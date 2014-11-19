@@ -1,0 +1,10 @@
+# ignore obj directory
+obj/
+# ignore bin folder except input and waverf coef
+bin/*
+!bin/input_HOS.dat
+!bin/waverf*
+# ignore backup files + Mac specific files
+*~
+sources/*/*~
+.DS_Store

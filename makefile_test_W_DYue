@@ -1,0 +1,102 @@
+LOCDIR =.
+
+OBJDIR=$(LOCDIR)/obj/
+#LIBDIR=$(LOCDIR)/lib/
+LIBDIR=/usr/local/lib/
+BINDIR=$(LOCDIR)/bin/
+SRCDIR =$(LOCDIR)/sources/HOS/
+SRCDIR2=$(LOCDIR)/sources/utilities/
+SRCDIR3=$(LOCDIR)/sources/Benchmark/
+## ifort compiler
+#FC=ifort
+##
+#OPTFLAGS= -O3 -module $(OBJDIR) # -fp-model precise this option to keep exactly same fp description
+#DBFLAGS= -O0 -traceback -check all -warn all -module $(OBJDIR)
+#FLAGMOD1= -module $(OBJDIR) #Flag for writing modules in $(OBJ)
+#FLAGMOD2= -module $(OBJDIR) #Flag for reading modules in $(OBJ)
+#
+# gfortran compiler (optimized for Mac Pro with intel corei7: avx not working on Mac)
+FC=gfortran
+#
+OPTFLAGS= -O3 -march=corei7 -msse2 -funroll-loops -fno-protect-parens -ffast-math #-Ofast -ffast-math -fstack-arrays: do not use those options
+# Tests : -march=native -mno-avx -Wl,-arch -Wl,x86_64 -J $(OBJDIR)
+DBFLAGS= -O0 -fdefault-real-8 -fdefault-double-8 -Wline-truncation -fpack-derived -finit-integer=inf -finit-real=nan -fbacktrace -ffpe-trap=zero,overflow -ffpe-summary=all -fimplicit-none -fcheck=all -Wall -Wtabs -Wextra -Wconversion-extra -Wunderflow
+FLAGMOD1= -J $(OBJDIR) #Flag for writing modules in $(OBJ)
+FLAGMOD2= -I $(OBJDIR) #Flag for reading modules in $(OBJ)
+#
+#define all modules
+nomcode=check_W_DYue
+
+module=\
+	resol_HOS\
+	runge_kutta\
+	energy_calc\
+	velocities
+
+module2=\
+	type\
+	ramp\
+	filters\
+	RF_solution\
+	fourier_r2c_FFTW3
+
+module3=\
+    variables_3D_DYue	
+ 
+# define the list of source files.
+SRCS = $(addprefix $(SRCDIR3), $(addsuffix .f90, $(nomcode))) $(addprefix $(SRCDIR), $(addsuffix .f90, $(module))) $(addprefix $(SRCDIR2), $(addsuffix .f90, $(module2))) $(addprefix $(SRCDIR3), $(addsuffix .f90, $(module3)))
+
+build:Release
+
+# top-level rule, to compile everything.
+all:clean depend Release
+
+# Targets for compilation
+
+Release: FFLAGS1 = $(OPTFLAGS) $(FLAGMOD1)
+Release: FFLAGS2 = $(OPTFLAGS) $(FLAGMOD2)
+Release: $(BINDIR)$(nomcode) $(SRCS)
+
+Debug: FFLAGS1 = $(DBFLAGS) $(FLAGMOD1)
+Debug: FFLAGS2 = $(DBFLAGS) $(FLAGMOD2)
+Debug: $(BINDIR)$(nomcode) $(SRCS)
+
+# now add a line to include the dependency list.
+include $(OBJDIR).depend2
+
+Objlink = $(addprefix $(OBJDIR), $(addsuffix .o, $(module))) $(addprefix $(OBJDIR), $(addsuffix .o, $(module2))) $(addprefix $(OBJDIR), $(addsuffix .o, $(module3))) $(addprefix $(OBJDIR), $(addsuffix .o, $(subroutine))) $(addprefix $(OBJDIR), $(addsuffix .o, $(module4)))
+
+# rule to link the program
+$(BINDIR)$(nomcode): $(SRCDIR3)$(nomcode:%=%.f90) $(Objlink) $(OBJDIR).depend2
+	$(FC) $(FFLAGS2) -o $(BINDIR)$(nomcode) $(SRCDIR3)$(nomcode:%=%.f90) $(Objlink) $(LIBDIR)libfftw3.a $(LIBDIR)librefblas.a $(LIBDIR)liblapack.a
+
+# now comes a meta-rule for compiling any "f90" source file.
+$(OBJDIR)%.o: $(SRCDIR)%.f90 $(OBJDIR).depend2
+	$(FC) $(FFLAGS1) -c $< -o $@
+
+$(OBJDIR)%.o: $(SRCDIR2)%.f90 $(OBJDIR).depend2
+	$(FC) $(FFLAGS1) -c $< -o $@
+
+$(OBJDIR)%.o: $(SRCDIR3)%.f90 $(OBJDIR).depend2
+	$(FC) $(FFLAGS1) -c $< -o $@
+
+# rule for building dependency lists, and writing them to a file
+# named ".depend2".
+depend $(OBJDIR).depend2:
+	rm -f $(OBJDIR).depend2
+	makedepf90 -b $(OBJDIR) $(SRCS) > $(OBJDIR).depend2
+
+clean:
+	rm -f $(addprefix $(OBJDIR), $(addsuffix .o, $(module)))
+	rm -f $(addprefix $(OBJDIR), $(addsuffix .o, $(module2)))
+	rm -f $(addprefix $(OBJDIR), $(addsuffix .o, $(module3)))
+	rm -f $(addprefix $(OBJDIR), $(addsuffix .o, $(subroutine)))
+	rm -f $(addprefix $(OBJDIR), $(addsuffix .mod, $(module)))
+	rm -f $(addprefix $(OBJDIR), $(addsuffix .mod, $(module2)))
+	rm -f $(addprefix $(OBJDIR), $(addsuffix .mod, $(module3)))
+	rm -f $(BINDIR)$(nomcode)
+	rm -f $(OBJDIR).depend2
+
+.PHONY: clean depend
+
+
