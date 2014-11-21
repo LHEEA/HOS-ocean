@@ -8,3 +8,8 @@ bin/*
 *~
 sources/*/*~
 .DS_Store
+# ignore PostProcessing/obj directory
+sources/PostProcessing/obj/
+# ignore PostProcessing/bin directory except input
+sources/PostProcessing/bin/*
+sources/PostProcessing/bin/input_post_process.dat

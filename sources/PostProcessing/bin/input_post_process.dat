@@ -1,0 +1,17 @@
+--- Choice of post-processing options
+Wave-by-wave analysis        :: i_ana            :: 1
+VP-card output               :: i_card           :: 1
+--- Wavefield analysis
+Starting time analysis       :: T_start          :: 0.0
+Stoping time analysis        :: T_stop           :: 8500.0
+--- Velocities/pressure cards
+Minimum x in VP-card         :: x_min            :: 0.0
+Maximum x in VP-card         :: x_max            :: 100.0
+Minimum y in VP-card         :: y_min            :: 0.0
+Maximum y in VP-card         :: y_max            :: 100.0
+Minimum t in VP-card         :: t_min            :: 0.0
+Maximum t in VP-card         :: t_max            :: 100.0
+--- Input files
+Tecplot version              :: tecplot          :: 11
+Name of free-surface file    :: file_3d          :: 3d.dat
+Name of modal description    :: file_mod         :: modes_HOS_SWENSE.dat
