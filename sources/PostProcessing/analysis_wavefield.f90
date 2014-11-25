@@ -20,7 +20,7 @@ MODULE analysis_wavefield
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 USE type
-USE variables_post_process
+USE variables_3d
 !
 CONTAINS
 !

@@ -27,7 +27,7 @@ MODULE input_post_process
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 USE type
-USE variables_post_process
+USE variables_3d
 !
 IMPLICIT NONE
 !
@@ -64,8 +64,6 @@ line_counter = 0
 CALL read_blank_line(unit)             ! --- Choice of post-processing options
 CALL read_datum(unit, i_ana)           ! Wave-by-wave analysis
 CALL read_datum(unit, i_card)          ! VP-card output
-WRITE(*,*)
-CALL read_blank_line(unit)             ! --- Wavefield analysis
 CALL read_datum(unit,T_start)          ! Starting time analysis
 CALL read_datum(unit, T_stop)          ! Stoping time analysis
 WRITE(*,*)
@@ -74,8 +72,9 @@ CALL read_datum(unit, x_min)           ! Minimum x in VP-card
 CALL read_datum(unit, x_max)           ! Maximum x in VP-card
 CALL read_datum(unit, y_min)           ! Minimum y in VP-card
 CALL read_datum(unit, y_max)           ! Maximum y in VP-card
-CALL read_datum(unit, t_min)           ! Minimum t in VP-card
-CALL read_datum(unit, t_max)           ! Maximum t in VP-card
+CALL read_datum(unit, z_min)           ! Minimum z in VP-card
+CALL read_datum(unit, z_max)           ! Maximum z in VP-card
+CALL read_datum(unit, i_zvect)         ! Maximum z in VP-card
 WRITE(*,*)
 CALL read_blank_line(unit)             ! --- Input files
 CALL read_datum(unit, tecplot)         ! Tecplot version

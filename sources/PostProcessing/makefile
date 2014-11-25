@@ -17,7 +17,7 @@ BINDIR=$(LOCDIR)/bin/
 FC=gfortran
 #
 OPTFLAGS= -O3 -march=corei7 -msse2 -funroll-loops -fno-protect-parens -ffast-math
-DBFLAGS = -O0 -Wline-truncation -fpack-derived -finit-integer=inf -finit-real=nan -fbacktrace -ffpe-trap=zero,overflow -ffpe-summary=all -fimplicit-none -fcheck=all -Wall -Wtabs -Wextra -Wunderflow  -Wno-zerotrip
+DBFLAGS = -O0 -Wline-truncation -fpack-derived -fbacktrace -ffpe-summary=all -fimplicit-none -fcheck=all -Wall -Wtabs -Wextra -Wunderflow  -Wno-zerotrip -finit-integer=inf -finit-real=nan -ffpe-trap=zero,overflow
 FLAGMOD1= -J $(OBJDIR) #Flag for writing modules in $(OBJ)
 FLAGMOD2= -I $(OBJDIR) #Flag for reading modules in $(OBJ)
 
@@ -29,10 +29,12 @@ module=\
 	input_post_process\
 	read_files\
 	analysis_wavefield\
-	output_post_process
+	output_post_process\
+	reconstruction
 
 module2=\
-	type
+	type\
+	fourier_r2c_FFTW3
 
 subroutine=\
 

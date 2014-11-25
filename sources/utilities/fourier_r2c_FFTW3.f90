@@ -59,8 +59,6 @@ REAL(RP), ALLOCATABLE, DIMENSION(:,:)    :: in_big
 COMPLEX(CP), ALLOCATABLE, DIMENSION(:,:) :: out_big
 !
 REAL(RP)                      :: twoon1, twooNd1, twoon2, twooNd2, oneon1, oneon2, oneoNd1, oneoNd2
-REAL(RP), DIMENSION(m1,m2)    :: y_real, y_temp
-REAL(RP), DIMENSION(md1,md2)  :: y_real_ext, y_temp_ext
 !
 !
 !

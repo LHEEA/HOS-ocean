@@ -144,8 +144,8 @@ IF (i_sw == 1) THEN
 	ENDIF
     ! Give constants needed to computation...
     OPEN(123,file='Results/modes_HOS_SWENSE.dat',status='REPLACE', FORM='FORMATTED', ACCESS='DIRECT',RECL=18*(2*n1o2p1))
-     WRITE(123,'(5000(ES17.10,1X))',REC=1) REAL(n1), REAL(n2), 1.0_rp/f_out,T_stop &
-          , xlen_star , ylen_star, L, (0.0_rp, i1=8,2*n1o2p1)
+     WRITE(123,'(5000(ES17.10,1X))',REC=1) REAL(n1), REAL(n2), 1.0_rp/f_out_star,T_stop_star &
+          , xlen_star , ylen_star , depth_star, g_star, L, T, (0.0_rp, i1=11,2*n1o2p1)
      
      WRITE(123,'(5000(ES17.10,1X))',REC=2) (0.0_rp, i1=1,2*n1o2p1)
      WRITE(123,'(5000(ES17.10,1X))',REC=3) (0.0_rp, i1=1,2*n1o2p1)
@@ -375,8 +375,8 @@ IF (i_prob == 1) THEN ! probes output
     WRITE(99,'(6(ES13.5,X))') time * T_out, (eta_probe(ii)* L_out, ii=1,nprobes)
 ENDIF
 !
-IF ((i_sw == 1).AND.(ABS(time) > tiny)) THEN
-    it = NINT(time*T*f_out)
+IF (i_sw == 1) THEN ! time=0 has to be saved...
+    it = NINT(time*T*f_out)+1
     do i2=1,n2
         WRITE(123,'(5000(ES17.10,1X))',REC=((it)*n2*6)+1+6*(i2-1)) (modesspecx(i1,i2), i1=1,n1o2p1)
         WRITE(123,'(5000(ES17.10,1X))',REC=((it)*n2*6)+2+6*(i2-1)) (modesspecy(i1,i2), i1=1,n1o2p1)
