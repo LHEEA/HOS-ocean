@@ -34,16 +34,16 @@ IMPLICIT NONE
 !
 INTEGER, INTENT(IN)                 :: n1
 REAL(RP), DIMENSION(n1), INTENT(IN) :: signal, x
+! Allocatable variables
+INTEGER, ALLOCATABLE, DIMENSION(:), INTENT(OUT)   :: idx_crest,idx_trough
+INTEGER, ALLOCATABLE, DIMENSION(:), INTENT(OUT)   :: idx_up,idx_down
+REAL(RP), ALLOCATABLE, DIMENSION(:), INTENT(OUT)  :: crest,trough,H_up,H_down,L_up,L_down
 !
 ! Local variables
 INTEGER :: i1
 INTEGER, DIMENSION(n1) :: idx_zeros ! indexes of zero-crossings
 INTEGER                :: n_zeros, n_waves ! number of zero crossings and waves
 INTEGER                :: shift, i_crest, i_trough, i_tmp, j1
-! Allocatable variables
-INTEGER, ALLOCATABLE, DIMENSION(:), INTENT(INOUT)   :: idx_crest,idx_trough
-INTEGER, ALLOCATABLE, DIMENSION(:), INTENT(INOUT)   :: idx_up,idx_down
-REAL(RP), ALLOCATABLE, DIMENSION(:), INTENT(INOUT)  :: crest,trough,H_up,H_down,L_up,L_down
 !
 ! Initialize
 idx_zeros = 0 ! Necessary since all n1 elements will not be evaluated (only n_zeros)
@@ -74,6 +74,13 @@ IF(.NOT.iseven(n_zeros)) THEN
   STOP
 ENDIF
 n_waves = n_zeros/2
+!
+! Test on the number of waves detected
+IF (n_waves < 2) THEN
+	print*, 'Too small number of waves in wave-by-wave analysis'
+	print*, 'If 3D analysis of wave-field, you should restrict to 2D'
+	STOP
+ENDIF
 !
 ! Allocation on the number of waves
 !
@@ -187,6 +194,142 @@ END SUBROUTINE wave_by_wave
 !
 !
 !
+SUBROUTINE wave_by_wave_3D(signal,x,y,n1,n2,n_waves,H_up,L_up,idx_up,H_down,crest,idx_crest,L_up_t,idx_up_t,idx_crest_t)
+!
+! Wave-by-wave analysis of a periodic signal on n1 point
+!
+IMPLICIT NONE
+!
+INTEGER, INTENT(IN)                    :: n1,n2
+REAL(RP), DIMENSION(n1), INTENT(IN)    :: x
+REAL(RP), DIMENSION(n2), INTENT(IN)    :: y
+REAL(RP), DIMENSION(n1,n2), INTENT(IN) :: signal
+! Allocatable variables
+INTEGER, ALLOCATABLE, DIMENSION(:), INTENT(OUT)   :: idx_crest,idx_up
+REAL(RP), ALLOCATABLE, DIMENSION(:), INTENT(OUT)  :: crest,H_up,H_down,L_up
+!
+INTEGER, ALLOCATABLE, DIMENSION(:), INTENT(OUT)   :: idx_crest_t,idx_up_t
+REAL(RP), ALLOCATABLE, DIMENSION(:), INTENT(OUT)  :: L_up_t
+!
+! Local variables
+INTEGER :: i1,i2,j1,j2
+INTEGER :: n_waves ! number of waves
+!
+! Temp variables assuming at least 4 points per wavelength
+INTEGER, DIMENSION(n2)        :: n_waves_x
+INTEGER, DIMENSION(n1/4,n2)   :: idx_crest_x,idx_trough_x
+INTEGER, DIMENSION(n1/4,n2)   :: idx_up_x,idx_down_x
+REAL(RP), DIMENSION(n1/4,n2)  :: crest_x,trough_x,H_up_x,H_down_x,L_up_x,L_down_x
+!
+INTEGER, DIMENSION(n1)        :: n_waves_y
+INTEGER, DIMENSION(n1,n2/4)   :: idx_crest_y,idx_trough_y
+INTEGER, DIMENSION(n1,n2/4)   :: idx_up_y,idx_down_y
+REAL(RP), DIMENSION(n1,n2/4)  :: crest_y,trough_y,H_up_y,H_down_y,L_up_y,L_down_y
+
+! Allocatables temp variables
+INTEGER, ALLOCATABLE, DIMENSION(:)   :: idx_crest_tmp,idx_trough_tmp
+INTEGER, ALLOCATABLE, DIMENSION(:)   :: idx_up_tmp,idx_down_tmp
+REAL(RP), ALLOCATABLE, DIMENSION(:)  :: crest_tmp,trough_tmp,H_up_tmp,H_down_tmp,L_up_tmp,L_down_tmp
+!
+! one has to perform recursive analysis 
+DO i2=1,n2
+	CALL wave_by_wave(signal(:,i2),x,n1,n_waves_x(i2),H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,&
+		crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+	!
+	IF (n_waves_x(i2) > n1/4) THEN
+		print*, 'Not enough points per wavelength in x'
+		print*,'n_waves =', n_waves_x(i2), 'n1 =', n1
+		stop
+	ENDIF
+	!
+	DO i1=1,n_waves_x(i2)
+		H_up_x(i1,i2)       = H_up_tmp(i1)
+		L_up_x(i1,i2)       = L_up_tmp(i1)
+		idx_up_x(i1,i2)     = idx_up_tmp(i1)
+		H_down_x(i1,i2)     = H_down_tmp(i1)
+		L_down_x(i1,i2)     = L_down_tmp(i1)
+		idx_down_x(i1,i2)   = idx_down_tmp(i1)
+		crest_x(i1,i2)      = crest_tmp(i1)
+		idx_crest_x(i1,i2)  = idx_crest_tmp(i1)
+		trough_x(i1,i2)     = trough_tmp(i1)
+		idx_trough_x(i1,i2) = idx_trough_tmp(i1)
+	ENDDO
+	!
+	DEALLOCATE(H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+ENDDO
+!
+! transverse analysis
+DO i1=1,n1
+	CALL wave_by_wave(signal(i1,:),y,n2,n_waves_y(i1),H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,&
+		crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+	!
+	IF (n_waves_y(i1) > n2/4) THEN
+		print*, 'Not enough points per wavelength in y'
+		print*,'n_waves =', n_waves_y(i1), 'n2 =', n2
+		stop
+	ENDIF
+	!
+	DO i2=1,n_waves_y(i1)
+		H_up_y(i1,i2)       = H_up_tmp(i2)
+		L_up_y(i1,i2)       = L_up_tmp(i2)
+		idx_up_y(i1,i2)     = idx_up_tmp(i2)
+		H_down_y(i1,i2)     = H_down_tmp(i2)
+		L_down_y(i1,i2)     = L_down_tmp(i2)
+		idx_down_y(i1,i2)   = idx_down_tmp(i2)
+		crest_y(i1,i2)      = crest_tmp(i2)
+		idx_crest_y(i1,i2)  = idx_crest_tmp(i2)
+		trough_y(i1,i2)     = trough_tmp(i2)
+		idx_trough_y(i1,i2) = idx_trough_tmp(i2)
+	ENDDO
+	!
+	DEALLOCATE(H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+ENDDO
+!
+! Determine the number of 3D-waves
+n_waves=0
+DO i1=1,n1
+  DO j1=1,n_waves_y(i1)
+	 DO i2=1,n2
+		DO j2=1,n_waves_x(i2)
+		   IF((i1.EQ.idx_crest_x(j2,i2)).AND.(i2.EQ.idx_crest_y(i1,j1))) THEN
+			  n_waves = n_waves+1
+		   ENDIF
+		ENDDO
+	 ENDDO
+  ENDDO
+ENDDO
+!
+! Allocate
+ALLOCATE(H_up(n_waves),H_down(n_waves),crest(n_waves),L_up(n_waves),idx_up(n_waves),idx_crest(n_waves),&
+	L_up_t(n_waves),idx_up_t(n_waves),idx_crest_t(n_waves))
+!
+n_waves=0
+DO i1=1,n1
+  DO j1=1,n_waves_y(i1)
+	 DO i2=1,n2
+		DO j2=1,n_waves_x(i2)
+		   IF((i1.EQ.idx_crest_x(j2,i2)).AND.(i2.EQ.idx_crest_y(i1,j1))) THEN
+		   		n_waves = n_waves+1
+			  	H_up(n_waves)       = H_up_x(j2,i2)
+			  	H_down(n_waves)     = H_down_x(j2,i2)
+			  	crest(n_waves)      = crest_x(j2,i2)
+			  	L_up(n_waves)       = L_up_x(j2,i2)
+			  	idx_up(n_waves)     = idx_up_x(j2,i2)
+			  	idx_crest(n_waves)  = idx_crest_x(j2,i2)
+			  	! transverse
+			  	L_up_t(n_waves)       = L_up_y(i1,j1)
+			  	idx_up_t(n_waves)     = idx_up_y(i1,j1)
+			  	idx_crest_t(n_waves)  = idx_crest_y(i1,j1)
+		   ENDIF
+		ENDDO
+	 ENDDO
+  ENDDO
+ENDDO
+!
+END SUBROUTINE wave_by_wave_3D
+!
+!
+!
 SUBROUTINE H_onethird(H,n_waves,H_1_3rd)
 !
 ! Computation of H_1/3
@@ -244,6 +387,12 @@ IF(n_freak.NE.0) THEN
 ELSE
 	n_freak=1
 	ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+	! Initialize
+	H_freak(n_freak) = 0.0_rp
+	x_freak(n_freak) = 0.0_rp
+	L_freak(n_freak) = 0.0_rp
+	idx_freak(n_freak) = 0
+	!
 	n_freak=0
 ENDIF
 !
@@ -265,6 +414,82 @@ ENDDO
 !
 !
 END SUBROUTINE locate_freak
+!
+!
+!
+SUBROUTINE locate_freak_3D(H,L,idx_crest,idx_start,L_t,idx_crest_t,idx_start_t,n_waves,x,y,n1,n2,H_lim, &
+	n_freak,H_freak,L_freak,x_freak,idx_freak,L_freak_t,y_freak,idx_freak_t)
+!
+! This subroutine locate the freak waves in a given 3D wavefield
+!
+REAL(RP), DIMENSION(n_waves), INTENT(IN) :: H, L, L_t
+INTEGER, DIMENSION(n_waves), INTENT(IN)  :: idx_crest, idx_start, idx_crest_t, idx_start_t
+INTEGER, INTENT(IN)                      :: n_waves, n1, n2
+REAL(RP), DIMENSION(n1), INTENT(IN)      :: x
+REAL(RP), DIMENSION(n2), INTENT(IN)      :: y
+REAL(RP), INTENT(IN)                     :: H_lim
+!
+REAL(RP), ALLOCATABLE, DIMENSION(:), INTENT(OUT) :: H_freak, x_freak, L_freak, y_freak, L_freak_t
+INTEGER, ALLOCATABLE, DIMENSION(:), INTENT(OUT)  :: idx_freak, idx_freak_t
+INTEGER, INTENT(OUT) :: n_freak
+!
+! Local variables
+INTEGER :: j1, i_freak
+!
+!
+! Number of freak waves
+n_freak=0
+DO j1=1,n_waves
+   IF(H(j1).GT.H_lim) THEN
+      n_freak = n_freak + 1
+   ENDIF
+ENDDO
+!
+! Allocate freak waves parameters
+IF(n_freak.NE.0) THEN
+	ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+	ALLOCATE(y_freak(n_freak),L_freak_t(n_freak), idx_freak_t(n_freak))
+ELSE
+	n_freak=1
+	ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+	ALLOCATE(y_freak(n_freak),L_freak_t(n_freak), idx_freak_t(n_freak))
+	! Initialize
+	H_freak(n_freak) = 0.0_rp
+	x_freak(n_freak) = 0.0_rp
+	L_freak(n_freak) = 0.0_rp
+	idx_freak(n_freak) = 0
+	y_freak(n_freak) = 0.0_rp
+	L_freak_t(n_freak) = 0.0_rp
+	idx_freak_t(n_freak) = 0
+	n_freak=0
+ENDIF
+!
+i_freak = 0
+!
+DO j1=1,n_waves
+	IF(H(j1).GT.H_lim) THEN
+		i_freak                  = i_freak+1
+		H_freak(i_freak)         = H(j1)
+		L_freak(i_freak)         = L(j1)
+		IF (idx_crest(j1).GT.n1) THEN
+			x_freak(i_freak)      = x(n1)+x(idx_crest(j1)-n1)
+		ELSE
+			x_freak(i_freak)      = x(idx_crest(j1))
+		ENDIF
+		idx_freak(i_freak) = idx_start(j1) ! index of the beginning of the corresponding wave
+		! Transverse
+		L_freak_t(i_freak)         = L_t(j1)
+		IF (idx_crest_t(j1).GT.n2) THEN
+			y_freak(i_freak)      = y(n2)+y(idx_crest_t(j1)-n2)
+		ELSE
+			y_freak(i_freak)      = y(idx_crest_t(j1))
+		ENDIF
+		idx_freak_t(i_freak) = idx_start_t(j1) ! index of the beginning of the corresponding wave
+	ENDIF
+ENDDO
+!
+!
+END SUBROUTINE locate_freak_3D
 !
 !
 !

@@ -1,9 +1,9 @@
 Choice of computed case      :: i_case           :: 3
 --- Geometry of the horizontal domain
-Length in x-direction        :: xlen             :: 80.0
+Length in x-direction        :: xlen             :: 20.0
 Length in y-direction        :: ylen             :: 20.0
 --- Time stuff
-Duration of the simulation   :: T_stop           :: 10.0
+Duration of the simulation   :: T_stop           :: 100.0
 Sampling frequency (output)  :: f_out            :: 5.0
 Tolerance of RK scheme       :: toler            :: 1.0e-7
 Dommermuth initialisation    :: n                :: 4

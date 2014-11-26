@@ -35,16 +35,23 @@ IMPLICIT NONE
 REAL(RP) :: dt_out, time, time_prev
 REAL(RP), ALLOCATABLE, DIMENSION(:) :: H_up, L_up, H_down, L_down, crest, trough
 INTEGER, ALLOCATABLE, DIMENSION(:)  :: idx_up, idx_down, idx_crest, idx_trough
+! Transverse
+REAL(RP), ALLOCATABLE, DIMENSION(:) :: L_up_t
+INTEGER, ALLOCATABLE, DIMENSION(:)  :: idx_crest_t,idx_up_t
 INTEGER  :: i_unit,n_waves
 REAL(RP) :: H_1_3rd_up, H_1_3rd_down, H_lim
 !
 ! For moments
 REAL(RP) :: ave_eta,adev_eta,sdev_eta,var_eta,skew_eta,kurt_eta
+REAL(RP), ALLOCATABLE, DIMENSION(:) :: data
 !
 ! For freak waves
 INTEGER :: n_freak
 REAL(RP), ALLOCATABLE, DIMENSION(:) :: H_freak,L_freak,x_freak
 INTEGER,ALLOCATABLE, DIMENSION(:)   :: idx_freak
+! Transverse
+REAL(RP), ALLOCATABLE, DIMENSION(:) :: L_freak_t,y_freak
+INTEGER,ALLOCATABLE, DIMENSION(:)   :: idx_freak_t
 !
 ! For SWENSE-type outputs + velocity/pressure cards
 !
@@ -64,18 +71,13 @@ CALL read_input('input_post_process.dat')
 CALL init_output_post_process(i_ana,i_card)
 !
 ! Wave-by-wave analysis
-IF (i_ana == 1) THEN
+IF (i_ana /= 0) THEN
 	!
 	! Initialize data reading from file...
 	i_unit = 101
 	CALL init_read_3d(file_3d,i_unit,tecplot,n1,n2,x,y,eta,phis,dt_out)
 	print*, file_3d
 	print*, n1,n2,dt_out
-	!
-	IF (n2 > 1) THEN
-		print*, 'This is limited to 2D analysis for now'
-		STOP
-	ENDIF
 	!
 	! Force the time to be a multiple of dt_out... starting from closest time-step 
 	time      = NINT(T_start/dt_out)*dt_out
@@ -86,30 +88,80 @@ IF (i_ana == 1) THEN
 		! It reads the closest time in file_3d
 		IF (time >= dt_out/2) CALL read_3d(i_unit,tecplot,time_prev,time,dt_out,n1,n2,eta,phis)
 		!
-		! Wave-by-wave analysis
-		CALL wave_by_wave(eta(:,1),x,n1,n_waves,H_up,L_up,idx_up,H_down,L_down,idx_down,crest,idx_crest,trough,idx_trough)
+		! Always compute the moments of free surface elevation
+		IF (i_ana >= 1) THEN
+			!
+			ALLOCATE(data(n1*n2))
+			DO i1=1,n1
+				DO i2=1,n2
+					data(i2+n2*(i1-1)) = eta(i1,i2)
+				ENDDO
+			ENDDO
+			!
+			! Evaluation of moments associated to 3D-free surface elevation
+			CALL moment(n1*n2,data,ave_eta,adev_eta,sdev_eta,var_eta,skew_eta,kurt_eta)
+			!
+			DEALLOCATE(data)
+			!
+		ENDIF
 		!
-		! Evaluate H_1/3
-		CALL H_onethird(H_up,n_waves,H_1_3rd_up)
-		CALL H_onethird(H_down,n_waves,H_1_3rd_down)
-		!
-		! Evaluation of moments associated to free surface elevation
-		CALL moment(n1,eta(:,1),ave_eta,adev_eta,sdev_eta,var_eta,skew_eta,kurt_eta)
-		!
-		! Locate the freak waves with up-crossing analysis
-		H_lim = HfoHs*4.0_rp*sdev_eta
-		CALL locate_freak(H_up,L_up,idx_crest,idx_up,n_waves,x,n1,H_lim,n_freak,H_freak,L_freak,x_freak,idx_freak)
-		!
-		! Output at the given time-step
-		CALL output_time_step_ana(i_ana,tecplot,time,eta(:,1),ave_eta,sdev_eta,skew_eta,kurt_eta, &
-			MAXVAL(H_up),MAXVAL(H_down),MAXVAL(crest),MINVAL(trough),H_1_3rd_up,H_1_3rd_down,n_freak,H_freak,x_freak,L_freak,idx_freak)
+		IF ((n2 > 1).AND.(i_ana == 3)) THEN ! 3D analysis of 3D wave-field
+			!
+			! Wave-by-wave analysis for 3D wave-field
+			CALL wave_by_wave_3D(eta,x,y,n1,n2,n_waves,H_up,L_up,idx_up,H_down,crest,idx_crest,L_up_t,idx_up_t,idx_crest_t)
+			!
+			! Evaluate H_1/3 on 3D waves
+			CALL H_onethird(H_up,n_waves,H_1_3rd_up)
+			CALL H_onethird(H_down,n_waves,H_1_3rd_down)
+			!
+			! Locate the freak waves with up-crossing analysis
+			H_lim = HfoHs*4.0_rp*sdev_eta
+			CALL locate_freak_3D(H_up,L_up,idx_crest,idx_up,L_up_t,idx_crest_t,idx_up_t,n_waves,x,y,n1,n2,H_lim, &
+				n_freak,H_freak,L_freak,x_freak,idx_freak,L_freak_t,y_freak,idx_freak_t)
+			!
+			! Output at the given time-step
+			CALL output_time_step_ana(i_ana,tecplot,time,eta,ave_eta,sdev_eta,skew_eta,kurt_eta,&
+				MAXVAL(H_up),MAXVAL(H_down),MAXVAL(crest),H_1_3rd_up,H_1_3rd_down,&
+				n_freak,H_freak,x_freak,L_freak,idx_freak,y_freak,L_freak_t,idx_freak_t)
+			!
+			! Deallocate
+			DEALLOCATE(H_up,L_up,H_down,crest,idx_up,idx_crest,H_freak,L_freak,x_freak,idx_freak,y_freak,idx_freak_t,L_freak_t)
+		ELSEIF (i_ana == 2) THEN ! 2D analysis of wave-field (if 3D treat only i2=1)
+				!
+				! Wave-by-wave analysis
+				CALL wave_by_wave(eta(:,1),x,n1,n_waves,H_up,L_up,idx_up,H_down,L_down,idx_down,crest,idx_crest,trough,idx_trough)
+				!
+				! Evaluate H_1/3
+				CALL H_onethird(H_up,n_waves,H_1_3rd_up)
+				CALL H_onethird(H_down,n_waves,H_1_3rd_down)
+				!
+				! Locate the freak waves with up-crossing analysis
+				H_lim = HfoHs*4.0_rp*sdev_eta
+				CALL locate_freak(H_up,L_up,idx_crest,idx_up,n_waves,x,n1,H_lim,n_freak,H_freak,L_freak,x_freak,idx_freak)
+				!
+				! Output at the given time-step
+				CALL output_time_step_ana(i_ana,tecplot,time,eta,ave_eta,sdev_eta,skew_eta,kurt_eta,&
+					MAXVAL(H_up),MAXVAL(H_down),MAXVAL(crest),H_1_3rd_up,H_1_3rd_down,&
+					n_freak,H_freak,x_freak,L_freak,idx_freak,0.0_rp*x_freak,0.0_rp*L_freak,0*idx_freak)
+				!
+				! Deallocate
+				DEALLOCATE(H_up,L_up,H_down,L_down,crest,trough,idx_up,idx_down,idx_crest,H_freak,L_freak,x_freak,idx_freak,idx_trough)
+		ELSEIF (i_ana == 1) THEN ! Output of results for case i_ana = 1
+			n_freak = 1
+			ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+			ALLOCATE(y_freak(n_freak),L_freak_t(n_freak), idx_freak_t(n_freak))
+			!
+			! Output at the given time-step
+			CALL output_time_step_ana(i_ana,tecplot,time,eta,ave_eta,sdev_eta,skew_eta,kurt_eta,&
+				0.0_rp,0.0_rp,0.0_rp,0.0_rp,0.0_rp,&
+				n_freak,H_freak,x_freak,L_freak,idx_freak,y_freak,L_freak_t,idx_freak_t)
+			!
+			DEALLOCATE(H_freak,L_freak,x_freak,idx_freak,y_freak,idx_freak_t,L_freak_t)
+		ENDIF
 		!
 		! next time-step
 		time_prev = time
 		time      = time + dt_out
-		!
-		! Deallocate
-		DEALLOCATE(H_up,L_up,H_down,L_down,crest,trough,idx_up,idx_down,idx_crest,H_freak,L_freak,x_freak,idx_freak,idx_trough)
 	ENDDO
 	!
 	! Close all files (including those open in output...

@@ -28,16 +28,16 @@ USE ramp
 IMPLICIT NONE
 !
 ! Number of modes
-INTEGER, PARAMETER :: n1 = 2048	
-INTEGER, PARAMETER :: n2 = 1
+INTEGER, PARAMETER :: n1 = 256	
+INTEGER, PARAMETER :: n2 = 64
 ! Array size
 INTEGER, PARAMETER :: m1 = n1
 INTEGER, PARAMETER :: m2 = n2
 ! HOS nonlinearity order
-INTEGER, PARAMETER :: M = 5
+INTEGER, PARAMETER :: M = 3
 ! Dealiasing parameters
 INTEGER, PARAMETER :: p1 = M ! must have p1 <= M
-INTEGER, PARAMETER :: p2 = 1 ! must have p2 <= M
+INTEGER, PARAMETER :: p2 = M ! must have p2 <= M
 !
 INTEGER, DIMENSION(3), PARAMETER  :: ctype1 = (/p1, 2*(n1/2+1), 0/) ! p, N_der and N_filt
 INTEGER, DIMENSION(3), PARAMETER  :: ctype2 = (/p2, 2*(n2/2+1), 0/) ! p, N_der and N_filt

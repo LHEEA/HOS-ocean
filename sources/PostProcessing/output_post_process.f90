@@ -47,23 +47,25 @@ INTEGER, INTENT(IN) :: i_ana, i_card
 !
 !INTEGER :: i1, i2
 !
-IF (i_ana == 1) THEN
+IF (i_ana >= 1) THEN
 	!
 	! Results of wave field analysis: moments of FS and wave-by-wave analysis
 	OPEN(20,file='Results/Analysis.dat',status='unknown')
 	WRITE(20,'(A)') 'TITLE=" Free surface analysis "'
 	WRITE(20,'(A,A)') 'VARIABLES="time","ave_eta","sdev_eta","skew_eta","kurt_eta","Hs",', &
-		'"H_max_up","H_max_down","crest_max","trough_max","H_one3_up","H_one3_down","n_freak"'
-	!
-	! Free surface profile of freak waves detected
-	OPEN(21,file='Results/freak_waves.dat',status='unknown')
-	WRITE(21,'(A)') 'TITLE=" 3D free surface elevation of freak waves "'
-	WRITE(21,'(A)') 'VARIABLES="x","y","eta"'
-	!
-	! Characteristics of freak events detected
-	OPEN(22,file='Results/Caract_freaks.dat',status='unknown')
-	WRITE(22,'(A)') 'TITLE=" Parameters of detected freak waves "'
-	WRITE(22,'(A)') 'VARIABLES="time","i_freak","H_freak","x_freak","Lx_freak"'
+		'"H_max_up","H_max_down","crest_max","H_one3_up","H_one3_down","n_freak"'
+	IF (i_ana > 1) THEN
+		!
+		! Free surface profile of freak waves detected
+		OPEN(21,file='Results/freak_waves.dat',status='unknown')
+		WRITE(21,'(A)') 'TITLE=" 3D free surface elevation of freak waves "'
+		WRITE(21,'(A)') 'VARIABLES="x","y","eta"'
+		!
+		! Characteristics of freak events detected
+		OPEN(22,file='Results/Caract_freaks.dat',status='unknown')
+		WRITE(22,'(A)') 'TITLE=" Parameters of detected freak waves "'
+		WRITE(22,'(A)') 'VARIABLES="time","i_freak","H_freak","x_freak","Lx_freak","y_freak","Ly_freak"'
+	ENDIF
 END IF
 !
 IF (i_card /= 0) THEN
@@ -88,52 +90,74 @@ END SUBROUTINE init_output_post_process
 !
 !
 SUBROUTINE output_time_step_ana(i_ana,tecplot,time,eta,ave_eta,sdev_eta,skew_eta,kurt_eta, &
-		H_max_up,H_max_down,crest_max,trough_max,H_one3_up,H_one3_down,n_freak,&
-		H_freak,x_freak,L_freak,idx_freak)
+		H_max_up,H_max_down,crest_max,H_one3_up,H_one3_down,&
+		n_freak,H_freak,x_freak,L_freak,idx_freak,y_freak,L_freak_t,idx_freak_t)
 !
 ! This subroutine performs the output of wave-field analysis
 !
 IMPLICIT NONE
 !
 ! Input variables
-INTEGER, INTENT(IN)    :: i_ana, tecplot
-REAL(RP), INTENT(IN)   :: time
-REAL(RP), DIMENSION(:), INTENT(IN) :: eta
+INTEGER, INTENT(IN)                  :: i_ana, tecplot
+REAL(RP), INTENT(IN)                 :: time
+REAL(RP), DIMENSION(:,:), INTENT(IN) :: eta
 !
-REAL(RP), INTENT(IN) :: ave_eta,sdev_eta,skew_eta,kurt_eta,H_max_up,H_max_down,crest_max,trough_max,H_one3_up,H_one3_down
+REAL(RP), INTENT(IN) :: ave_eta,sdev_eta,skew_eta,kurt_eta,H_max_up,H_max_down,crest_max,H_one3_up,H_one3_down
 !
 INTEGER, INTENT(IN)  :: n_freak
-REAL(RP), DIMENSION(n_freak), INTENT(IN) :: H_freak,x_freak,L_freak
-INTEGER, DIMENSION(n_freak), INTENT(IN)  :: idx_freak
+REAL(RP), DIMENSION(MAX(n_freak,1)), INTENT(IN) :: H_freak,x_freak,L_freak,y_freak,L_freak_t
+INTEGER, DIMENSION(MAX(n_freak,1)), INTENT(IN)  :: idx_freak, idx_freak_t
 ! Local variables
 !
-INTEGER  :: i_freak, i1, i2, npts, idx_tmp
-REAL(RP) :: dx
+INTEGER  :: i_freak, i1, i2, nptsx, nptsy, idx_tmp, idx_tmp_t
+REAL(RP) :: dx, dy
 !
-IF (i_ana == 1) THEN
+IF (i_ana >= 1) THEN
 	!
-	WRITE(20,'(12(ES16.9,X),I6)') time,ave_eta,sdev_eta,skew_eta,kurt_eta, &
-		4.0_rp*sdev_eta,H_max_up,H_max_down,crest_max,trough_max,H_one3_up,H_one3_down,n_freak
-	IF(n_freak.NE.0) THEN
+	WRITE(20,'(11(ES16.9,X),I6)') time,ave_eta,sdev_eta,skew_eta,kurt_eta, &
+		4.0_rp*sdev_eta,H_max_up,H_max_down,crest_max,H_one3_up,H_one3_down,n_freak
+	IF ((i_ana>1).AND.(n_freak.NE.0)) THEN
 		write(22,103)'ZONE T = "t = ',time, '", I=', n_freak
 		!
 		DO i_freak=1,n_freak
-      		write(22,'(ES16.9,X,I6,X,3(ES16.9,X))') time,i_freak,H_freak(i_freak),x_freak(i_freak),L_freak(i_freak)
+			write(22,'(ES16.9,X,I6,X,5(ES16.9,X))') time,i_freak,H_freak(i_freak),x_freak(i_freak),L_freak(i_freak), &
+				y_freak(i_freak),L_freak_t(i_freak) ! 2D-case taken into-account in input ot output routine 
       	    !
-    		dx   = x(2)-x(1)
-    		npts = NINT(L_freak(i_freak)/dx)+1
+    		dx    = x(2)-x(1)
+    		nptsx = NINT(L_freak(i_freak)/dx)+1
+    		IF (SIZE(y,1) /= 1) THEN
+				dy    = y(2)-y(1)
+				nptsy = NINT(L_freak_t(i_freak)/dy)+1
+			ELSE
+				dy    = 0.0_rp
+				nptsy = 1
+			ENDIF
     		IF (tecplot == 11) THEN
-    			WRITE(21,103)'ZONE SOLUTIONTIME = ',time,', I=',npts,', J=',1
+    			WRITE(21,103)'ZONE SOLUTIONTIME = ',time,', I=',nptsx,', J=',nptsy
     		ELSE
-    			WRITE(21,103)'ZONE T = "',time,'", I=',npts,', J=',1
+    			WRITE(21,103)'ZONE T = "',time,'", I=',nptsx,', J=',nptsy
     		END IF
-    		DO i2=1,1
-    			DO i1=1,npts
-    				idx_tmp = idx_freak(i_freak)+i1-1
-    				IF (idx_tmp > SIZE(x,1)) idx_tmp = idx_tmp - SIZE(x,1) ! Useful for eta
-    				WRITE(21,'(3(ES16.9,X))') x(idx_freak(i_freak))+(i1-1)*dx, 0.d0, eta(idx_tmp)
-                ENDDO
-            ENDDO
+    		IF (SIZE(y,1) /= 1) THEN
+				DO i2=1,nptsy
+					DO i1=1,nptsx
+						idx_tmp = idx_freak(i_freak)+i1-1
+						IF (idx_tmp > SIZE(x,1)) idx_tmp = idx_tmp - SIZE(x,1) ! Useful for eta
+						idx_tmp_t = idx_freak_t(i_freak)+i2-1
+						IF (idx_tmp_t > SIZE(y,1)) idx_tmp_t = idx_tmp_t - SIZE(y,1) ! Useful for eta
+						!
+						WRITE(21,'(3(ES16.9,X))') x(idx_freak(i_freak))+(i1-1)*dx, y(idx_freak_t(i_freak))+(i2-1)*dy, eta(idx_tmp,idx_tmp_t)
+					ENDDO
+				ENDDO
+            ELSE
+            	DO i2=1,nptsy
+					DO i1=1,nptsx
+						idx_tmp = idx_freak(i_freak)+i1-1
+						IF (idx_tmp > SIZE(x,1)) idx_tmp = idx_tmp - SIZE(x,1) ! Useful for eta
+						!
+						WRITE(21,'(3(ES16.9,X))') x(idx_freak(i_freak))+(i1-1)*dx, 0.0_rp, eta(idx_tmp,1)
+					ENDDO
+				ENDDO
+            ENDIF
         ENDDO
     ENDIF
 ENDIF
@@ -165,19 +189,20 @@ REAL(RP) :: Press
 !
 IF (i_card /= 0) THEN
 	!
-    ! These are informations useful for eventual coupling using files VP_card
-    IF (time*T_out <= T_start) THEN ! First time-step
-    	OPEN(30,file='Results/data_VP_card.dat',status='unknown')
-		WRITE(30,'(2(ES16.9,X))') x(imin)*L_out, x(imax)*L_out
-		WRITE(30,'(2(ES16.9,X))') y(jmin)*L_out, y(jmax)*L_out
-		WRITE(30,'(2(ES16.9,X))') z_min, z_max ! should be used only for (i_card == 1)
-		WRITE(30,'(3(I4,X))') imax-imin+1, jmax-jmin+1, i_zvect
-		WRITE(30,'(3(ES16.9,X),I6)') T_start, T_stop, dt_out_star*T_out, FLOOR((T_stop-T_start)/T_out/dt_out_star) !T_stop, T_start are dimensional quantities
-		CLOSE(30)
-	ENDIF
-	!
 	! Velocity and pressure card
 	IF (i_card == 1) THEN
+		!
+   		! These are informations useful for eventual coupling using files VP_card
+    	IF (time*T_out <= T_start) THEN ! First time-step
+    		OPEN(30,file='Results/data_VP_card.dat',status='unknown')
+			WRITE(30,'(2(ES16.9,X))') x(imin)*L_out, x(imax)*L_out
+			WRITE(30,'(2(ES16.9,X))') y(jmin)*L_out, y(jmax)*L_out
+			WRITE(30,'(2(ES16.9,X))') z_min, z_max ! should be used only for (i_card == 1)
+			WRITE(30,'(3(I4,X))') imax-imin+1, jmax-jmin+1, i_zvect
+			WRITE(30,'(3(ES16.9,X),I6)') T_start, T_stop, dt_out_star*T_out, FLOOR((T_stop-T_start)/T_out/dt_out_star) !T_stop, T_start are dimensional quantities
+			CLOSE(30)
+		ENDIF
+		!
 		IF (i_test == 1) THEN ! First element in the z-loop
 			IF (time*T_out <= T_start) THEN ! First time-step
 				IF (tecplot == 11) THEN
