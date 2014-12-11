@@ -1,9 +1,27 @@
-!MODULE variables_post_process
 MODULE variables_3d
 !
-USE type
+! This module defines the different common variables for post-processing
 !
-! Define the different common variables for post-processing
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!    Copyright (C) 2014 - LHEEA Lab., Ecole Centrale de Nantes, UMR CNRS 6598
+!
+!    This program is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+!
+!    This program is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+USE type
 !
 INTEGER :: n1,n2
 REAL(RP), ALLOCATABLE, DIMENSION(:)   :: x,y
@@ -27,12 +45,6 @@ REAL(RP), PARAMETER   :: HfoHs = 2.0_rp ! Freak wave height on Hs threshold for 
 INTEGER :: n1o2p1,n2o2p1
 ! test for fourier
 INTEGER :: m1,m2,Nd1,Nd2,Nd1o2p1,m1o2p1,md1o2p1,md1,md2
-
-!! For output in VP_card
-!REAL(RP) :: x_min, x_max, y_min, y_max, z_min, z_max, T_init
-!REAL(RP), ALLOCATABLE, DIMENSION(:)   :: xvect, yvect, zvect
-!REAL(RP), ALLOCATABLE, DIMENSION(:,:) :: eta_card
-!INTEGER :: i_xvect, i_yvect, i_zvect, imin, imax, jmin, jmax
 !
 CONTAINS
 !
@@ -47,4 +59,3 @@ iseven = (MOD(n,2) == 0)
 END FUNCTION iseven
 !
 END MODULE variables_3d
-!END MODULE variables_post_process
