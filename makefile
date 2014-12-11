@@ -22,7 +22,7 @@ FLAGMOD1= -J $(OBJDIR) #Flag for writing modules in $(OBJ)
 FLAGMOD2= -I $(OBJDIR) #Flag for reading modules in $(OBJ)
 
 #define all modules
-nomcode=HOS_ocean
+nomcode=HOS-ocean
 
 module=\
 	runge_kutta\

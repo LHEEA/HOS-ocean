@@ -2,13 +2,15 @@ MODULE RF_solution
 !
 ! This module computes the solution of Rienecker & Fenton (J.F.M. Vol.104, 1981)
 ! It uses a set of coefficients describing eta and phi obtained from a specific R&F program 
-! from LHEEA Lab. (Pierre Ferrant & Félicien Bonnefoy)
+! from LHEEA Lab., ECN (Pierre Ferrant & Félicien Bonnefoy)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !    Copyright (C) 2014 - LHEEA Lab., Ecole Centrale de Nantes, UMR CNRS 6598
 !
-!    This program is free software: you can redistribute it and/or modify
+!    This program is part of HOS-ocean
+!
+!    HOS-ocean is free software: you can redistribute it and/or modify
 !    it under the terms of the GNU General Public License as published by
 !    the Free Software Foundation, either version 3 of the License, or
 !    (at your option) any later version.

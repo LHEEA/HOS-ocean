@@ -64,7 +64,6 @@ REAL(RP) :: error_H2
 !
  CALL initiate_parameters()
 !
-!
 ! Scales
 IF(i_case == 3 .or. i_case==31 .or. i_case == 32) THEN
 	!
@@ -393,9 +392,7 @@ dt     = 0.5_rp * dt_rk4
 !
 WRITE(*,*) dt_out, dt_rk4, dt_lin
 !
-!
 ! Initial solution
-!
  CALL initiate(time, eta, phis, RK_param)
 !
 ! keeping only n1c and n2c modes

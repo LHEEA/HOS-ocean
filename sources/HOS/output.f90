@@ -6,7 +6,9 @@ MODULE output
 !
 !    Copyright (C) 2014 - LHEEA Lab., Ecole Centrale de Nantes, UMR CNRS 6598
 !
-!    This program is free software: you can redistribute it and/or modify
+!    This program is part of HOS-ocean
+!
+!    HOS-ocean is free software: you can redistribute it and/or modify
 !    it under the terms of the GNU General Public License as published by
 !    the Free Software Foundation, either version 3 of the License, or
 !    (at your option) any later version.
@@ -171,14 +173,14 @@ SUBROUTINE output_time_step(i_3d, i_a, i_vol, i_2D, i_max, time, N_stop, a_eta, 
 IMPLICIT NONE
 !
 ! Input variables
-INTEGER, INTENT(IN)             :: i_3d, i_a, i_vol, i_2D, i_max, N_stop, i_prob
+INTEGER, INTENT(IN)               :: i_3d, i_a, i_vol, i_2D, i_max, N_stop, i_prob
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: a_eta, a_phis, da_eta
-REAL(RP), DIMENSION(m1,m2)      :: eta, phis
+REAL(RP), DIMENSION(m1,m2)        :: eta, phis
 REAL(RP) :: time, volume, energy(4), E_0(4), E_tot
 ! Local variables
-INTEGER                    :: ii, i1, i2, it
-REAL(RP)                   :: a_1, eta_mult, min_val, max_val
-REAL(RP), DIMENSION(m1,m2) :: envelope
+INTEGER                        :: ii, i1, i2, it
+REAL(RP)                       :: a_1, eta_mult, min_val, max_val
+REAL(RP), DIMENSION(m1,m2)     :: envelope
 REAL(RP), DIMENSION(m1o2p1,m2) :: abs_eta, log_eta,abs_phis,log_phis
 !
 eta_mult = eta_out
