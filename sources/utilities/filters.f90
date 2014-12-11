@@ -151,20 +151,29 @@ IMPLICIT NONE
 INTEGER                                         :: order
 REAL(RP), DIMENSION(1:md1,1:md2), INTENT(INOUT) :: var_ext
 !
+! Prevent from doing 4 FFTs instead of 2 in 3D configurations
+IF (((i_dealias(1) == 1).AND.(MOD(order-1,order_max(1)) == 0)).OR.((i_dealias(2) == 1).AND.(MOD(order-1,order_max(2)) == 0))) THEN
+	CALL space_2_fourier_big(var_ext, temp_C_Nd)
+ENDIF
+!
 IF (i_dealias(1) == 1) THEN
    IF (MOD(order-1,order_max(1)) == 0) THEN ! partial dealiasing along x-direction
-      CALL space_2_fourier_big(var_ext, temp_C_Nd)
+      !CALL space_2_fourier_big(var_ext, temp_C_Nd)
       temp_C_Nd(N_dea(1)+1:Nd1o2p1,1:Nd2) = ((0.0_rp, 0.0_rp))
-      CALL fourier_2_space_big(temp_C_Nd, var_ext)
+      !CALL fourier_2_space_big(temp_C_Nd, var_ext)
    END IF
 END IF
 IF (i_dealias(2) == 1) THEN
    IF (MOD(order-1,order_max(2)) == 0) THEN ! partial dealiasing along y-direction
-      CALL space_2_fourier_big(var_ext, temp_C_Nd)
+      !CALL space_2_fourier_big(var_ext, temp_C_Nd)
       temp_C_Nd(1:Nd1o2p1,N_dea(2)+1:Nd2-(N_dea(2)+1)+2) = ((0.0_rp, 0.0_rp))
-      CALL fourier_2_space_big(temp_C_Nd, var_ext)
+      !CALL fourier_2_space_big(temp_C_Nd, var_ext)
    END IF
 END IF
+!
+IF (((i_dealias(1) == 1).AND.(MOD(order-1,order_max(1)) == 0)).OR.((i_dealias(2) == 1).AND.(MOD(order-1,order_max(2)) == 0))) THEN
+	CALL fourier_2_space_big(temp_C_Nd, var_ext)
+ENDIF
 !
 END SUBROUTINE dealias
 !
