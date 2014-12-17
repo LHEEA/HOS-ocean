@@ -189,13 +189,18 @@ REAL(RP), DIMENSION(:,:), INTENT(IN) :: zlocal,vitx,vity,vitz,phit
 INTEGER  :: i1,i2
 REAL(RP) :: Press
 !
+REAL(RP)             :: tiny_sp
+!
+! tiny_sp is single precision: useful for inequalities check with values read from files
+tiny_sp = epsilon(1.0)
+!
 IF (i_card /= 0) THEN
 	!
 	! Velocity and pressure card
 	IF (i_card == 1) THEN
 		!
    		! These are informations useful for eventual coupling using files VP_card
-    	IF (time*T_out <= T_start) THEN ! First time-step
+    	IF (time*T_out <= T_start+tiny_sp) THEN ! First time-step
     		OPEN(30,file='Results/data_VP_card.dat',status='unknown')
 			WRITE(30,'(2(ES16.9,X))') x(imin)*L_out, x(imax)*L_out
 			WRITE(30,'(2(ES16.9,X))') y(jmin)*L_out, y(jmax)*L_out
@@ -206,7 +211,7 @@ IF (i_card /= 0) THEN
 		ENDIF
 		!
 		IF (i_test == 1) THEN ! First element in the z-loop
-			IF (time*T_out <= T_start) THEN ! First time-step
+			IF (time*T_out <= T_start+tiny_sp) THEN ! First time-step
 				IF (tecplot == 11) THEN
 					WRITE(31,104)'ZONE SOLUTIONTIME = ',time*T_out,', I=', imax-imin+1,' J=', jmax-jmin+1,' K=', i_zvect
 				ELSE
@@ -224,7 +229,7 @@ IF (i_card /= 0) THEN
 		DO i2=1,jmax-jmin+1
 			DO i1=1,imax-imin+1
 				Press = - g_star*zlocal(i1,i2) - 0.5_rp*(vitx(i1,i2)**2+vity(i1,i2)**2+vitz(i1,i2)**2)-phit(i1,i2)
-				if(time*T_out <= T_start) then
+				if(time*T_out <= T_start+tiny_sp) then
 					WRITE(31,'(7(ES16.9,X))') x(i1+imin-1)*L_out, y(i2+jmin-1)*L_out, zlocal(i1,i2)*L_out, &
 							vitx(i1,i2)*L_out/T_out, vity(i1,i2)*L_out/T_out, vitz(i1,i2)*L_out/T_out, &
 							Press*L_out**2/T_out**2

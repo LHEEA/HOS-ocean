@@ -480,14 +480,14 @@ END SUBROUTINE build_mesh_local
 !
 !
 !
-SUBROUTINE check_sizes(n2,x_min,x_max,y_min,y_max,t_min,t_max,xlen_star,ylen_star,T_stop_star,L,T)
+SUBROUTINE check_sizes(n2,x_min,x_max,y_min,y_max,z_min,t_min,t_max,xlen_star,ylen_star,depth_star,T_stop_star,L,T)
 !
 ! Test the domain size and time window
 !
 IMPLICIT NONE
 !
 INTEGER, INTENT(IN)  :: n2
-REAL(RP), INTENT(IN) :: x_min,x_max,y_min,y_max,t_min,t_max,xlen_star,ylen_star,T_stop_star,L,T
+REAL(RP), INTENT(IN) :: x_min,x_max,y_min,y_max,t_min,t_max,xlen_star,ylen_star,depth_star,T_stop_star,L,T
 REAL(RP)             :: tiny_sp
 !
 ! tiny_sp is single precision: useful for inequalities check with values read from files
@@ -523,6 +523,11 @@ ENDIF
 IF(t_min.LT.(-tiny_sp)) then
 	WRITE(*,*) 'Warning, negative starting time'
 	WRITE(*,*) 'tmin =',t_min
+	STOP
+ENDIF
+IF(z_min.LT.(-depth_star-tiny_sp)*L) then
+	WRITE(*,*) 'Warning, |z_min| is greater than water depth'
+	WRITE(*,*) 'zmin =',z_min
 	STOP
 ENDIF
 !

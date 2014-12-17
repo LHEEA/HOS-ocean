@@ -65,6 +65,10 @@ REAL(RP), ALLOCATABLE, DIMENSION(:,:)    :: vitx,vity,vitz,phit,dudt,dvdt,dwdt,z
 REAL(RP) :: dt_out_star,T_stop_star,xlen_star,ylen_star,depth_star,g_star,L,T
 INTEGER  :: imin,imax,jmin,jmax,i_xvect,i_yvect
 INTEGER  :: i1,i2,i3,i_test
+REAL(RP) :: tiny_sp
+!
+! tiny_sp is single precision: useful for inequalities check with values read from files
+tiny_sp = epsilon(1.0)
 !
 ! Read input file to define parameters of post-processing
 CALL read_input('input_post_process.dat')
@@ -85,7 +89,7 @@ IF (i_ana /= 0) THEN
 	time      = NINT(T_start/dt_out)*dt_out
 	time_prev = 0.0_rp
 	!
-	DO WHILE (time <= T_stop)
+	DO WHILE (time <= T_stop+tiny_sp)
 		!
 		! It reads the closest time in file_3d
 		IF (time >= dt_out/2) CALL read_3d(i_unit,tecplot,time_prev,time,dt_out,n1,n2,eta,phis)
@@ -206,7 +210,7 @@ IF (i_card /= 0) THEN
 	!
 	! Check (x_min, x_max, y_min, y_max) w.r.t. domain size
 	! + time window (t_min, t_max)
-	CALL check_sizes(n2,x_min,x_max,y_min,y_max,T_start,T_stop,xlen_star,ylen_star,T_stop_star,L,T)
+	CALL check_sizes(n2,x_min,x_max,y_min,y_max,z_min,T_start,T_stop,xlen_star,ylen_star,depth_star,T_stop_star,L,T)
 	!
 	ALLOCATE(x(n1),y(n2),kx(n1o2p1),ky_n2(n2),ikx(n1o2p1,n2),iky(n1o2p1,n2),kth(n1o2p1,n2))
 	!
@@ -229,7 +233,7 @@ IF (i_card /= 0) THEN
 	time      = NINT(T_start/T/dt_out_star)*dt_out_star 
 	time_prev = 0.0_rp
 	!
-	DO WHILE (time*T <= T_stop)
+	DO WHILE (time*T <= T_stop+tiny_sp)
 		!
 		write(*,'(A,ES8.1)') 'time = ',time*T
 		!
