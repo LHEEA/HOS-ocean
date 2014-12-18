@@ -1,10 +1,11 @@
 LOCDIR =.
 
-SRCDIR =$(LOCDIR)/sources/HOS/
-SRCDIR2=$(LOCDIR)/sources/utilities/
-OBJDIR =$(LOCDIR)/obj/
-LIBDIR=/usr/local/lib/
-BINDIR=$(LOCDIR)/bin/
+SRCDIR  = $(LOCDIR)/sources/HOS/
+SRCDIR2 = $(LOCDIR)/sources/utilities/
+OBJDIR  = $(LOCDIR)/obj/
+LIBDIR  = /usr/local/lib/
+BINDIR  = $(LOCDIR)/bin/
+LINKLIB = $(LIBDIR)libfftw3.a $(LIBDIR)liblapack.a $(LIBDIR)librefblas.a
 ## ifort compiler
 #FC=ifort
 ##
@@ -73,7 +74,7 @@ Objlink = $(addprefix $(OBJDIR), $(addsuffix .o, $(module))) $(addprefix $(OBJDI
 
 # rule to link the program
 $(BINDIR)$(nomcode): $(SRCDIR)$(nomcode:%=%.f90) $(Objlink) $(OBJDIR).depend
-	$(FC) $(FFLAGS2) -o $(BINDIR)$(nomcode) $(SRCDIR)$(nomcode:%=%.f90) $(Objlink) $(LIBDIR)libfftw3.a $(LIBDIR)librefblas.a $(LIBDIR)liblapack.a
+	$(FC) $(FFLAGS2) -o $(BINDIR)$(nomcode) $(SRCDIR)$(nomcode:%=%.f90) $(Objlink) $(LINKLIB)
 
 # now comes a meta-rule for compiling any "f90" source file.
 $(OBJDIR)%.o: $(SRCDIR)%.f90 $(OBJDIR).depend
@@ -93,6 +94,7 @@ clean:
 depend $(OBJDIR).depend:
 	@if test -d bin; then echo "bin/ exists"; else mkdir bin; fi
 	@if test -d obj; then echo "obj/ exists"; else mkdir obj; fi
+	@if test -d bin/Results; then echo "exists"; else mkdir bin/Results; fi
 	rm -f $(OBJDIR).depend
 	makedepf90 -b $(OBJDIR) $(SRCS) > $(OBJDIR).depend
 

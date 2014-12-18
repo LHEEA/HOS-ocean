@@ -37,12 +37,12 @@ CONTAINS
 !
 !
 !
-SUBROUTINE init_output(i_3d, i_a, i_vol, i_disp, i_2D, i_max, i_prob, i_sw)
+SUBROUTINE init_output(i_3d, i_a, i_vol, i_2D, i_max, i_prob, i_sw)
 !
 IMPLICIT NONE
 !
 ! Input variables
-INTEGER, INTENT(IN) :: i_3d, i_a, i_vol, i_disp, i_2D, i_max, i_prob, i_sw
+INTEGER, INTENT(IN) :: i_3d, i_a, i_vol, i_2D, i_max, i_prob, i_sw
 ! Local variables
 INTEGER :: i1, i2
 !

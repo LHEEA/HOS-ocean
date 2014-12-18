@@ -45,7 +45,7 @@ INTEGER                    :: Mo2
 INTEGER                    :: i1, i2, j, iCPUtime, jj
 REAL(RP)                   :: energy(4)
 !
-REAL(RP) :: time, t_i, t_f, time_cur, t_tot, time_next, t_i_indiv, t_f_indiv
+REAL(RP) :: t_i, t_f, time_cur, t_tot, time_next, t_i_indiv, t_f_indiv
 REAL(RP) :: dt_out, dt_rk4, dt, h_rk, h_loc, dt_lin
 INTEGER  :: n_rk, n_rk_tot, n_error, n_er_tot
 INTEGER  :: n_hour, n_min, n_sec
@@ -393,7 +393,7 @@ dt     = 0.5_rp * dt_rk4
 WRITE(*,*) dt_out, dt_rk4, dt_lin
 !
 ! Initial solution
- CALL initiate(time, eta, phis, RK_param)
+ CALL initiate(time_cur, eta, phis, RK_param)
 !
 ! keeping only n1c and n2c modes
  CALL space_2_fourier(eta,  a_eta)
@@ -441,7 +441,7 @@ error_old = toler
 !
 ! Output files
 !
-CALL init_output(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_disp=0, i_2D=i_2d, i_max=0, i_prob=i_prob, i_sw=i_sw)
+CALL init_output(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, i_prob=i_prob, i_sw=i_sw)
 !
 ! Analytical integration of the linear part
 ! Evaluates the modal amplitudes (FT)

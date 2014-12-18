@@ -1,12 +1,12 @@
 LOCDIR =.
 
-OBJDIR=$(LOCDIR)/obj/
-#LIBDIR=$(LOCDIR)/lib/
-LIBDIR=/usr/local/lib/
-BINDIR=$(LOCDIR)/bin/
-SRCDIR =$(LOCDIR)/sources/HOS/
-SRCDIR2=$(LOCDIR)/sources/utilities/
-SRCDIR3=$(LOCDIR)/sources/Benchmark/
+OBJDIR  = $(LOCDIR)/obj/
+LIBDIR  = /usr/local/lib/
+BINDIR  = $(LOCDIR)/bin/
+SRCDIR  = $(LOCDIR)/sources/HOS/
+SRCDIR2 = $(LOCDIR)/sources/utilities/
+SRCDIR3 = $(LOCDIR)/sources/Benchmark/
+LINKLIB = $(LIBDIR)libfftw3.a $(LIBDIR)liblapack.a $(LIBDIR)librefblas.a
 ## ifort compiler
 #FC=ifort
 ##
@@ -68,7 +68,7 @@ Objlink = $(addprefix $(OBJDIR), $(addsuffix .o, $(module))) $(addprefix $(OBJDI
 
 # rule to link the program
 $(BINDIR)$(nomcode): $(SRCDIR3)$(nomcode:%=%.f90) $(Objlink) $(OBJDIR).depend2
-	$(FC) $(FFLAGS2) -o $(BINDIR)$(nomcode) $(SRCDIR3)$(nomcode:%=%.f90) $(Objlink) $(LIBDIR)libfftw3.a $(LIBDIR)librefblas.a $(LIBDIR)liblapack.a
+	$(FC) $(FFLAGS2) -o $(BINDIR)$(nomcode) $(SRCDIR3)$(nomcode:%=%.f90) $(Objlink) $(LINKLIB)
 
 # now comes a meta-rule for compiling any "f90" source file.
 $(OBJDIR)%.o: $(SRCDIR)%.f90 $(OBJDIR).depend2

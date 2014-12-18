@@ -64,7 +64,7 @@ REAL(RP), ALLOCATABLE, DIMENSION(:,:) :: eta, phis
 REAL(RP)                   :: pioxlen, k2, spatial_ref, thkh, angle
 REAL(RP)                   :: dely, pioylen
 INTEGER                    :: Mo2, part
-INTEGER                    :: i1, i2, j, ideep, Nd1o2, err_x, err_y, err_xy, index
+INTEGER                    :: i1, i2, j, ideep, Nd1o2, err_x, err_y, err_xy
 !
 ! Adaptive Time Step Runge Kutta scheme
 TYPE(RK_parameters)        :: RK_param
