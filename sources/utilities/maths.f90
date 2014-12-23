@@ -29,19 +29,19 @@ IMPLICIT NONE
 !
 INTERFACE norme
    MODULE PROCEDURE norme_r,norme_d,norme_vr,norme_vd
-END INTERFACE 
+END INTERFACE
 INTERFACE ecart_type
    MODULE PROCEDURE ecart_type_r,ecart_type_d
-END INTERFACE 
+END INTERFACE
 INTERFACE variance
    MODULE PROCEDURE variance_r,variance_d
-END INTERFACE 
+END INTERFACE
 INTERFACE dichoto
    MODULE PROCEDURE dichoto_r,dichoto_d
-END INTERFACE 
+END INTERFACE
 INTERFACE phase
    MODULE PROCEDURE phase_r,phase_d !,phase_rv,phase_dv
-END INTERFACE 
+END INTERFACE
 !
 !
 !
