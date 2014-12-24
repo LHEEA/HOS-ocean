@@ -24,12 +24,12 @@ MODULE type
 ! Definition of symboles for real types (RP) and complex ones (CP)
 !
 ! Real numbers are simple or double precision
-INTEGER, PARAMETER :: SP = KIND(1.0)
-INTEGER, PARAMETER :: DP = KIND(1.0D0)
+INTEGER, PARAMETER :: SP = SELECTED_REAL_KIND(6,   37)     ! REAL32
+INTEGER, PARAMETER :: DP = SELECTED_REAL_KIND(15, 307)     ! REAL64
 !
 ! Complex numbers are simple or double precision
-INTEGER, PARAMETER :: SPC = KIND((1.0,1.0))
-INTEGER, PARAMETER :: DPC = KIND((1.0D0,1.0D0))
+INTEGER, PARAMETER :: SPC = SP
+INTEGER, PARAMETER :: DPC = DP
 !
 ! Current types
 INTEGER, PARAMETER :: RP = DP
