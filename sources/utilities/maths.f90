@@ -56,7 +56,7 @@ IMPLICIT NONE
 REAL(SP),INTENT(IN) :: x
 REAL(SP)            :: norme_r
 !
-norme_r = SQRT( x*x )
+norme_r = ABS( x )
 !
 END FUNCTION norme_r
 !
@@ -69,7 +69,7 @@ IMPLICIT NONE
 REAL(DP),INTENT(IN) :: x
 REAL(DP)            :: norme_d
 !
-norme_d = SQRT( x*x )
+norme_d = DABS( x )
 !
 END FUNCTION norme_d
 !
