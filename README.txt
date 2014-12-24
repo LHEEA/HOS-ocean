@@ -35,7 +35,7 @@ Setting the value of integer i_case in 'input_HOS.dat'
 i_case = 1 : starts from rest
 
 i_case = 2 and 21 : starts with a natural mode
-   2  - progressive wave: potential on free surface accrodingly to linear theory
+   2  - progressive wave: potential on free surface accordingly to linear theory
    21 - stationary wave: no velocity at initial time
    The number of the mode, its amplitude and phase have to be chosen
    in the module 'initial_condition.f90'.
