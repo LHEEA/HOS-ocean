@@ -156,7 +156,7 @@ IMPLICIT NONE
 REAL(SP), DIMENSION(:),INTENT(IN) :: x
 REAL(SP)                          :: ecart_type_r
 !
-ecart_type_r = SQRT( variance( x ) )
+ecart_type_r = SQRT( variance_r( x ) )
 !
 END FUNCTION ecart_type_r
 !
@@ -169,7 +169,7 @@ IMPLICIT NONE
 REAL(DP), DIMENSION(:),INTENT(IN) :: x
 REAL(DP)                          :: ecart_type_d
 !
-ecart_type_d = SQRT( variance( x ) )
+ecart_type_d = SQRT( variance_d( x ) )
 !
 END FUNCTION ecart_type_d
 !
