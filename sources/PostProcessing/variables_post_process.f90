@@ -43,7 +43,7 @@ REAL(RP), PARAMETER   :: HfoHs = 2.0_rp ! Freak wave height on Hs threshold for 
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-! 
+!
 INTEGER :: n1o2p1,n2o2p1
 ! test for fourier
 INTEGER :: m1,m2,Nd1,Nd2,Nd1o2p1,m1o2p1,md1o2p1,md1,md2

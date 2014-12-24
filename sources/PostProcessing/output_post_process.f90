@@ -123,7 +123,7 @@ IF (i_ana >= 1) THEN
 		!
 		DO i_freak=1,n_freak
 			write(22,'(ES16.9,X,I6,X,5(ES16.9,X))') time,i_freak,H_freak(i_freak),x_freak(i_freak),L_freak(i_freak), &
-				y_freak(i_freak),L_freak_t(i_freak) ! 2D-case taken into-account in input ot output routine 
+				y_freak(i_freak),L_freak_t(i_freak) ! 2D-case taken into-account in input ot output routine
       	    !
     		dx    = x(2)-x(1)
     		nptsx = NINT(L_freak(i_freak)/dx)+1
@@ -165,7 +165,7 @@ IF (i_ana >= 1) THEN
 ENDIF
 !
 103 FORMAT(A,F9.2,A,I5,A,I5)
-                  
+
 END SUBROUTINE output_time_step_ana
 !
 !
@@ -245,21 +245,21 @@ IF (i_card /= 0) THEN
 				WRITE(32,104)'ZONE SOLUTIONTIME = ',time*T_out,', I=', imax-imin+1,' J=', jmax-jmin+1,' K=', i_zvect
 			ELSE
 				WRITE(32,104)'ZONE T = "',time*T_out,', I=', imax-imin+1,' J=', jmax-jmin+1,' K=', i_zvect
-			END IF    	
+			END IF
     	ENDIF
 		!
 		DO i2=1,jmax-jmin+1
         	DO i1=1,imax-imin+1
 				Press = - g_star*zlocal(i1,i2) - 0.5_rp*(vitx(i1,i2)**2+vity(i1,i2)**2+vitz(i1,i2)**2)-phit(i1,i2)
 				WRITE(32,'(7(ES16.9,X))') x(i1+imin-1)*L_out, y(i2+jmin-1)*L_out, zlocal(i1,i2)*L_out, vitx(i1,i2)*L_out/T_out, &
-					vity(i1,i2)*L_out/T_out, vitz(i1,i2)*L_out/T_out, Press*L_out**2/T_out**2 
+					vity(i1,i2)*L_out/T_out, vitz(i1,i2)*L_out/T_out, Press*L_out**2/T_out**2
 			ENDDO
 		ENDDO
     ENDIF
 ENDIF
 !
 104 FORMAT(A,F9.2,A,I5,A,I5,A,I5)
-                  
+
 END SUBROUTINE output_time_step_card
 !
 END MODULE output_post_process

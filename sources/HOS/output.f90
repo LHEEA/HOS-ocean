@@ -101,7 +101,7 @@ IF (i_prob == 1) THEN
    OPEN(55,FILE='prob.inp')
    nprobes=0
    DO
-      READ(55,*,END=98) 
+      READ(55,*,END=98)
       nprobes = nprobes + 1
       CYCLE
 98    EXIT
@@ -129,7 +129,7 @@ IF (i_prob == 1) THEN
    !
    xprobe = xprobe / L
    yprobe = yprobe / L
-   !	   
+   !
    !
 902 format(a,2(i2,a,1es10.3,a))
 	!
@@ -148,7 +148,7 @@ IF (i_sw == 1) THEN
     OPEN(123,file='Results/modes_HOS_SWENSE.dat',status='REPLACE', FORM='FORMATTED', ACCESS='DIRECT',RECL=18*(2*n1o2p1))
      WRITE(123,'(5000(ES17.10,1X))',REC=1) REAL(n1), REAL(n2), 1.0_rp/f_out_star,T_stop_star &
           , xlen_star , ylen_star , depth_star, g_star, L, T, (0.0_rp, i1=11,2*n1o2p1)
-     
+
      WRITE(123,'(5000(ES17.10,1X))',REC=2) (0.0_rp, i1=1,2*n1o2p1)
      WRITE(123,'(5000(ES17.10,1X))',REC=3) (0.0_rp, i1=1,2*n1o2p1)
      WRITE(123,'(5000(ES17.10,1X))',REC=4) (0.0_rp, i1=1,2*n1o2p1)
@@ -192,7 +192,7 @@ IF (i_3D == 1) THEN
    IF (n2 == 1) THEN
       envelope = hilbert(a_eta)
       envelope(1:n1,1:n2) = SQRT(eta(1:n1,1:n2)**2 + envelope(1:n1,1:n2)**2)
-      WHERE (ABS(envelope(1:n1,1:n2)) < 1.0E-50_rp) 
+      WHERE (ABS(envelope(1:n1,1:n2)) < 1.0E-50_rp)
          envelope(1:n1,1:n2) = 0.0_rp
       END WHERE
    ELSE

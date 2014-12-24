@@ -30,7 +30,7 @@ IMPLICIT NONE
 !
 INTERFACE alpha_adim
    MODULE PROCEDURE alpha_adim_r, alpha_adim_v
-END INTERFACE 
+END INTERFACE
 !
 CONTAINS
 !
@@ -128,7 +128,7 @@ IF ( (TWOPI*f)**2 / g * h < log(HUGE(1.0_rp))-1.0_rp ) THEN
    wave_number_r = wave_number_r / h
 ELSE
    wave_number_r = (TWOPI*f)**2 / g
-END IF   
+END IF
 !
 END FUNCTION wave_number_r
 !
@@ -146,7 +146,7 @@ IF ( (TWOPI*f)**2 < log(HUGE(1.0_rp))-1.0_rp ) THEN
 ELSE
    WRITE(*,*) 'big frequency'
    wave_number_adim_r = (TWOPI*f)**2
-END IF   
+END IF
 !
 END FUNCTION wave_number_adim_r
 !

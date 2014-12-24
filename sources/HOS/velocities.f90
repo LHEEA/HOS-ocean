@@ -39,7 +39,7 @@ CONTAINS
 !      subroutine HOSvel2(meta2,M_HOSvel,a_eta_l,a_phis_l,time_current,Ta,n,iCPUtime)
       subroutine HOSvel2(meta2,M_HOSvel,a_eta_l,a_phis_l,time_current)
 !     ======================================
-      
+
 implicit none
 !
 !% INPUT VARIABLES
@@ -222,7 +222,7 @@ do i1=1,n1
       phimx(i1,i2) = (phisx_d(i1,i2) - phiz_etax(i1,i2))
       phimy(i1,i2) = (phisy_d(i1,i2) - phiz_etay(i1,i2))
       phit(i1,i2)  = dphis3(i1,i2) - (detaphiz_d(i1,i2))
-      phimz(i1,i2) = phiz(i1,i2) 
+      phimz(i1,i2) = phiz(i1,i2)
    enddo
 enddo
 !
@@ -299,7 +299,7 @@ do ii1=1,meta2-1
          eta2(i1,i2)=(eta3(i1,i2))*(meta2-1-(ii1-1))/(meta2)
       enddo
    enddo
-!   
+!
 ! inverse FFT: determination of the modes of eta2
 !
    CALL space_2_fourier(eta2,as2)
@@ -382,7 +382,7 @@ do ii1=1,meta2-1
          CALL fourier_2_space_big(a_phiziy,phiziy)
          CALL fourier_2_space_big(a_phiziz,phiziz)
          CALL fourier_2_space_big(a_phizit,phizit)
-         
+
     ! change : new etapmext goes from 1 to mHOS+1
          do i1=1,Nd1
             do i2=1,Nd2
@@ -403,7 +403,7 @@ do ii1=1,meta2-1
       end do
 
 !
-! FIXME: optimize 
+! FIXME: optimize
      a_phizi  = ((0.0_rp, 0.0_rp))
      a_phizix = ((0.0_rp, 0.0_rp))
      a_phiziy = ((0.0_rp, 0.0_rp))
@@ -437,14 +437,14 @@ do ii1=1,meta2-1
     ! change : new etapmext goes from 1 to mHOS+1
       do i1=1,Nd1
          do i2=1,Nd2
-            phim_ext(i1,i2)   = phim_ext(i1,i2) - phizi(i1,i2) * etapmext1(i1,i2,1+1) 
-            phimx_ext(i1,i2)  = phimx_ext(i1,i2) - phizix(i1,i2) * etapmext1(i1,i2,1+1) 
+            phim_ext(i1,i2)   = phim_ext(i1,i2) - phizi(i1,i2) * etapmext1(i1,i2,1+1)
+            phimx_ext(i1,i2)  = phimx_ext(i1,i2) - phizix(i1,i2) * etapmext1(i1,i2,1+1)
             phimy_ext(i1,i2)  = phimy_ext(i1,i2) - phiziy(i1,i2) * etapmext1(i1,i2,1+1)
             phimz_ext(i1,i2)  = phimz_ext(i1,i2) - phiziz(i1,i2) * etapmext1(i1,i2,1+1)
             phit_ext(i1,i2)   = phit_ext(i1,i2) - phizit(i1,i2) * etapmext1(i1,i2,1+1)
             !
-            phim2_ext(i1,i2)  = phim2_ext(i1,i2) + phizi(i1,i2) * etapmext2(i1,i2,1+1) 
-            phimx2_ext(i1,i2) = phimx2_ext(i1,i2) + phizix(i1,i2) * etapmext2(i1,i2,1+1) 
+            phim2_ext(i1,i2)  = phim2_ext(i1,i2) + phizi(i1,i2) * etapmext2(i1,i2,1+1)
+            phimx2_ext(i1,i2) = phimx2_ext(i1,i2) + phizix(i1,i2) * etapmext2(i1,i2,1+1)
             phimy2_ext(i1,i2) = phimy2_ext(i1,i2) + phiziy(i1,i2) * etapmext2(i1,i2,1+1)
             phimz2_ext(i1,i2) = phimz2_ext(i1,i2) + phiziz(i1,i2) * etapmext2(i1,i2,1+1)
             phit2_ext(i1,i2)  = phit2_ext(i1,i2) + phizit(i1,i2) * etapmext2(i1,i2,1+1)
@@ -505,7 +505,7 @@ COMPLEX(CP), DIMENSION(md1o2p1,md2) :: a_phizi, a_phizix, a_phiziy, a_phiziz, a_
 
 REAL(RP), DIMENSION(md1,md2) :: phim_ext, phimx_ext, phimy_ext, phimz_ext, phit_ext
 REAL(RP), DIMENSION(m1,m2) :: B, Bx, By, Bz, Bt
-	  
+
 INTEGER :: i1, j, iHOS, jm1, j2, i2, M_HOSvel
 !
 ! initializations
@@ -522,7 +522,7 @@ do i1=1,Nd1
       phimx_ext(i1,i2)= vitx_int(i1,i2)
       phimy_ext(i1,i2)= vity_int(i1,i2)
       phimz_ext(i1,i2)= vitz_int(i1,i2)
-      phit_ext(i1,i2)= phit_int(i1,i2) 
+      phit_ext(i1,i2)= phit_int(i1,i2)
    enddo
 enddo
 !
@@ -543,7 +543,7 @@ do iHOS=1,M_HOSvel
   CALL space_2_fourier_big(phimy_ext,aHOSy(:,:,iHOS))
   CALL space_2_fourier_big(phimz_ext,aHOSz(:,:,iHOS))
   CALL space_2_fourier_big(phit_ext,aHOSt(:,:,iHOS))
-   
+
    do i1 = 1, Nd1
       do i2=1,Nd2
          phim_ext(i1,i2)  = 0.0_rp
@@ -556,7 +556,7 @@ do iHOS=1,M_HOSvel
 
    do j = iHOS,2,-1
       jm1 = j - 1
-      j2  = iHOS - jm1  
+      j2  = iHOS - jm1
       ! FIXME: optimize
       a_phizi  = ((0.0_rp, 0.0_rp))
       a_phizix = ((0.0_rp, 0.0_rp))
@@ -699,7 +699,7 @@ ENDDO
 !
 phi_SL(1:n1,1:n2)   = 0.0_rp
 vitx_SL(1:n1,1:n2)  = 0.0_rp
-vity_SL(1:n1,1:n2)  = 0.0_rp 
+vity_SL(1:n1,1:n2)  = 0.0_rp
 vitz_SL(1:n1,1:n2)  = 0.0_rp
 dphit_SL(1:n1,1:n2) = 0.0_rp
 eta_SL(1:n1,1:n2)   = 0.0_rp
@@ -713,7 +713,7 @@ accz_SL(1:n1,1:n2)  = 0.0_rp
 do ii=1,n1
    do ii2=1,n2
     !
-    ! Take into account finite depth...    
+    ! Take into account finite depth...
     !
     i1 = 1
     i2 = 1
@@ -756,7 +756,7 @@ do ii=1,n1
         !
         accx_SL(ii,ii2)  =  accx_SL(ii,ii2) + 0.0_rp
         accy_SL(ii,ii2)  =  accy_SL(ii,ii2) - 2.0_rp*ABS(modesspecy(i1,i2) * coeff * i * ky_n2(i2)) &
-        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))  
+        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))
         accz_SL(ii,ii2)  =  accz_SL(ii,ii2) + 2.0_rp*ABS(modesspecz(i1,i2) * coeff2 * k_n2 &
         	/ TANH(k_n2*(eta_l(ii,ii2)+depth_star)))*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2))))
     enddo
@@ -777,7 +777,7 @@ do ii=1,n1
         !
         accx_SL(ii,ii2)  =  accx_SL(ii,ii2) + 0.0_rp
         accy_SL(ii,ii2)  =  accy_SL(ii,ii2) + 1.0_rp*ABS(modesspecy(i1,i2) * coeff * i * ky_n2(i2)) &
-        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))  
+        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))
         accz_SL(ii,ii2)  =  accz_SL(ii,ii2) - 1.0_rp*ABS(modesspecz(i1,i2) * coeff2 * k_n2 &
         	/ TANH(k_n2*(eta_l(ii,ii2)+depth_star)))*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2))))
     ENDIF
@@ -859,7 +859,7 @@ end subroutine reconstruction_SL
 !      subroutine HOSvel2(meta2,M_HOSvel,a_eta_l,a_phis_l,time_current,Ta,n,iCPUtime)
       subroutine HOSvel_direct(a_eta_l,a_phis_l,time_current)
 !     ======================================
-      
+
 implicit none !double precision (a-h,o-z)
 
 !
@@ -955,7 +955,7 @@ do i1=1,n1
       phimx(i1,i2) = (phisx_d(i1,i2) - phiz_etax(i1,i2))
       phimy(i1,i2) = (phisy_d(i1,i2) - phiz_etay(i1,i2))
       phit(i1,i2)  = dphis3(i1,i2) - (detaphiz_d(i1,i2))
-      phimz(i1,i2) = phiz(i1,i2) 
+      phimz(i1,i2) = phiz(i1,i2)
    enddo
 enddo
 
@@ -1099,7 +1099,7 @@ COMPLEX(CP), DIMENSION(m1*1,m1*1) :: A_save
 REAL(RP), DIMENSION(m1,1), INTENT(IN) :: B
 COMPLEX(CP), DIMENSION(m1*1) :: work,work2
 COMPLEX(CP), DIMENSION(m1o2p1,1), INTENT(OUT) :: X
-! 
+!
 INTEGER, DIMENSION(m1*1)  :: ipiv
 !
 INTEGER :: i1,i2,index1,info

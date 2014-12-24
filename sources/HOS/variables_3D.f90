@@ -30,7 +30,7 @@ USE ramp
 IMPLICIT NONE
 !
 ! Number of modes
-INTEGER, PARAMETER :: n1 = 256	
+INTEGER, PARAMETER :: n1 = 256
 INTEGER, PARAMETER :: n2 = 64
 ! Array size
 INTEGER, PARAMETER :: m1 = n1

@@ -77,7 +77,7 @@ CALL fourier_2_space_big(temp_C_Nd, etax)
 temp_C_Nd = extend_C(a_etark)
 temp_C_Nd(1:Nd1o2p1,1:Nd2) = iky_big(1:Nd1o2p1,1:Nd2) * temp_C_Nd(1:Nd1o2p1,1:Nd2)
 CALL fourier_2_space_big(temp_C_Nd, etay)
-! 
+!
 ! grad(eta)^2 (on a (p+1)/2 N grid)
 gradeta2(1:Nd1,1:Nd2) = etax(1:Nd1,1:Nd2) * etax(1:Nd1,1:Nd2) + etay(1:Nd1,1:Nd2) * etay(1:Nd1,1:Nd2)
 CALL dealias(2,gradeta2)
@@ -102,7 +102,7 @@ endif
 END SUBROUTINE phisxy_etaxy
 !
 !
-! 
+!
 SUBROUTINE HOSphis_modes_fully_dealiased(a_phisrk)
 !
 IMPLICIT NONE
@@ -164,7 +164,7 @@ DO i_m = 1, M
       aHOS(1:Nd1o2p1,1:Nd2,i_m+1) = temp_C_Nd(1:Nd1o2p1,1:Nd2)
    END IF
    ! Storing W1 = phizm at order 1
-   IF (i_m == 1) temp2_R_Nd(1:Nd1,1:Nd2) = phizi(1:Nd1,1:Nd2) 
+   IF (i_m == 1) temp2_R_Nd(1:Nd1,1:Nd2) = phizi(1:Nd1,1:Nd2)
    !
 END DO
 !
@@ -202,8 +202,8 @@ IF (M >= 3) THEN
    geta2phiz(1:Nd1,1:Nd2) = geta2phiz(1:Nd1,1:Nd2) + temp_R_Nd(1:Nd1,1:Nd2)
 END IF
 !
-! Assembling of phiz2 at order M and 
-!  gradeta2*phiz at order M (i.e. with phiz at order M-2) 
+! Assembling of phiz2 at order M and
+!  gradeta2*phiz at order M (i.e. with phiz at order M-2)
 !  with correct p dealiasing
 !  in two steps
 phiz2(1:Nd1,1:Nd2)      = 0.0_rp
@@ -265,7 +265,7 @@ IMPLICIT NONE
 INTEGER :: q, j
 REAL(RP), DIMENSION(md1o2p1,md2) :: build_kth
 !
-INTEGER :: N_der_local, i1, i2 
+INTEGER :: N_der_local, i1, i2
 !
 !build_kth = kth(:,:,j)
 !FIXME; change feb.2013 OK?
@@ -377,7 +377,7 @@ ELSE ! Nonlinear case
       DO i2=1,n2
          DO i1=1,n1
             dphi_dn      = phiz(i1,i2) + deta(i1,i2)
-            deta(i1,i2)  = (dphi_dn - W1(i1,i2))* (1.0_rp - exp(-(time/Ta)**n)) 
+            deta(i1,i2)  = (dphi_dn - W1(i1,i2))* (1.0_rp - exp(-(time/Ta)**n))
             ! only the nonlinear part as A is then build as a o(|grad eta|^1)
             dphis(i1,i2) = (0.5_rp * dphis(i1,i2))* (1.0_rp - exp(-(time/Ta)**n)) ! - nu(i1,i2) * dphi_dn)* (1.0_rp - exp(-(time/Ta)**n))
          END DO

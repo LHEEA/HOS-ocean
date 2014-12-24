@@ -147,7 +147,7 @@ SELECT CASE (i_case)
       Ta     = Ta*Tp_real
       !
       IF(i_case == 31) CALL read_irreg_f
-CASE DEFAULT 
+CASE DEFAULT
    WRITE(*,'(A)') 'initiate_parameters: Unknow case'
 END SELECT
 !
@@ -234,9 +234,9 @@ SELECT CASE (i_case)
       IF(i_case==3) CALL initiate_irreg(RK_param)
       IF(i_case==31) CALL initiate_irreg_f
       IF(i_case==32) CALL initiate_irreg_i
-      !    	
+      !
       CALL fourier_2_space(a_phis, phis)
-      CALL fourier_2_space(a_eta, eta)    
+      CALL fourier_2_space(a_eta, eta)
 !      !
 !      ! Test pi phase-shift
 !      !
@@ -244,7 +244,7 @@ SELECT CASE (i_case)
 !      phis = - phis
 !      CALL space_2_fourier(phis, a_phis)
 !      CALL space_2_fourier(eta,a_eta)
-CASE DEFAULT 
+CASE DEFAULT
    WRITE(*,'(A)') 'initiate: maybe not correctly initiated'
    eta(1:n1,1:n2) = 0.0_rp
    STOP
@@ -272,7 +272,7 @@ SELECT CASE (i_case)
 	  i_initiate_NL = 0
       IF(i_initiate_NL == 1)THEN
 	    CALL initiate_NL
-      ENDIF	
+      ENDIF
       !
    CASE (21)
       !  Stationary natural mode, no velocity
@@ -308,7 +308,7 @@ SELECT CASE (i_case)
       END IF
    CASE (3,31,32)
       ! Initialisation already done... Nothing to do
- CASE DEFAULT 
+ CASE DEFAULT
       phis(1:n1,1:n2) = 0.0_rp
 END SELECT
 !
@@ -321,7 +321,7 @@ SELECT CASE (i_case)
       CALL space_2_fourier(eta,  a_eta)
       CALL space_2_fourier(phis, a_phis)
       CALL RK_adapt_2var_3D_in_mo_lin(0, RK_param, 0.0_rp, 0.0_rp, a_phis, a_eta, da_eta)
-CASE DEFAULT 
+CASE DEFAULT
       da_eta(1:n1o2p1,1:n2) = 0.0_cp
 END SELECT
 !
@@ -389,12 +389,12 @@ COMPLEX(CP), DIMENSION(m1o2p1,m2) :: da_eta,a_eta_temp,a_phi_temp
 REAL(RP),DIMENSION(m1o2p1,m2) :: DD_WW
 REAL(RP),DIMENSION(ikp) :: ones_k
 INTEGER ::  i_dir_JSWP,jj
-REAL(RP) :: beta_min,beta_max,frr,fp_w,s_ww,Norm_DD	
+REAL(RP) :: beta_min,beta_max,frr,fp_w,s_ww,Norm_DD
 !
 pioxlen = TWOPI/xlen_star
 pioylen = TWOPI/ylen_star
 ! FIXME : add this choice of normalized dir function in input file
-! ----- Normalised Dir Function 
+! ----- Normalised Dir Function
 DD_WW = 0.0_rp
 i_dir_JSWP = 0
 IF (i_dir_JSWP == 1) THEN
@@ -406,18 +406,18 @@ IF (i_dir_JSWP == 1) THEN
     DO i1=1,n1o2p1
         DO i2=1,n2
             Norm_DD = 0.0_rp
-            frr = MIN(2.5_rp,omega_n2(i1,i2)/TWOPI/fp_w) 
+            frr = MIN(2.5_rp,omega_n2(i1,i2)/TWOPI/fp_w)
             IF(frr .lt. 1.0_rp)THEN
-                s_ww = 9.77_rp * frr ** beta_min        
+                s_ww = 9.77_rp * frr ** beta_min
             ELSE
-                s_ww = 9.77_rp * frr ** beta_max 
+                s_ww = 9.77_rp * frr ** beta_max
             ENDIF
-     
+
             IF(cos(theta_abs(i1,i2)/2.0_rp)**2 .GT. 1.E-20 )THEN
-                IF(s_ww*LOG(cos(theta_abs(i1,i2)/2.0_rp)**2) .GT.-170.0_rp) THEN 
+                IF(s_ww*LOG(cos(theta_abs(i1,i2)/2.0_rp)**2) .GT.-170.0_rp) THEN
                     DO jj=1,ithp
-                        Norm_DD = Norm_DD + (cos(theta_base(jj)/2.0_rp)**2)**s_ww * dth                 
-                    ENDDO                        
+                        Norm_DD = Norm_DD + (cos(theta_base(jj)/2.0_rp)**2)**s_ww * dth
+                    ENDDO
                     DD_WW(i1,i2) = 1.0_rp/Norm_DD * (cos(theta_abs(i1,i2)/2.0_rp)**2)**s_ww
                 ENDIF
             ENDIF
@@ -426,9 +426,9 @@ IF (i_dir_JSWP == 1) THEN
 ELSE
     DO i1=1,n1o2p1
         DO i2=1,n2
-            DD_WW(i1,i2) =1.0_rp/beta*(cos(TWOPI*theta_abs(i1,i2)/(4*beta)))**2.0_rp 
+            DD_WW(i1,i2) =1.0_rp/beta*(cos(TWOPI*theta_abs(i1,i2)/(4*beta)))**2.0_rp
         ENDDO
-    ENDDO    
+    ENDDO
 ENDIF
 ! ----- End dir function
 
@@ -453,11 +453,11 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
    a_phis(1,1) = 0.0_rp
    !
    DO i1 = 2, n1o2p1
-      rnd = RAND(0) 
-	  angle1 = rnd*TWOPI 
+      rnd = RAND(0)
+	  angle1 = rnd*TWOPI
       !
       rnd = RAND(0)
-	  angle2 =  rnd*TWOPI 
+	  angle2 =  rnd*TWOPI
       angle = 0.0_rp
       !
       if(omega_n2(i1,1).LT.1.0_rp) then !FIXME: it is assumed that omega_p=1 (peak)
@@ -476,13 +476,13 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
       ELSE
          phi_JONSWAP(i1,1) = 0.0_rp
       ENDIF
-	!%%%%%%%%%%%%%%% Takes 1D / 2D into account      
+	!%%%%%%%%%%%%%%% Takes 1D / 2D into account
 	IF(n2 == 1) THEN
         a_eta(i1,1)  = (2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1))*phi_JONSWAP(i1,1)*pioxlen*pioylen)**(0.5_rp) &
            *exp(i*(angle1+angle2+angle))
         a_phis(i1,1) = -1.0_rp*i/omega_n2(i1,1)*(2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1))*phi_JONSWAP(i1,1) &
            *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
-	ELSE	      
+	ELSE
 	    a_eta(i1,1)  = (2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1)**3.0_rp)*phi_JONSWAP(i1,1)*pioxlen*pioylen)**(0.5_rp) &
            *exp(i*(angle1+angle2+angle))
       	a_phis(i1,1) = -1.0_rp*i/omega_n2(i1,1)*(2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1)**3.0_rp)*phi_JONSWAP(i1,1) &
@@ -491,8 +491,8 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
    ENDDO
    !
    DO i2 = 2, n2
-      rnd = RAND(0) 
-	  angle1 =  rnd*TWOPI 
+      rnd = RAND(0)
+	  angle1 =  rnd*TWOPI
       !
       rnd = RAND(0)
 	  angle2 =  rnd*TWOPI
@@ -520,10 +520,10 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
            *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
       DO i1 = 2, n1o2p1
          rnd = RAND(0)
-		 angle1 =  rnd*TWOPI 
+		 angle1 =  rnd*TWOPI
          !
          rnd = RAND(0)
-		 angle2 =  rnd*TWOPI 
+		 angle2 =  rnd*TWOPI
          angle = 0.0_rp
          !
          if(omega_n2(i1,i2).LT.1.0_rp) then !FIXME: it is assumed that omega_p=1 (peak)
@@ -545,8 +545,8 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
          a_eta(i1,i2)  = (2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,i2)**3.0_rp)*phi_JONSWAP(i1,i2)*pioxlen*pioylen)**(0.5_rp) &
               *exp(i*(angle1+angle2+angle))
          a_phis(i1,i2) = -1.0_rp*i/omega_n2(i1,i2)*(2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,i2)**3.0_rp)*phi_JONSWAP(i1,i2) &
-              *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))     
-      ENDDO	
+              *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
+      ENDDO
    ENDDO
    ! n1o2p1 is special for n1 even (only a real part)
    IF (iseven(n1)) THEN
@@ -606,7 +606,7 @@ IMPLICIT NONE
 REAL(RP) :: theta, E, pioxlen, pioylen,d1,d2,d3,d4
 REAL(RP) :: rnd, angle, angle1, angle2
 REAL(RP), DIMENSION(m1o2p1,m2) :: phi_E
-REAL(RP), DIMENSION(m1o2p1,m2,4) :: coef_ww2cart 
+REAL(RP), DIMENSION(m1o2p1,m2,4) :: coef_ww2cart
 INTEGER, DIMENSION(m1o2p1,m2) :: ind_o_ww,ind_t_ww
 INTEGER :: iseed,i1,i2,i_int,I_cpt,ndp
 REAL(RP), DIMENSION(ifreq) :: ones_f
@@ -628,18 +628,18 @@ pioylen = TWOPI/ylen_star
  phi_E = 0.0_rp
  ones_t(:)=1.0
  ones_f(:)=1.0
- 
+
 IF(i_int == 1) THEN
-write(*,*) '----------Bilinear Interpolation from WW3 Input-----------------' 
+write(*,*) '----------Bilinear Interpolation from WW3 Input-----------------'
 DO i1 = 1, n1o2p1
     DO i2 = 1, n2
     IF(omega_n2(i1,i2) .ge. freq_ww(1) .and. omega_n2(i1,i2) .le. freq_ww(ifreq)) THEN
     ind_o_ww(i1,i2)=MINLOC(abs(freq_ww(:)-omega_n2(i1,i2)*ones_f(:)),1)
-	
+
         IF(freq_ww(ind_o_ww(i1,i2)) .gt. omega_n2(i1,i2)) ind_o_ww(i1,i2)=ind_o_ww(i1,i2)-1
 !write(*,*) 'ind_o_ww(i1,i2)=',ind_o_ww(i1,i2),freq_ww(ind_o_ww(i1,i2)),omega_n2(i1,i2)
-!    
-	IF(i1 == 1) THEN 
+!
+	IF(i1 == 1) THEN
 	theta = PIO2
 	ELSE
         theta = ATAN(ky_n2(i2)/kx(i1))
@@ -696,7 +696,7 @@ ENDIF
 ENDDO
 ENDDO
 ELSEIF(i_int == 2) THEN
-    write(*,*) '-----------Bicubic Interpolation from WW3 Input---------' 
+    write(*,*) '-----------Bicubic Interpolation from WW3 Input---------'
     I_cpt=1
     NDP=ithet*ifreq
     xd=0.0
@@ -733,11 +733,11 @@ DO i1 = 1, n1o2p1
     DO i2 = 1, n2
 	    IF(ABS(phi_E(i1,i2)).gt.tiny)THEN
 	        IF(i1 /= 1 .or. i2 /= 1)THEN
-              rnd = RAND(0) 
-	          angle1 = rnd*TWOPI
-              ! 
               rnd = RAND(0)
-	          angle2 =  rnd*TWOPI 
+	          angle1 = rnd*TWOPI
+              !
+              rnd = RAND(0)
+	          angle2 =  rnd*TWOPI
               angle = 0.0_rp
               a_eta(i1,i2)  = (phi_E(i1,i2)/abs(phi_E(i1,i2)))* (1.0_rp/omega_n2(i1,i2)**3 &
               	*abs(phi_E(i1,i2))*pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
@@ -745,7 +745,7 @@ DO i1 = 1, n1o2p1
               	*abs(phi_E(i1,i2))*pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
 	            E = E + 1.0_rp/(2.0_rp*omega_n2(i1,i2)**3)*phi_E(i1,i2)*pioxlen*pioylen
 	        ENDIF
-	    ENDIF   	
+	    ENDIF
     ENDDO
 ENDDO
 !
@@ -777,7 +777,7 @@ REAL(RP),DIMENSION(7) :: phi_temp
 ! FIXME : name of file in input file?
 OPEN(1002,file='/home/perignon/PHD/WW3/ww3.1m5s_nl.src')
 !
-READ(1002,*) 
+READ(1002,*)
 DO ii=1,FLOOR(ifreq/8.0)
     READ(1002,*) freq_ww(8*(ii-1)+1:8*ii)
 ENDDO
@@ -789,44 +789,44 @@ dthet=abs(thet_ww(2)-thet_ww(1))
 !
 READ(1002,*)
 READ(1002,*)
-DO i1=1,FLOOR(ithet * ifreq / 7.0) 
+DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
         jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
-        phi_ww(ii,jj)=phi_temp(i2) 
-    ENDDO 
+        phi_ww(ii,jj)=phi_temp(i2)
+    ENDDO
 ENDDO
 !
 READ(1002,*) phi_ww(ifreq-(ithet *ifreq-7*FLOOR(ithet * ifreq / 7.0))+1:ifreq,ithet)
 
-DO i1=1,FLOOR(ithet * ifreq / 7.0) 
+DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
         jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
-        S_in_ww(ii,jj)=phi_temp(i2) 
-    ENDDO 
+        S_in_ww(ii,jj)=phi_temp(i2)
+    ENDDO
 ENDDO
 READ(1002,*) S_in_ww(ifreq-(ithet *ifreq-7*FLOOR(ithet * ifreq / 7.0))+1:ifreq,ithet)
 !
-DO i1=1,FLOOR(ithet * ifreq / 7.0) 
+DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
         jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
-        S_nl_ww(ii,jj)=phi_temp(i2) 
-    ENDDO 
+        S_nl_ww(ii,jj)=phi_temp(i2)
+    ENDDO
 ENDDO
 READ(1002,*) S_nl_ww(ifreq-(ithet *ifreq-7*FLOOR(ithet * ifreq / 7.0))+1:ifreq,ithet)
 !
-DO i1=1,FLOOR(ithet * ifreq / 7.0) 
+DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
         jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
-        S_diss_ww(ii,jj)=phi_temp(i2) 
-    ENDDO 
+        S_diss_ww(ii,jj)=phi_temp(i2)
+    ENDDO
 ENDDO
 READ(1002,*) S_diss_ww(ifreq-(ithet *ifreq-7*FLOOR(ithet * ifreq / 7.0))+1:ifreq,ithet)
 CLOSE(1002)
@@ -852,8 +852,8 @@ ENDDO
 103 FORMAT(A,F9.2,A,I5,A,I5)
 !
 ! Transform frequency -> omega & theta grid to same ref. as HOS
-phi_ww=phi_ww / TWOPI 
-thet_ww=PIO2-thet_ww 
+phi_ww=phi_ww / TWOPI
+thet_ww=PIO2-thet_ww
 DO i1=1,ithet
     IF(thet_ww(i1) .lt. 0.0_rp) thet_ww(i1) = thet_ww(i1) + TWOPI
 ENDDO
@@ -872,7 +872,7 @@ k_p_ww = O_p_ww**2 / grav ! FIXME: check if it is working if grav.ne.9.81
 Tp_real = TWOPI / O_p_ww
 L_out=1/k_p_ww **2
 T_out=1/O_p_ww
-Hs_real = 4.0_rp * sqrt(E_int_tot) 
+Hs_real = 4.0_rp * sqrt(E_int_tot)
 !%%%%%%%%%%%%%%%
 OPEN(130,file='./S_BAJ_int.dat',status='unknown')
 CALL write_input(130)
@@ -884,7 +884,7 @@ IF (tecplot == 11) THEN
 ELSE
     WRITE(130,103)'ZONE T = "',0.0_rp,'", I=',ifreq
 END IF
-!	
+!
 DO ii = 1, ifreq
     WRITE(130,133) freq_ww(ii)/ TWOPI,E_int(ii),S_in_int(ii),-S_diss_int(ii),S_nl_int(ii)
 END DO
@@ -916,7 +916,7 @@ CHARACTER :: A1,A2
 unit = 1000
 !
 open(1000,FILE='3d_ini.dat')
-DO ii= 1,63 
+DO ii= 1,63
  CALL read_blank_line(unit)
 ENDDO
 READ(unit,1003) A1,time_i,A2,m_i,n_i
@@ -929,7 +929,7 @@ IF(m_i == m1 .and. n_i == n2)THEN
     eta = eta /L_out
     phis = phis / (L_out**2/T_out)
     CALL space_2_fourier(eta, a_eta)
-    CALL space_2_fourier(phis, a_phis) 
+    CALL space_2_fourier(phis, a_phis)
 ELSE
     WRITE(*,*) 'INPUT ERROR - WRONG DIMENSIONS'
     STOP
@@ -977,7 +977,7 @@ a_phi_neg=0.0_rp
 !
 DO j1=1,n2
     DO i1=1,n1o2p1
-    	IF(i1 .ne.1 .or. j1 .ne.1)THEN 
+    	IF(i1 .ne.1 .or. j1 .ne.1)THEN
             a_phi_1(i1,j1)= - i * a_eta(i1,j1) * g_star / (omega_n2(i1,j1))
         	a_phi_d(i1,j1) = k_abs(i1,j1) * a_phi_1(i1,j1)
         	IF(2*i1-1 .le. n1o2p1)THEN
@@ -990,7 +990,7 @@ DO j1=1,n2
 	    DO j2=1,n2o2p1
 	        DO i2=1,n1o2p1
 		        IF(k_abs(i2,j2).ge.k_abs(i1,j1) .and. (i1 .ne. i2 .or. j1 .ne. j2))THEN
-                    !		
+                    !
                     A_pos = - ((omega_n2(i1,j1)*omega_n2(i2,j2)*(omega_n2(i1,j1)+omega_n2(i2,j2))* &
                     	(1.0_rp-cos(theta_abs(i1,j1)-theta_abs(i2,j2)))) &
 			            / ((omega_n2(i1,j1)+omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)) )
@@ -1001,8 +1001,8 @@ DO j1=1,n2
 		            B_pos = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
 		                - 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 - cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &
 		                * ( ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 + g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))&
-		                /   ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))) 
-                    !   
+		                /   ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
+                    !
 		            B_neg = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
 		                + 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 + cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &
 		                * ( ((omega_n2(i1,j1) - omega_n2(i2,j2))**2 + g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2))&
@@ -1019,7 +1019,7 @@ DO j1=1,n2
                         IF(j1.gt.n2o2p1 .and. j1+j2 .le. n2+1)THEN
                             a_eta_pos(i1+i2-1,j1+j2-1) = a_eta_pos (i1+i2-1,j1+j2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
                             a_phi_pos(i1+i2-1,j1+j2-1) = a_phi_pos (i1+i2-1,j1+j2-1) - i* A_pos * a_eta(i1,j1) * a_eta(i2,j2)
-                        ENDIF            
+                        ENDIF
 		            ENDIF
 		            IF(i2-i1 .ge. 0)THEN
 		                IF(j2-j1 .ge. 0)THEN
@@ -1040,14 +1040,14 @@ DO j1=1,n2
                             a_phi_neg (i2-i1+1,j2-j1+n2+1 ) = a_phi_neg (i2-i1+1,j2-j1+n2+1 ) &
                             	- i*A_neg * CONJG(a_eta(i1,j1)) * a_eta(i2,j2)
                         ENDIF
-                    ENDIF			
+                    ENDIF
 		        ENDIF
 	        ENDDO
 	    ENDDO
 	    DO j2=n2o2p1+1,n2
 	        DO i2=1,n1o2p1
 		        IF(k_abs(i2,j2) .ge. k_abs(i1,j1).and. (i1 .ne. i2 .or. j1 .ne. j2))THEN
-                    !		
+                    !
                     A_pos = - ((omega_n2(i1,j1)*omega_n2(i2,j2)*(omega_n2(i1,j1)+omega_n2(i2,j2)) &
                     	*(1.0_rp-cos(theta_abs(i1,j1)-theta_abs(i2,j2)))) &
 			            / ((omega_n2(i1,j1)+omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)) )
@@ -1058,7 +1058,7 @@ DO j1=1,n2
 		            B_pos = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
 		                - 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 - cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &
 		                * ( ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 + g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))&
-		                /   ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))) 
+		                /   ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
                     !
 		            B_neg = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
 		                + 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 + cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &

@@ -85,7 +85,7 @@ IF (i_ana /= 0) THEN
 	print*, file_3d
 	print*, n1,n2,dt_out
 	!
-	! Force the time to be a multiple of dt_out... starting from closest time-step 
+	! Force the time to be a multiple of dt_out... starting from closest time-step
 	time      = NINT(T_start/dt_out)*dt_out
 	time_prev = 0.0_rp
 	!
@@ -230,7 +230,7 @@ IF (i_card /= 0) THEN
 		phit(i_xvect, i_yvect), dudt(i_xvect, i_yvect), dvdt(i_xvect, i_yvect), dwdt(i_xvect, i_yvect))
 	!
 	! Define first time as the closest to T_start (input file)
-	time      = NINT(T_start/T/dt_out_star)*dt_out_star 
+	time      = NINT(T_start/T/dt_out_star)*dt_out_star
 	time_prev = 0.0_rp
 	!
 	DO WHILE (time*T <= T_stop+tiny_sp)
@@ -283,7 +283,7 @@ IF (i_card /= 0) THEN
 	CLOSE(31)
 	CLOSE(32)
 ENDIF
-! End of main program 
+! End of main program
 !
 CONTAINS
 !
