@@ -1,0 +1,8 @@
+FOREACH(f RUNTIME_OUTPUT_DIRECTORY
+          LIBRARY_OUTPUT_DIRECTORY
+          ARCHIVE_OUTPUT_DIRECTORY)
+    IF(NOT DEFINED ${f})
+        SET(${f} "bin")
+    ENDIF()
+    MESSAGE(STATUS "${f} : ${${f}}")
+ENDFOREACH()
