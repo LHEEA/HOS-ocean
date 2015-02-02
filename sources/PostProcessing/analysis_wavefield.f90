@@ -582,7 +582,7 @@ curt=sum(p(:))
 !
 ! Corrected two-pass formula.
 !
-var=(var-(ep**2.d0)/n)/REAL(n-1)
+var=(var-(ep**2.d0)/n)/REAL(n-1,RP)
 !
 sdev=sqrt(var)
 !

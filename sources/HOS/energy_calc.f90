@@ -62,7 +62,7 @@ temp_R_Nd(1:Nd1,1:Nd2) = temp_R_Nd(1:Nd1,1:Nd2) * temp_R_Nd(1:Nd1,1:Nd2)
 !   integral
 CALL space_2_fourier_big(temp_R_Nd, temp_C_Nd)
 !
-calc_energy(1) = g_star * REAL(temp_C_Nd(1,1))
+calc_energy(1) = g_star * REAL(temp_C_Nd(1,1),RP)
 !
 ! Kinetic energy
 !
@@ -81,7 +81,7 @@ temp_R_Nd(1:Nd1,1:Nd2) = temp_R_Nd(1:Nd1,1:Nd2) * temp2_R_Nd(1:Nd1,1:Nd2)
 !   integral
 CALL space_2_fourier_big(temp_R_Nd, temp_C_Nd)
 !
-calc_energy(3) = REAL(temp_C_Nd(1,1))
+calc_energy(3) = REAL(temp_C_Nd(1,1),RP)
 calc_energy(4) = calc_energy(1) + calc_energy(2) + calc_energy(3)
 calc_energy(1:4) = 0.5_rp * calc_energy(1:4)
 !

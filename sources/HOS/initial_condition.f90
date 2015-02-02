@@ -714,7 +714,7 @@ ELSEIF(i_int == 2) THEN
 	    IF(omega_n2(i1,i2) .ge. freq_ww(1) .and. omega_n2(i1,i2) .le. freq_ww(ifreq)) THEN
 	        xi=k_abs(i1,i2)*cos(theta_abs(i1,i2))
 	        yi=k_abs(i1,i2)*sin(theta_abs(i1,i2))
-		        CALL IDBVIP(I_cpt,ndp,REAL(xd),REAL(yd),REAL(zd),1,REAL(xi),REAL(yi),REAL(zi),IWK,REAL(WK))
+		        CALL IDBVIP(I_cpt,ndp,REAL(xd,RP),REAL(yd,RP),REAL(zd,RP),1,REAL(xi,RP),REAL(yi,RP),REAL(zi,RP),IWK,REAL(WK,RP))
 	        phi_E(i1,i2) = zi(1)
 	        I_cpt = 2
 	    ENDIF
@@ -792,7 +792,7 @@ READ(1002,*)
 DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
-        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
+        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq,RP))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
         phi_ww(ii,jj)=phi_temp(i2)
     ENDDO
@@ -803,7 +803,7 @@ READ(1002,*) phi_ww(ifreq-(ithet *ifreq-7*FLOOR(ithet * ifreq / 7.0))+1:ifreq,it
 DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
-        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
+        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq,RP))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
         S_in_ww(ii,jj)=phi_temp(i2)
     ENDDO
@@ -813,7 +813,7 @@ READ(1002,*) S_in_ww(ifreq-(ithet *ifreq-7*FLOOR(ithet * ifreq / 7.0))+1:ifreq,i
 DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
-        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
+        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq,RP))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
         S_nl_ww(ii,jj)=phi_temp(i2)
     ENDDO
@@ -823,7 +823,7 @@ READ(1002,*) S_nl_ww(ifreq-(ithet *ifreq-7*FLOOR(ithet * ifreq / 7.0))+1:ifreq,i
 DO i1=1,FLOOR(ithet * ifreq / 7.0)
     READ(1002,*) phi_temp(1:7)
     DO i2 = 1,7
-        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq))+1
+        jj=FLOOR(((i1-1)*7+i2-1)/REAL(ifreq,RP))+1
         ii=(i1-1)*7+i2 - (jj-1)*ifreq
         S_diss_ww(ii,jj)=phi_temp(i2)
     ENDDO

@@ -721,11 +721,11 @@ do ii=1,n1
     ! constant mode
     !
     phi_SL(ii,ii2)   =  0.0_rp
-    vitx_SL(ii,ii2)  =  REAL(modesspecx(i1,i2))
-    vity_SL(ii,ii2)  =  REAL(modesspecy(i1,i2))
-    vitz_SL(ii,ii2)  =  REAL(modesspecz(i1,i2))
-    dphit_SL(ii,ii2) =  REAL(modesspect(i1,i2))
-    eta_SL(ii,ii2)   =  REAL(modesSL(i1,i2))
+    vitx_SL(ii,ii2)  =  REAL(modesspecx(i1,i2),RP)
+    vity_SL(ii,ii2)  =  REAL(modesspecy(i1,i2),RP)
+    vitz_SL(ii,ii2)  =  REAL(modesspecz(i1,i2),RP)
+    dphit_SL(ii,ii2) =  REAL(modesspect(i1,i2),RP)
+    eta_SL(ii,ii2)   =  REAL(modesSL(i1,i2),RP)
     !
     accx_SL(ii,ii2)  =  0.0_rp ! it's a sine serie... but constant mode?
     accy_SL(ii,ii2)  =  0.0_rp ! i*ky_n2(i2)*modesspecy(i1,i2)
@@ -744,42 +744,44 @@ do ii=1,n1
 		!
         phi_SL(ii,ii2)   =  phi_SL(ii,ii2)  + 0.0_rp
         vitx_SL(ii,ii2)  =  vitx_SL(ii,ii2) + 2.0_rp*ABS(modesspecx(i1,i2) * coeff) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecx(i1,i2)),REAL(modesspecx(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecx(i1,i2)),REAL(modesspecx(i1,i2),RP)))
         vity_SL(ii,ii2)  =  vity_SL(ii,ii2) + 2.0_rp*ABS(modesspecy(i1,i2) * coeff) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2),RP)))
         vitz_SL(ii,ii2)  =  vitz_SL(ii,ii2) + 2.0_rp*ABS(modesspecz(i1,i2) * coeff2) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2),RP)))
         dphit_SL(ii,ii2) = dphit_SL(ii,ii2) + 2.0_rp*ABS(modesspect(i1,i2) * coeff) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspect(i1,i2)),REAL(modesspect(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspect(i1,i2)),REAL(modesspect(i1,i2),RP)))
         eta_SL(ii,ii2)   =  eta_SL(ii,ii2)  + 2.0_rp*ABS(modesSL(i1,i2)) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesSL(i1,i2)),REAL(modesSL(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesSL(i1,i2)),REAL(modesSL(i1,i2),RP)))
         !
         accx_SL(ii,ii2)  =  accx_SL(ii,ii2) + 0.0_rp
         accy_SL(ii,ii2)  =  accy_SL(ii,ii2) - 2.0_rp*ABS(modesspecy(i1,i2) * coeff * i * ky_n2(i2)) &
-        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))
+        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2),RP)))
         accz_SL(ii,ii2)  =  accz_SL(ii,ii2) + 2.0_rp*ABS(modesspecz(i1,i2) * coeff2 * k_n2 &
-        	/ TANH(k_n2*(eta_l(ii,ii2)+depth_star)))*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2))))
+        	/ TANH(k_n2*(eta_l(ii,ii2)+depth_star)))*COS(ky_n2(i2)*y(ii2) &
+        	+ ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2),RP)))
     enddo
     ! With the previous computation, mode n2o2p1 is computed twice if n2 even but should be computed only once...
 	IF (iseven(n2)) THEN
     	i2=n2o2p1
         phi_SL(ii,ii2)   =  phi_SL(ii,ii2)  + 0.0_rp
         vitx_SL(ii,ii2)  =  vitx_SL(ii,ii2) - 1.0_rp*ABS(modesspecx(i1,i2) * coeff) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecx(i1,i2)),REAL(modesspecx(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecx(i1,i2)),REAL(modesspecx(i1,i2),RP)))
         vity_SL(ii,ii2)  =  vity_SL(ii,ii2) - 1.0_rp*ABS(modesspecy(i1,i2) * coeff) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2),RP)))
         vitz_SL(ii,ii2)  =  vitz_SL(ii,ii2) - 1.0_rp*ABS(modesspecz(i1,i2) * coeff2) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2),RP)))
         dphit_SL(ii,ii2) = dphit_SL(ii,ii2) - 1.0_rp*ABS(modesspect(i1,i2) * coeff) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspect(i1,i2)),REAL(modesspect(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspect(i1,i2)),REAL(modesspect(i1,i2),RP)))
         eta_SL(ii,ii2)   =  eta_SL(ii,ii2)  - 1.0_rp*ABS(modesSL(i1,i2)) &
-        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesSL(i1,i2)),REAL(modesSL(i1,i2))))
+        	*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesSL(i1,i2)),REAL(modesSL(i1,i2),RP)))
         !
         accx_SL(ii,ii2)  =  accx_SL(ii,ii2) + 0.0_rp
         accy_SL(ii,ii2)  =  accy_SL(ii,ii2) + 1.0_rp*ABS(modesspecy(i1,i2) * coeff * i * ky_n2(i2)) &
-        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2))))
+        	*SIN(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2),RP)))
         accz_SL(ii,ii2)  =  accz_SL(ii,ii2) - 1.0_rp*ABS(modesspecz(i1,i2) * coeff2 * k_n2 &
-        	/ TANH(k_n2*(eta_l(ii,ii2)+depth_star)))*COS(ky_n2(i2)*y(ii2)+ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2))))
+        	/ TANH(k_n2*(eta_l(ii,ii2)+depth_star)))*COS(ky_n2(i2)*y(ii2) &
+        	+ ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2),RP)))
     ENDIF
     !
     do i1=2,n1o2p1
@@ -800,25 +802,25 @@ do ii=1,n1
             dphit_l(i1,i2) = modesspect(i1,i2) * coeff
             !
             phi_SL(ii,ii2)   =  phi_SL(ii,ii2)  &
-            	+ 1.0_rp*ABS(phi_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(phi_l(i1,i2)),REAL(phi_l(i1,i2))))
+            	+ 1.0_rp*ABS(phi_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(phi_l(i1,i2)),REAL(phi_l(i1,i2),RP)))
             vitx_SL(ii,ii2)  =  vitx_SL(ii,ii2) &
-            	+ 1.0_rp*ABS(vitx_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vitx_l(i1,i2)),REAL(vitx_l(i1,i2))))
+            	+ 1.0_rp*ABS(vitx_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vitx_l(i1,i2)),REAL(vitx_l(i1,i2),RP)))
             vity_SL(ii,ii2)  =  vity_SL(ii,ii2) &
             	+ 1.0_rp*ABS(vity_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vity_l(i1,i2)),REAL(vity_l(i1,i2))))
             vitz_SL(ii,ii2)  =  vitz_SL(ii,ii2) &
-            	+ 1.0_rp*ABS(vitz_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vitz_l(i1,i2)),REAL(vitz_l(i1,i2))))
+            	+ 1.0_rp*ABS(vitz_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vitz_l(i1,i2)),REAL(vitz_l(i1,i2),RP)))
             dphit_SL(ii,ii2) = dphit_SL(ii,ii2) &
-            	+ 1.0_rp*ABS(dphit_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(dphit_l(i1,i2)),REAL(dphit_l(i1,i2))))
+            	+ 1.0_rp*ABS(dphit_l(i1,i2))*COS(kx(i1)*x(ii)+ATAN2(AIMAG(dphit_l(i1,i2)),REAL(dphit_l(i1,i2),RP)))
             eta_SL(ii,ii2)   =  eta_SL(ii,ii2)  + 1.0_rp*ABS(modesSL(i1,i2) * EXP(i*ky_n2(i2)*y(ii2))) &
                 *COS(kx(i1)*x(ii)+ATAN2(AIMAG(modesSL(i1,i2) * EXP(i*ky_n2(i2)*y(ii2))) &
-                ,REAL(modesSL(i1,i2) * EXP(i*ky_n2(i2)*y(ii2)))))
+                ,REAL(modesSL(i1,i2) * EXP(i*ky_n2(i2)*y(ii2)),RP)))
             !
             accx_SL(ii,ii2)  =  accx_SL(ii,ii2) - 1.0_rp*ABS(kx(i1)*vitx_l(i1,i2)) &
-            	*SIN(kx(i1)*x(ii)+ATAN2(AIMAG(vitx_l(i1,i2)),REAL(vitx_l(i1,i2))))
+            	*SIN(kx(i1)*x(ii)+ATAN2(AIMAG(vitx_l(i1,i2)),REAL(vitx_l(i1,i2),RP)))
             accy_SL(ii,ii2)  =  accy_SL(ii,ii2) + 1.0_rp*ABS(i * ky_n2(i2) * vity_l(i1,i2)) &
-            	*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vity_l(i1,i2)*i*ky_n2(i2)),REAL(vity_l(i1,i2)*i*ky_n2(i2))))
+            	*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vity_l(i1,i2)*i*ky_n2(i2)),REAL(vity_l(i1,i2)*i*ky_n2(i2),RP)))
             accz_SL(ii,ii2)  =  accz_SL(ii,ii2) + 1.0_rp*ABS(k_n2/TANH(k_n2*(eta_l(ii,ii2)+depth_star))*vitz_l(i1,i2)) &
-            	*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vitz_l(i1,i2)),REAL(vitz_l(i1,i2))))
+            	*COS(kx(i1)*x(ii)+ATAN2(AIMAG(vitz_l(i1,i2)),REAL(vitz_l(i1,i2),RP)))
         enddo
     enddo
     !

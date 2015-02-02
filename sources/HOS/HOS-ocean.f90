@@ -306,12 +306,12 @@ IF(n2 == 1) THEN
 	dth = 1.0
 	theta_base=0.0_rp
 ELSE
-	dth = pi / REAL(ithp-1)
+	dth = pi / REAL(ithp-1,RP)
 	DO jj=1,ithp/2+1
 		theta_base(jj)=dth * (jj-1)
 	ENDDO
-	DO jj=floor(real(ithp)/2.0)+2,ithp
-		theta_base(jj)=3.0_rp * pi / 2.0_rp + dth * (jj-floor(real(ithp)/2.0)-2)
+	DO jj=floor(real(ithp,RP)/2.0)+2,ithp
+		theta_base(jj)=3.0_rp * pi / 2.0_rp + dth * (jj-floor(real(ithp,RP)/2.0)-2)
 	ENDDO
 END IF
 ! HOS modal coefficients of the vertical derivatives
@@ -477,7 +477,7 @@ DO WHILE (time_cur <= T_stop_star)
    t_i = t_f
    !
    ! Output of volume and energy
-   volume = REAL(a_eta(1,1))
+   volume = REAL(a_eta(1,1),RP)
    energy = calc_energy(a_eta, a_phis, da_eta)
    !
    ! Test addition velocity comp.

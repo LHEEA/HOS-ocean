@@ -146,7 +146,7 @@ IF (i_sw == 1) THEN
 	ENDIF
     ! Give constants needed to computation...
     OPEN(123,file='Results/modes_HOS_SWENSE.dat',status='REPLACE', FORM='FORMATTED', ACCESS='DIRECT',RECL=18*(2*n1o2p1))
-     WRITE(123,'(5000(ES17.10,1X))',REC=1) REAL(n1), REAL(n2), 1.0_rp/f_out_star,T_stop_star &
+     WRITE(123,'(5000(ES17.10,1X))',REC=1) REAL(n1,RP), REAL(n2,RP), 1.0_rp/f_out_star,T_stop_star &
           , xlen_star , ylen_star , depth_star, g_star, L, T, (0.0_rp, i1=11,2*n1o2p1)
 
      WRITE(123,'(5000(ES17.10,1X))',REC=2) (0.0_rp, i1=1,2*n1o2p1)
@@ -346,7 +346,7 @@ END IF
 !
 ! FIXME: make this work for xlen diff from 1
 IF (MOD(i_case,10) == 8) THEN
-   WRITE(9,'(ES12.5,X,ES12.5)') time * T_out, ATAN2(IMAG(a_eta(2,1)), REAL(a_eta(2,1)))*180.0_rp/PI
+   WRITE(9,'(ES12.5,X,ES12.5)') time * T_out, ATAN2(IMAG(a_eta(2,1)), REAL(a_eta(2,1),RP))*180.0_rp/PI
 END IF
 !
 IF (i_prob == 1) THEN ! probes output
@@ -358,18 +358,18 @@ IF (i_prob == 1) THEN ! probes output
 		!
     	i1 = 1
     	i2 = 1
-    	eta_probe(ii)   =  REAL(a_eta(i1,i2))
+    	eta_probe(ii)   =  REAL(a_eta(i1,i2),RP)
     	!
     	do i2=2,n2o2p1
         	eta_probe(ii)   =  eta_probe(ii)  + 2.0_rp*ABS(a_eta(i1,i2)) &
-        		*COS(ky_n2(i2)*yprobe(ii)+ATAN2(AIMAG(a_eta(i1,i2)),REAL(a_eta(i1,i2))))
+        		*COS(ky_n2(i2)*yprobe(ii)+ATAN2(AIMAG(a_eta(i1,i2)),REAL(a_eta(i1,i2),RP)))
     	enddo
     	!
     	do i1=2,n1o2p1
         	do i2=1,n2
             	eta_probe(ii)   =  eta_probe(ii)  + 1.0_rp*ABS(a_eta(i1,i2) * EXP(i*ky_n2(i2)*yprobe(ii))) &
                 	*COS(kx(i1)*xprobe(ii)+ATAN2(AIMAG(a_eta(i1,i2) * EXP(i*ky_n2(i2)*yprobe(ii))) &
-                	,REAL(a_eta(i1,i2) * EXP(i*ky_n2(i2)*yprobe(ii)))))
+                	,REAL(a_eta(i1,i2) * EXP(i*ky_n2(i2)*yprobe(ii)),RP)))
         	enddo
     	enddo
   	enddo

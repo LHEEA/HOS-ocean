@@ -228,13 +228,13 @@ enddo
 !
 DO i1=1,n1o2p1
     DO i2=1,n2
-        anglex(i1,i2)  = ATAN2(AIMAG(modesspecx(i1,i2)),REAL(modesspecx(i1,i2)))
-        angley(i1,i2)  = ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2)))
-        anglez(i1,i2)  = ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2)))
-        anglet(i1,i2)  = ATAN2(AIMAG(modesspect(i1,i2)),REAL(modesspect(i1,i2)))
-        angleut(i1,i2) = ATAN2(AIMAG(ikx(i1,i2)*modesspect(i1,i2)),REAL(ikx(i1,i2)*modesspect(i1,i2)))
-        anglevt(i1,i2) = ATAN2(AIMAG(iky(i1,i2)*modesspect(i1,i2)),REAL(iky(i1,i2)*modesspect(i1,i2)))
-        anglewt(i1,i2) = ATAN2(AIMAG(kth(i1,i2)*modesspect(i1,i2)),REAL(kth(i1,i2)*modesspect(i1,i2)))
+        anglex(i1,i2)  = ATAN2(AIMAG(modesspecx(i1,i2)),REAL(modesspecx(i1,i2),RP))
+        angley(i1,i2)  = ATAN2(AIMAG(modesspecy(i1,i2)),REAL(modesspecy(i1,i2),RP))
+        anglez(i1,i2)  = ATAN2(AIMAG(modesspecz(i1,i2)),REAL(modesspecz(i1,i2),RP))
+        anglet(i1,i2)  = ATAN2(AIMAG(modesspect(i1,i2)),REAL(modesspect(i1,i2),RP))
+        angleut(i1,i2) = ATAN2(AIMAG(ikx(i1,i2)*modesspect(i1,i2)),REAL(ikx(i1,i2)*modesspect(i1,i2),RP))
+        anglevt(i1,i2) = ATAN2(AIMAG(iky(i1,i2)*modesspect(i1,i2)),REAL(iky(i1,i2)*modesspect(i1,i2),RP))
+        anglewt(i1,i2) = ATAN2(AIMAG(kth(i1,i2)*modesspect(i1,i2)),REAL(kth(i1,i2)*modesspect(i1,i2),RP))
     ENDDO
 ENDDO
 !
@@ -244,13 +244,13 @@ DO ii1 = 1, imax-imin+1
 		i1 = 1
 		i2 = 1
 		!
-		vitx(ii1,ii2) = REAL(modesspecx(i1,i2))
-		vity(ii1,ii2) = REAL(modesspecy(i1,i2))
-		vitz(ii1,ii2) = REAL(modesspecz(i1,i2))
-		phit(ii1,ii2) = REAL(modesspect(i1,i2))
-		dudt(ii1,ii2) = REAL(ikx(i1,i2)*modesspect(i1,i2))
-		dvdt(ii1,ii2) = REAL(iky(i1,i2)*modesspect(i1,i2))
-		dwdt(ii1,ii2) = REAL(kth(i1,i2)*modesspect(i1,i2))
+		vitx(ii1,ii2) = REAL(modesspecx(i1,i2),RP)
+		vity(ii1,ii2) = REAL(modesspecy(i1,i2),RP)
+		vitz(ii1,ii2) = REAL(modesspecz(i1,i2),RP)
+		phit(ii1,ii2) = REAL(modesspect(i1,i2),RP)
+		dudt(ii1,ii2) = REAL(ikx(i1,i2)*modesspect(i1,i2),RP)
+		dvdt(ii1,ii2) = REAL(iky(i1,i2)*modesspect(i1,i2),RP)
+		dwdt(ii1,ii2) = REAL(kth(i1,i2)*modesspect(i1,i2),RP)
 		! i1=1 and all i2
 		DO i2=2,n2o2p1
 			k_n2 = SQRT(kx(i1)**2+ky_n2(i2)**2)
@@ -307,13 +307,13 @@ DO ii1 = 1, imax-imin+1
 				dvdt_l = iky(i1,i2)*phit_l
 				dwdt_l = kth(i1,i2)*modesspect(i1,i2) * coeff2
 				!
-				vitx(ii1,ii2) = vitx(ii1,ii2) + 1.0_rp*ABS(vitx_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(vitx_l),REAL(vitx_l)))
-				vity(ii1,ii2) = vity(ii1,ii2) + 1.0_rp*ABS(vity_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(vity_l),REAL(vity_l)))
-				vitz(ii1,ii2) = vitz(ii1,ii2) + 1.0_rp*ABS(vitz_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(vitz_l),REAL(vitz_l)))
-				phit(ii1,ii2) = phit(ii1,ii2) + 1.0_rp*ABS(phit_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(phit_l),REAL(phit_l)))
-				dudt(ii1,ii2) = dudt(ii1,ii2) + 1.0_rp*ABS(dudt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dudt_l),REAL(dudt_l)))
-				dvdt(ii1,ii2) = dudt(ii1,ii2) + 1.0_rp*ABS(dvdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dvdt_l),REAL(dvdt_l)))
-				dwdt(ii1,ii2) = dwdt(ii1,ii2) + 1.0_rp*ABS(dwdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dwdt_l),REAL(dwdt_l)))
+				vitx(ii1,ii2) = vitx(ii1,ii2) + 1.0_rp*ABS(vitx_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(vitx_l),REAL(vitx_l,RP)))
+				vity(ii1,ii2) = vity(ii1,ii2) + 1.0_rp*ABS(vity_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(vity_l),REAL(vity_l,RP)))
+				vitz(ii1,ii2) = vitz(ii1,ii2) + 1.0_rp*ABS(vitz_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(vitz_l),REAL(vitz_l,RP)))
+				phit(ii1,ii2) = phit(ii1,ii2) + 1.0_rp*ABS(phit_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(phit_l),REAL(phit_l,RP)))
+				dudt(ii1,ii2) = dudt(ii1,ii2) + 1.0_rp*ABS(dudt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dudt_l),REAL(dudt_l,RP)))
+				dvdt(ii1,ii2) = dudt(ii1,ii2) + 1.0_rp*ABS(dvdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dvdt_l),REAL(dvdt_l,RP)))
+				dwdt(ii1,ii2) = dwdt(ii1,ii2) + 1.0_rp*ABS(dwdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dwdt_l),REAL(dwdt_l,RP)))
 			ENDDO
 		ENDDO
     ENDDO

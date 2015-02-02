@@ -382,7 +382,7 @@ DO i_steep = 1,5
 					   !
 					   !
 					   ! Output of volume and energy
-					   volume = REAL(a_eta(1,1))
+					   volume = REAL(a_eta(1,1),RP)
 					   energy = calc_energy(a_eta, a_phis, da_eta)
 					   !
 					   print*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
@@ -424,8 +424,8 @@ DO i_steep = 1,5
 					  !
 					  WRITE(88,'(ES10.3,X,ES10.3,X,ES10.3)') time_cur, &
 						ABS(ABS(a_eta(idx_max(1),idx_max(2)))-ABS(a_eta_ref(idx_max(1),idx_max(2)))) ,&
-						ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)))) &
-						-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2))))
+						ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)),RP)) &
+						-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2)),RP))
 					   !
 					   IF (ABS(time_cur-T_stop_star) .LT. tiny) EXIT ! output of the last zone is done
 					   !
@@ -490,7 +490,7 @@ DO i_steep = 1,5
 					DO WHILE (time_cur > T_stop_star)
 					   !
 					   ! Output of volume and energy
-					   volume = REAL(a_eta(1,1))
+					   volume = REAL(a_eta(1,1),RP)
 					   energy = calc_energy(a_eta, a_phis, da_eta)
 					   !
 					   print*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
@@ -522,8 +522,8 @@ DO i_steep = 1,5
 					  !
 					  WRITE(88,'(ES10.3,X,ES10.3,X,ES10.3)') time_cur, &
 						ABS(ABS(a_eta(idx_max(1),idx_max(2)))-ABS(a_eta_ref(idx_max(1),idx_max(2)))) ,&
-						ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)))) &
-						-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2))))
+						ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)),RP)) &
+						-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2)),RP))
 					   !
 					   IF (ABS(time_cur-T_stop_star) .LT. tiny) EXIT ! output of the last zone is done
 					   !
@@ -1208,7 +1208,7 @@ IF (test_y.EQ.1) THEN
 						   !
 						   !
 						   ! Output of volume and energy
-						   volume = REAL(a_eta(1,1))
+						   volume = REAL(a_eta(1,1),RP)
 						   energy = calc_energy(a_eta, a_phis, da_eta)
 						   !
 						   print*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
@@ -1250,8 +1250,8 @@ IF (test_y.EQ.1) THEN
 						  !
 						  WRITE(88,'(ES10.3,X,ES10.3,X,ES10.3)') time_cur, &
 							ABS(ABS(a_eta(idx_max(1),idx_max(2)))-ABS(a_eta_ref(idx_max(1),idx_max(2)))) ,&
-							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)))) &
-							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2))))
+							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)),RP)) &
+							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2)),RP))
 						   !
 						   IF (ABS(time_cur-T_stop_star) .LT. tiny) EXIT ! output of the last zone is done
 						   !
@@ -1315,7 +1315,7 @@ IF (test_y.EQ.1) THEN
 						DO WHILE (time_cur > T_stop_star)
 						   !
 						   ! Output of volume and energy
-						   volume = REAL(a_eta(1,1))
+						   volume = REAL(a_eta(1,1),RP)
 						   energy = calc_energy(a_eta, a_phis, da_eta)
 						   !
 						   print*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
@@ -1347,8 +1347,8 @@ IF (test_y.EQ.1) THEN
 						  !
 						  WRITE(88,'(ES10.3,X,ES10.3,X,ES10.3)') time_cur, &
 							ABS(ABS(a_eta(idx_max(1),idx_max(2)))-ABS(a_eta_ref(idx_max(1),idx_max(2)))) ,&
-							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)))) &
-							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2))))
+							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)),RP)) &
+							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2)),RP))
 						   !
 						   IF (ABS(time_cur-T_stop_star) .LT. tiny) EXIT ! output of the last zone is done
 						   !
@@ -2178,7 +2178,7 @@ IF (test_xy.EQ.1) THEN
 						   !
 						   !
 						   ! Output of volume and energy
-						   volume = REAL(a_eta(1,1))
+						   volume = REAL(a_eta(1,1),RP)
 						   energy = calc_energy(a_eta, a_phis, da_eta)
 						   !
 						   print*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
@@ -2220,8 +2220,8 @@ IF (test_xy.EQ.1) THEN
 						  !
 						  WRITE(88,'(ES10.3,X,ES10.3,X,ES10.3)') time_cur, &
 							ABS(ABS(a_eta(idx_max(1),idx_max(2)))-ABS(a_eta_ref(idx_max(1),idx_max(2)))) ,&
-							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)))) &
-							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2))))
+							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)),RP)) &
+							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2)),RP))
 						   !
 						   IF (ABS(time_cur-T_stop_star) .LT. tiny) EXIT ! output of the last zone is done
 						   !
@@ -2287,7 +2287,7 @@ IF (test_xy.EQ.1) THEN
 						   !
 						   !
 						   ! Output of volume and energy
-						   volume = REAL(a_eta(1,1))
+						   volume = REAL(a_eta(1,1),RP)
 						   energy = calc_energy(a_eta, a_phis, da_eta)
 						   !
 						   print*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
@@ -2319,8 +2319,8 @@ IF (test_xy.EQ.1) THEN
 						  !
 						  WRITE(88,'(ES10.3,X,ES10.3,X,ES10.3)') time_cur, &
 							ABS(ABS(a_eta(idx_max(1),idx_max(2)))-ABS(a_eta_ref(idx_max(1),idx_max(2)))) ,&
-							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)))) &
-							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2))))
+							ATAN2(AIMAG(a_eta(idx_max(1),idx_max(2))),REAL(a_eta(idx_max(1),idx_max(2)),RP)) &
+							-ATAN2(AIMAG(a_eta_ref(idx_max(1),idx_max(2))),REAL(a_eta_ref(idx_max(1),idx_max(2)),RP))
 						   !
 						   IF (ABS(time_cur-T_stop_star) .LT. tiny) EXIT ! output of the last zone is done
 						   !
