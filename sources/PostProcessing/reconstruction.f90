@@ -285,7 +285,7 @@ DO ii1 = 1, imax-imin+1
 			dvdt(ii1,ii2) = dvdt(ii1,ii2) - 1.0_rp*ABS(iky(i1,i2)*modesspect(i1,i2) * coeff) &
 				*COS(ky_n2(i2)*yvect(ii2)+anglevt(i1,i2))
 			dwdt(ii1,ii2) = dwdt(ii1,ii2) - 1.0_rp*ABS(kth(i1,i2)*modesspect(i1,i2) * coeff2) &
-				*COS(ky_n2(i2)*yvect(ii2)+anglewt(i1,i2))             
+				*COS(ky_n2(i2)*yvect(ii2)+anglewt(i1,i2))
 		ENDIF
 		! i2 and i1 =/ 1
 		DO i1=2,n1o2p1
@@ -315,7 +315,7 @@ DO ii1 = 1, imax-imin+1
 				dvdt(ii1,ii2) = dudt(ii1,ii2) + 1.0_rp*ABS(dvdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dvdt_l),REAL(dvdt_l)))
 				dwdt(ii1,ii2) = dwdt(ii1,ii2) + 1.0_rp*ABS(dwdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dwdt_l),REAL(dwdt_l)))
 			ENDDO
-		ENDDO 
+		ENDDO
     ENDDO
 ENDDO
 !
@@ -405,7 +405,7 @@ iky = 0.0_cp
 DO i1 = 1, n1o2p1
    iky(i1,1:MIN(N_der(2),n2o2p1)) = i * ky_n2(1:MIN(N_der(2),n2o2p1))
    ! negative ky
-   DO i2 = 2, MIN(N_der(2), n2o2p1) 
+   DO i2 = 2, MIN(N_der(2), n2o2p1)
       iky(i1,n2-i2+2) = - i * ky_n2(i2)
    END DO
    IF (iseven(n2) .AND. N_der(2)>=n2o2p1) iky(i1,n2o2p1) = 0.0_cp
@@ -487,7 +487,7 @@ SUBROUTINE check_sizes(n2,x_min,x_max,y_min,y_max,z_min,t_min,t_max,xlen_star,yl
 IMPLICIT NONE
 !
 INTEGER, INTENT(IN)  :: n2
-REAL(RP), INTENT(IN) :: x_min,x_max,y_min,y_max,t_min,t_max,xlen_star,ylen_star,depth_star,T_stop_star,L,T
+REAL(RP), INTENT(IN) :: x_min,x_max,y_min,y_max,z_min,t_min,t_max,xlen_star,ylen_star,depth_star,T_stop_star,L,T
 REAL(RP)             :: tiny_sp
 !
 ! tiny_sp is single precision: useful for inequalities check with values read from files

@@ -1,0 +1,32 @@
+SET(srcHOS_ocean
+    ${SRC_DIRECTORY}/HOS/HOS-ocean.f90
+    ${SRC_DIRECTORY}/HOS/runge_kutta.f90
+    ${SRC_DIRECTORY}/HOS/variables_3D.f90
+    ${SRC_DIRECTORY}/HOS/energy_calc.f90
+    ${SRC_DIRECTORY}/HOS/resol_HOS.f90
+    ${SRC_DIRECTORY}/HOS/initial_condition.f90
+    ${SRC_DIRECTORY}/HOS/input_HOS.f90
+    ${SRC_DIRECTORY}/HOS/output.f90
+    ${SRC_DIRECTORY}/HOS/velocities.f90
+    ${SRC_DIRECTORY}/utilities/nrutil_tmp.f90
+    ${SRC_DIRECTORY}/utilities/filters.f90
+    ${SRC_DIRECTORY}/utilities/type.f90
+    ${SRC_DIRECTORY}/utilities/fourier_r2c_FFTW3.f90
+    ${SRC_DIRECTORY}/utilities/Bivar.f90
+    ${SRC_DIRECTORY}/utilities/maths.f90
+    ${SRC_DIRECTORY}/utilities/ramp.f90
+    ${SRC_DIRECTORY}/utilities/RF_solution.f90
+    ${SRC_DIRECTORY}/utilities/linear_wave.f90
+    )
+
+SET(srcPost_processing
+    ${SRC_DIRECTORY}/PostProcessing/variables_post_process.f90
+    ${SRC_DIRECTORY}/PostProcessing/reconstruction.f90
+    ${SRC_DIRECTORY}/PostProcessing/read_files.f90
+    ${SRC_DIRECTORY}/PostProcessing/output_post_process.f90
+    ${SRC_DIRECTORY}/PostProcessing/input_post_process.f90
+    ${SRC_DIRECTORY}/PostProcessing/analysis_wavefield.f90
+    ${SRC_DIRECTORY}/PostProcessing/Post_processing.f90
+    ${SRC_DIRECTORY}/utilities/type.f90
+    ${SRC_DIRECTORY}/utilities/fourier_r2c_FFTW3.f90
+    )

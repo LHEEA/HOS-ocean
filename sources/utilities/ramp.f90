@@ -13,7 +13,7 @@ MODULE ramp
 !    |      x  |                    |  x
 !  --x-----x---x--------------------x---x-------x---->
 !      t_begin t_start         t_stop         t_end
-! 
+!
 ! t_dur = t_stop - t_start
 ! d_start and d_stop = lengths of the start and stop ramps
 ! r_start and r_stop = type of the start and stop ramps
@@ -99,7 +99,7 @@ END IF
 !
 ! Stop ramp_ini
 !   different type or not ?
-IF (SIZE(ri_def) > 1) THEN 
+IF (SIZE(ri_def) > 1) THEN
    ramp_ini%r_stop = ri_def(2)    ! type
 ELSE ! same def as start ramp_ini
    ramp_ini%r_stop = ri_def(1)    ! type
@@ -124,7 +124,7 @@ IF (s == 1) THEN ! begins at t=0
 ELSE ! begins at t=t_begin/=0
    ramp_ini%t_begin = t_def(1)
 END IF
-! Starting time is define when the ramp_ini is 1/2 
+! Starting time is define when the ramp_ini is 1/2
 !   I assume it is when we are half way into the ramp_ini
 ramp_ini%t_start = ramp_ini%t_begin + ramp_ini%d_start / 2
 !
@@ -170,7 +170,7 @@ ELSE IF (ABS(ramp%d_start) .GT. tiny .AND. loc-(ramp%t_begin + ramp%d_start) <= 
    ramp_value(1) = ramp_calc(u, ramp%r_start)
    ramp_value(2) = dramp_du_calc(u, ramp%r_start)   / ramp%d_start
    ramp_value(3) = d2ramp_du2_calc(u, ramp%r_start) / (ramp%d_start * ramp%d_start)
-ELSE IF (loc-(ramp%t_stop - ramp%d_stop/2) < tiny) THEN ! 
+ELSE IF (loc-(ramp%t_stop - ramp%d_stop/2) < tiny) THEN !
    ramp_value = ramp_calc(1.0_rp, ramp%r_start)
    ramp_value(1) = ramp_value(1)
    ramp_value(2) = 0.0_rp
@@ -343,7 +343,7 @@ ELSE IF (abs(ramp%d_start) > tiny .AND. loc-(ramp%t_begin + ramp%d_start) < tiny
    u = (loc - ramp%t_begin) / ramp%d_start
    ramp_integ = int_ramp_calc(u,ramp%r_start)
    ramp_integ = ramp%d_start * ramp_integ
-ELSE IF (loc < ramp%t_stop - ramp%d_stop/2) THEN ! 
+ELSE IF (loc < ramp%t_stop - ramp%d_stop/2) THEN !
    ramp_integ = int_ramp_calc(1.0_rp ,ramp%r_start)
    ramp_integ = ramp%d_start * ramp_integ
    ramp_integ = ramp_integ + ramp_calc(1.0_rp ,ramp%r_start) * (loc - (ramp%t_begin + ramp%d_start))

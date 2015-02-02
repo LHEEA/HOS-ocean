@@ -44,12 +44,12 @@ INTEGER, PARAMETER  :: calc_case  = 1
 !     0 together with Nma=13 and Mm=9 (m1=512 and p1=21)
 REAL(RP), DIMENSION(5)           :: steepness
 CHARACTER(LEN=100), DIMENSION(5) :: files
-INTEGER, PARAMETER               :: Nma = 7, Mm = 7 !Nma = 13, Mm = 9 
+INTEGER, PARAMETER               :: Nma = 7, Mm = 7 !Nma = 13, Mm = 9
 ! Test along x, y or 45° direction
 INTEGER, PARAMETER               :: test_x = 1, test_y = 1, test_xy = 1
 ! Test with time stepping along x, y or 45° direction (1 for propagation, -1 for direct and inverse propagation)
 INTEGER, PARAMETER               :: test_t_x = 0, test_t_y = 0, test_t_xy=0
-! 
+!
 INTEGER, PARAMETER               :: test_vel=0
 !
 INTEGER, DIMENSION(Nma,Mm,5)     :: NM
@@ -203,7 +203,7 @@ DO i_steep = 1,5
 	            DO j = 3,M
 		            kth_all(i1,i2,j) = k2 * kth_all(i1,i2,j-2)
 	            END DO
-            END DO            
+            END DO
             !
             DO i2 = 2, Nd2o2p1
                DO i1 = 1, Nd1o2p1
@@ -435,7 +435,7 @@ DO i_steep = 1,5
 					   h_rk    = dt ! starting time step
 					   DO WHILE(time_cur < time_next)
 						  h_loc = h_rk ! local time step
-						  IF (time_next < time_cur + h_rk) h_loc = time_next - time_cur ! if last time step 
+						  IF (time_next < time_cur + h_rk) h_loc = time_next - time_cur ! if last time step
 						  !
 						  ! Analytical integration of the linear part
 						  ! starting at current time
@@ -461,7 +461,7 @@ DO i_steep = 1,5
 						  IF (dt_correc < 0.125_rp) dt_correc = 0.125_rp
 						  !
 						  ! Step size security factor
-						  dt_correc = 0.98_rp * dt_correc            
+						  dt_correc = 0.98_rp * dt_correc
 						  ! New step size
 						  h_rk      = h_rk * dt_correc
 						  ! Stability checkings
@@ -533,7 +533,7 @@ DO i_steep = 1,5
 					   h_rk    = dt ! starting time step
 					   DO WHILE(time_cur > time_next)
 						  h_loc = h_rk ! local time step
-						  IF (time_next > time_cur + h_rk) h_loc = time_next - time_cur ! if last time step 
+						  IF (time_next > time_cur + h_rk) h_loc = time_next - time_cur ! if last time step
 						  !
 						  ! Analytical integration of the linear part
 						  ! starting at current time
@@ -559,7 +559,7 @@ DO i_steep = 1,5
 						  IF (dt_correc < 0.125_rp) dt_correc = 0.125_rp
 						  !
 						  ! Step size security factor
-						  dt_correc = 0.98_rp * dt_correc            
+						  dt_correc = 0.98_rp * dt_correc
 						  ! New step size
 						  h_rk      = ABS(h_rk) * dt_correc
 						  ! Stability checkings
@@ -580,7 +580,7 @@ DO i_steep = 1,5
             ! FIXME : fill in the whole matrix
             ! FIXME : create a specific calc_case for this test?
             !
-            IF (calc_case == 1) THEN 
+            IF (calc_case == 1) THEN
 				IF((error(N_loop,M/2,i_steep,2)-error(N_loop,M/2,i_steep,6))-0.05*error(N_loop,M/2,i_steep,6).GT.tiny) THEN
 					print*, 'Worsening of previous HOS computation: total dealiasing'
 					print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6)
@@ -590,8 +590,8 @@ DO i_steep = 1,5
 					-0.05*error(N_loop,M/2,i_steep,6).GT.tiny) THEN
 					IF (ABS(error(N_loop,M/2,i_steep,6)-1.0_rp).GT.tiny) THEN
 						print*, 'Enhancement of previous HOS computation: total dealiasing'
-						print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6) 
-					ENDIF                   
+						print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6)
+					ENDIF
 				ENDIF
             ENDIF
             !
@@ -600,7 +600,7 @@ DO i_steep = 1,5
                ! Best dealiasing
                Nd1     = ((part+1) * n1) / 2
                Nd1o2p1 = Nd1/2+1
-               order_max(1) = part-1 
+               order_max(1) = part-1
                i_dealias(1) = 1
                N_dea(1)     = n1o2p1
                !N_der(1)     = 2*n1o2p1
@@ -624,7 +624,7 @@ DO i_steep = 1,5
             DEALLOCATE(kth,kth_all)
          END IF
       END DO
-   END DO 
+   END DO
 END DO
 !
 !
@@ -1017,8 +1017,8 @@ IF (test_y.EQ.1) THEN
 	                 IF (M > 1) kth_all(i1,i2,2) = k2
 	                 DO j = 3,M
 		                 kth_all(i1,i2,j) = k2 * kth_all(i1,i2,j-2)
-	                END DO   
-	            ENDDO             
+	                END DO
+	            ENDDO
                 DO i2 = 2, Nd2o2p1
                    DO i1 = 1, Nd1o2p1
 	                   k2           = kx(i1) * kx(i1) + ky(i2) * ky(i2)
@@ -1047,8 +1047,8 @@ IF (test_y.EQ.1) THEN
                     k2                 = kx(i1) * kx(i1) + ky_n2(i2) * ky_n2(i2)
                     omega_n2(i1,i2)    = SQRT(g_star * SQRT(k2) * TANH(SQRT(k2)*depth_star))
                     goomega_n2(i1,i2)  = g_star / omega_n2(i1,i2)
-                END DO  
-                !              
+                END DO
+                !
                 DO i2 = 2, n2
                    DO i1 = 1, Nd1o2p1
                       k2                 = kx(i1) * kx(i1) + ky_n2(i2) * ky_n2(i2)
@@ -1261,7 +1261,7 @@ IF (test_y.EQ.1) THEN
 						   h_rk    = dt ! starting time step
 						   DO WHILE(time_cur < time_next)
 							  h_loc = h_rk ! local time step
-							  IF (time_next < time_cur + h_rk) h_loc = time_next - time_cur ! if last time step 
+							  IF (time_next < time_cur + h_rk) h_loc = time_next - time_cur ! if last time step
 							  !
 							  ! Analytical integration of the linear part
 							  ! starting at current time
@@ -1287,7 +1287,7 @@ IF (test_y.EQ.1) THEN
 							  IF (dt_correc < 0.125_rp) dt_correc = 0.125_rp
 							  !
 							  ! Step size security factor
-							  dt_correc = 0.98_rp * dt_correc            
+							  dt_correc = 0.98_rp * dt_correc
 							  ! New step size
 							  h_rk      = h_rk * dt_correc
 							  ! Stability checkings
@@ -1358,7 +1358,7 @@ IF (test_y.EQ.1) THEN
 						   h_rk    = dt ! starting time step
 						   DO WHILE(time_cur > time_next)
 							  h_loc = h_rk ! local time step
-							  IF (time_next > time_cur + h_rk) h_loc = time_next - time_cur ! if last time step 
+							  IF (time_next > time_cur + h_rk) h_loc = time_next - time_cur ! if last time step
 							  !
 							  ! Analytical integration of the linear part
 							  ! starting at current time
@@ -1384,7 +1384,7 @@ IF (test_y.EQ.1) THEN
 							  IF (dt_correc < 0.125_rp) dt_correc = 0.125_rp
 							  !
 							  ! Step size security factor
-							  dt_correc = 0.98_rp * dt_correc            
+							  dt_correc = 0.98_rp * dt_correc
 							  ! New step size
 							  h_rk      = ABS(h_rk) * dt_correc
 							  ! Stability checkings
@@ -1406,7 +1406,7 @@ IF (test_y.EQ.1) THEN
                 ! FIXME : create a specific calc_case for this test?
                 !
                 IF (calc_case == 1) THEN
-                    !IF (i_steep == 5) THEN 
+                    !IF (i_steep == 5) THEN
                         IF((error(N_loop,M/2,i_steep,2)-error(N_loop,M/2,i_steep,6)).GT.0.05*error(N_loop,M/2,i_steep,6)) THEN
                             print*, 'Worsening previous HOS computation: total dealiasing'
                             print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6)
@@ -1415,7 +1415,7 @@ IF (test_y.EQ.1) THEN
                     		-0.05*error(N_loop,M/2,i_steep,6).GT.tiny) THEN
                     		IF (ABS(error(N_loop,M/2,i_steep,6)-1.0_rp).GT.tiny) THEN
                         		print*, 'Enhancement of previous HOS computation: total dealiasing'
-                        		print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6) 
+                        		print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6)
                         	ENDIF
                         ENDIF
                     !ENDIF
@@ -1427,7 +1427,7 @@ IF (test_y.EQ.1) THEN
                    Nd2     = ((part+1) * n2) / 2
                    Nd2o2p1 = Nd2/2+1
                    Nd2p1o2 = (Nd2+1)/2
-                   order_max(2) = part-1 
+                   order_max(2) = part-1
                    i_dealias(2) = 1
                    N_dea(2)     = n2o2p1
                    !N_der(2)     = 2*n2o2p1
@@ -1451,7 +1451,7 @@ IF (test_y.EQ.1) THEN
                 DEALLOCATE(kth,kth_all)
              END IF
           END DO
-       END DO 
+       END DO
     END DO
     !
     !
@@ -1761,7 +1761,7 @@ IF (test_xy.EQ.1) THEN
                 n2     = Npts
                 n2o2p1 = Npts/2 + 1
                 n2c    = n2o2p1
-                n2m1o2m1 = (n2-1)/2-1                
+                n2m1o2m1 = (n2-1)/2-1
 
                 ! Memory allocation
                 ALLOCATE(etapm_ext(md1, md2, M+1))
@@ -1982,7 +1982,7 @@ IF (test_xy.EQ.1) THEN
 					!
 					CALL fourier_2_space(a_eta,eta)
 					CALL fourier_2_space(a_phis,phis)
-					CALL fourier_2_space(a_phiz_RF,phizRF_2D)                                
+					CALL fourier_2_space(a_phiz_RF,phizRF_2D)
                 	!
                 	CALL fourier_end(3)
                 ENDIF
@@ -2002,7 +2002,7 @@ IF (test_xy.EQ.1) THEN
 !         			CALL fourier_2_space(a_phiz_RF,phizRF_2D)
      			END IF
                 !
-                CALL fourier_2_space(a_eta,eta)                                
+                CALL fourier_2_space(a_eta,eta)
                 !
                 CALL fourier_end(3)
 				!
@@ -2092,7 +2092,7 @@ IF (test_xy.EQ.1) THEN
                 error(N_loop,M/2,i_steep,2) = MAXVAL(ABS(phizRF_2D(1:n1,1:n2) - phiz(1:n1,1:n2)))
                 !
                 CALL space_2_fourier(phiz,a_phiz)
-                CALL space_2_fourier(phizRF_2D,a_phiz_RF)                
+                CALL space_2_fourier(phizRF_2D,a_phiz_RF)
                 !
                 ! Check present results w.r.t. previous HOS results
                 ! FIXME : fill in the whole matrix
@@ -2108,10 +2108,10 @@ IF (test_xy.EQ.1) THEN
                    		-0.05*error(N_loop,M/2,i_steep,6).GT.tiny) THEN
                    		IF (ABS(error(N_loop,M/2,i_steep,6)-1.0_rp).GT.tiny) THEN
                        		print*, 'Enhancement of previous HOS computation: total dealiasing'
-                       		print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6) 
+                       		print*, 'N=',Npts/2,'M=',M,error(N_loop,M/2,i_steep,2),error(N_loop,M/2,i_steep,6)
                        	ENDIF
                     ENDIF
-                    IF (i_steep == 5) THEN 
+                    IF (i_steep == 5) THEN
                           IF (M.EQ.2) THEN
                             OPEN(666,FILE='3d_test.dat')
                             WRITE(666,'(A)') 'VARIABLES="x", "y", "eta", "phis", "W", "W_RF", "err"'
@@ -2231,7 +2231,7 @@ IF (test_xy.EQ.1) THEN
 						   h_rk    = dt ! starting time step
 						   DO WHILE(time_cur < time_next)
 							  h_loc = h_rk ! local time step
-							  IF (time_next < time_cur + h_rk) h_loc = time_next - time_cur ! if last time step 
+							  IF (time_next < time_cur + h_rk) h_loc = time_next - time_cur ! if last time step
 							  !
 							  ! Analytical integration of the linear part
 							  ! starting at current time
@@ -2257,7 +2257,7 @@ IF (test_xy.EQ.1) THEN
 							  IF (dt_correc < 0.125_rp) dt_correc = 0.125_rp
 							  !
 							  ! Step size security factor
-							  dt_correc = 0.98_rp * dt_correc            
+							  dt_correc = 0.98_rp * dt_correc
 							  ! New step size
 							  h_rk      = h_rk * dt_correc
 							  ! Stability checkings
@@ -2330,7 +2330,7 @@ IF (test_xy.EQ.1) THEN
 						   h_rk    = dt ! starting time step
 						   DO WHILE(time_cur > time_next)
 							  h_loc = h_rk ! local time step
-							  IF (time_next > time_cur + h_rk) h_loc = time_next - time_cur ! if last time step 
+							  IF (time_next > time_cur + h_rk) h_loc = time_next - time_cur ! if last time step
 							  !
 							  ! Analytical integration of the linear part
 							  ! starting at current time
@@ -2356,7 +2356,7 @@ IF (test_xy.EQ.1) THEN
 							  IF (dt_correc < 0.125_rp) dt_correc = 0.125_rp
 							  !
 							  ! Step size security factor
-							  dt_correc = 0.98_rp * dt_correc            
+							  dt_correc = 0.98_rp * dt_correc
 							  ! New step size
 							  h_rk      = ABS(h_rk) * dt_correc
 							  ! Stability checkings
@@ -2388,14 +2388,14 @@ IF (test_xy.EQ.1) THEN
                    ! Best dealiasing
                    Nd1     = ((part+1) * n1) / 2
                    Nd1o2p1 = Nd1/2+1
-                   order_max(1) = part-1 
+                   order_max(1) = part-1
                    i_dealias(1) = 1
                    N_dea(1)     = n1o2p1
                    !
                    Nd2     = ((part+1) * n2) / 2
                    Nd2o2p1 = Nd2/2+1
                    Nd2p1o2 = (Nd2+1)/2
-                   order_max(2) = part-1 
+                   order_max(2) = part-1
                    i_dealias(2) = 1
                    N_dea(2)     = n2o2p1
 
@@ -2418,7 +2418,7 @@ IF (test_xy.EQ.1) THEN
                 DEALLOCATE(kth,kth_all)
              END IF
           END DO
-       END DO 
+       END DO
     END DO
     !
     !
@@ -3116,7 +3116,7 @@ IF (comp_case == 1) THEN
    error(4,4,4,5) = 0.73E-04
    error(4,5,4,5) = 0.10E-04
    error(4,6,4,5) = 0.14E-05
-   error(4,7,4,5) = 0.25E-06   
+   error(4,7,4,5) = 0.25E-06
    ! ka = 0.4
    error(1,1,5,5) = 0.45E-01 ! ka=0.4,N=32
    error(1,2,5,5) = 0.79E-02
@@ -3238,7 +3238,7 @@ IF (comp_case == 1) THEN
    error(4,4,4,6) = 0.73E-04
    error(4,5,4,6) = 0.10E-04
    error(4,6,4,6) = 0.14E-05
-   error(4,7,4,6) = 0.20E-06   
+   error(4,7,4,6) = 0.20E-06
    ! ka = 0.4
    error(1,1,5,6) = 0.45E-01 ! ka=0.4,N=32
    error(1,2,5,6) = 0.78E-02
@@ -3319,7 +3319,7 @@ iky = ((0.0_rp, 0.0_rp))
 DO i1 = 1, n1o2p1
    iky(i1,1:MIN(N_der(2),n2o2p1)) = i * ky_n2(1:MIN(N_der(2),n2o2p1))
    ! negative ky
-   DO i2 = 2, MIN(N_der(2), n2o2p1) 
+   DO i2 = 2, MIN(N_der(2), n2o2p1)
   ! FIXME : check
   !DO i2 = 2, MIN(N_der(2), n2p1o2)
       iky(i1,n2-i2+2) = - i * ky_n2(i2)
@@ -3347,7 +3347,7 @@ DO i1 = 1, Nd1o2p1
   END DO
   ! Last mode contains cos information only and must not be part of the differentiation.
   IF (iseven(Nd2) .AND. N_der(2) >= Nd2o2p1) iky_big(i1,Nd2o2p1) = ((0.0_rp, 0.0_rp)) !FIXME : check this
-END DO 
+END DO
 !
 DO i2=1,Nd2o2p1
 	DO i1=1,Nd1o2p1

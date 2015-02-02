@@ -252,7 +252,7 @@ iky = 0.0_cp
 DO i1 = 1, n1o2p1
    iky(i1,1:MIN(N_der(2),n2o2p1)) = i * ky_n2(1:MIN(N_der(2),n2o2p1))
    ! negative ky
-   DO i2 = 2, MIN(N_der(2), n2o2p1) 
+   DO i2 = 2, MIN(N_der(2), n2o2p1)
       iky(i1,n2-i2+2) = - i * ky_n2(i2)
    END DO
    IF (iseven(n2) .AND. N_der(2)>=n2o2p1) iky(i1,n2o2p1) = 0.0_cp
@@ -277,8 +277,8 @@ DO i1 = 1, Nd1o2p1
      iky_big(i1,Nd2-i2+2) = - i * ky(i2)
   END DO
   ! Last mode contains cos information only and must not be part of the differentiation.!FIXME: check
-  IF (iseven(Nd2) .AND. N_der(2) >= Nd2o2p1) iky_big(i1,Nd2o2p1) = 0.0_cp 
-END DO 
+  IF (iseven(Nd2) .AND. N_der(2) >= Nd2o2p1) iky_big(i1,Nd2o2p1) = 0.0_cp
+END DO
 !
 ! k_abs may be useful... CHECK
 ! some variables useful for initialization
@@ -369,7 +369,7 @@ CALL display_velocities()
 !
 ! Initial conditions
 !
-! Evaluates the modal amplitudes (FT) 
+! Evaluates the modal amplitudes (FT)
  CALL fourier_ini(3)
  CALL fill_butcher_array(RK_param)
 !
@@ -462,7 +462,7 @@ DO WHILE (time_cur <= T_stop_star)
    n_er_tot = n_error + n_er_tot ! number or time steps with too large error (wrong time steps)
    n_rk_tot = n_rk_tot + n_rk    ! total number of time steps
    CALL CPU_TIME(t_f)
-   ! Dsplays the CPU time for one time steps 
+   ! Dsplays the CPU time for one time steps
    IF (time_cur <= 3000 * dt_out) THEN ! only for the first 100 steps
          WRITE(*,'(A,F6.2,2(X,I4),3(X,F9.3))') 'CPU time for Output time step ',t_f-t_i, n_rk, n_error, time_cur*T_out, dt_rk4, dt
    END IF
@@ -523,7 +523,7 @@ DO WHILE (time_cur <= T_stop_star)
       !
       CALL check_slope
       h_loc = h_rk ! local time step
-      IF (time_next - time_cur < h_rk) h_loc = time_next - time_cur ! if last time step 
+      IF (time_next - time_cur < h_rk) h_loc = time_next - time_cur ! if last time step
       !
       ! Analytical integration of the linear part
       ! starting at current time
@@ -551,7 +551,7 @@ DO WHILE (time_cur <= T_stop_star)
          IF (dt_correc < 0.125_rp) dt_correc = 0.125_rp
          !
          ! Step size security factor
-         dt_correc = 0.98_rp * dt_correc            
+         dt_correc = 0.98_rp * dt_correc
          ! New step size
          h_rk      = h_rk * dt_correc
          ! Stability checkings

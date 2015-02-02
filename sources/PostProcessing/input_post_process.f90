@@ -157,7 +157,7 @@ IMPLICIT NONE
 INTEGER, INTENT(IN)   :: unit
 !
 line_counter = line_counter + 1
-READ(unit,*) 
+READ(unit,*)
 !
 END SUBROUTINE read_blank_line
 !
@@ -193,7 +193,7 @@ IMPLICIT NONE
 ! Input variables
 CHARACTER(LEN=N_tot) :: description
 !
-WRITE(*,'(A,I2)') 'Error while reading the input file on line: ', line_counter 
+WRITE(*,'(A,I2)') 'Error while reading the input file on line: ', line_counter
 WRITE(*,'(A)') description
 STOP
 !

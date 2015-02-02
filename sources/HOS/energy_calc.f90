@@ -1,7 +1,7 @@
 MODULE energy_calc
 !
 ! This module is related to the evaluation of free-surface wave fields energy.
-! 
+!
 ! contains  : one function named calc_energy
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

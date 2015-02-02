@@ -1,7 +1,7 @@
 MODULE RF_solution
 !
 ! This module computes the solution of Rienecker & Fenton (J.F.M. Vol.104, 1981)
-! It uses a set of coefficients describing eta and phi obtained from a specific R&F program 
+! It uses a set of coefficients describing eta and phi obtained from a specific R&F program
 ! from LHEEA Lab., ECN (Pierre Ferrant & Félicien Bonnefoy)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -33,15 +33,15 @@ IMPLICIT NONE
 TYPE RF_data
    ! see the Rienecker and Fenton solver (eg wave_rf_hinf_N12.f90)
    CHARACTER(LEN=100)                	:: file_name
-   INTEGER                           	:: N_eta, N_phi 
+   INTEGER                           	:: N_eta, N_phi
    REAL(RP)                          	:: ka, lambda, k, T, C, CC, CPH, H, omega
    REAL(RP)                          	:: depth, Q, R
    LOGICAL                           	:: inf_depth
    REAL(RP), ALLOCATABLE, DIMENSION(:)  :: A, B
-   ! 
-   INTEGER                           	:: N_space          ! number of points 
+   !
+   INTEGER                           	:: N_space          ! number of points
    REAL(RP), ALLOCATABLE, DIMENSION(:)  :: x, eta, phis, W  ! values
-   ! building in space on N>=N_space, then moving to Fourier, keeping the N_space first 
+   ! building in space on N>=N_space, then moving to Fourier, keeping the N_space first
    ! modes and back to space on N_space
    REAL(RP), ALLOCATABLE, DIMENSION(:)  :: eta_dealiased, phis_dealiased, W_dealiased
 !    ! building in space on N_space from the N_space first modes of the RF data
@@ -198,7 +198,7 @@ RF_obj%phis = phis_w
 RF_obj%W    = W_w
 
 ! Dealiased solution on N_space points from the modes of phi and eta
-! building in space on N>=N_space, then moving to Fourier, keeping the N_space first 
+! building in space on N>=N_space, then moving to Fourier, keeping the N_space first
 ! modes and back to space on N_space
 IF (RF_obj%N_eta > RF_obj%N_space/2) THEN
    N_work = 2 * 2**nextpow2(RF_obj%N_eta)
@@ -350,7 +350,7 @@ RF_obj%eta_dealiased  = eta_w
 RF_obj%phis_dealiased = phis_w
 RF_obj%W_dealiased    = W_w
 !
-! Deallocate 
+! Deallocate
 DEALLOCATE(x_w, phis_w, eta_w, W_w)
 !
 END SUBROUTINE build_RF_reference

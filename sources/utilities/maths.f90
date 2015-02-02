@@ -29,19 +29,19 @@ IMPLICIT NONE
 !
 INTERFACE norme
    MODULE PROCEDURE norme_r,norme_d,norme_vr,norme_vd
-END INTERFACE 
+END INTERFACE
 INTERFACE ecart_type
    MODULE PROCEDURE ecart_type_r,ecart_type_d
-END INTERFACE 
+END INTERFACE
 INTERFACE variance
    MODULE PROCEDURE variance_r,variance_d
-END INTERFACE 
+END INTERFACE
 INTERFACE dichoto
    MODULE PROCEDURE dichoto_r,dichoto_d
-END INTERFACE 
+END INTERFACE
 INTERFACE phase
    MODULE PROCEDURE phase_r,phase_d !,phase_rv,phase_dv
-END INTERFACE 
+END INTERFACE
 !
 !
 !
@@ -56,7 +56,7 @@ IMPLICIT NONE
 REAL(SP),INTENT(IN) :: x
 REAL(SP)            :: norme_r
 !
-norme_r = SQRT( x*x )
+norme_r = ABS( x )
 !
 END FUNCTION norme_r
 !
@@ -69,7 +69,7 @@ IMPLICIT NONE
 REAL(DP),INTENT(IN) :: x
 REAL(DP)            :: norme_d
 !
-norme_d = SQRT( x*x )
+norme_d = DABS( x )
 !
 END FUNCTION norme_d
 !
@@ -156,7 +156,7 @@ IMPLICIT NONE
 REAL(SP), DIMENSION(:),INTENT(IN) :: x
 REAL(SP)                          :: ecart_type_r
 !
-ecart_type_r = SQRT( variance( x ) )
+ecart_type_r = SQRT( variance_r( x ) )
 !
 END FUNCTION ecart_type_r
 !
@@ -169,7 +169,7 @@ IMPLICIT NONE
 REAL(DP), DIMENSION(:),INTENT(IN) :: x
 REAL(DP)                          :: ecart_type_d
 !
-ecart_type_d = SQRT( variance( x ) )
+ecart_type_d = SQRT( variance_d( x ) )
 !
 END FUNCTION ecart_type_d
 !

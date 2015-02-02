@@ -23,63 +23,63 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
 !
 !  Purpose:
 !
-!    To provide bivariate interpolation and smooth surface fitting for 
+!    To provide bivariate interpolation and smooth surface fitting for
 !    values given at irregularly distributed points.
 !
-!    The resulting interpolating function and its first-order partial 
+!    The resulting interpolating function and its first-order partial
 !    derivatives are continuous.
 !
-!    The method employed is local, i.e. a change in the data in one area 
+!    The method employed is local, i.e. a change in the data in one area
 !    of the plane does not affect the interpolating function except in
-!    that local area.  This is advantageous over global interpolation 
+!    that local area.  This is advantageous over global interpolation
 !    methods.
 !
-!    Also, the method gives exact results when all points lie in a plane. 
+!    Also, the method gives exact results when all points lie in a plane.
 !    This is advantageous over other methods such as two-dimensional
 !    Fourier series interpolation.
 !
 !  Usage:
 !
-!    This package contains two user entries, IDBVIP and IDSFFT, both 
+!    This package contains two user entries, IDBVIP and IDSFFT, both
 !    requiring input data to be given at points
 !      ( X(I), Y(I) ), I = 1,...,N.
 !
-!    If the user desires the interpolated data to be output at grid 
+!    If the user desires the interpolated data to be output at grid
 !    points, i.e. at points
 !      ( XI(I), YI(J) ), I = 1,...,NXI, J=1,...,NYI,
-!    then IDSFFT should be used.  This is useful for generating an 
+!    then IDSFFT should be used.  This is useful for generating an
 !    interpolating surface.
 !
-!    The other user entry point, IDBVIP, will produce interpolated 
+!    The other user entry point, IDBVIP, will produce interpolated
 !    values at scattered points
-!      ( XI(I), YI(I) ), i = 1,...,NIP.  
+!      ( XI(I), YI(I) ), i = 1,...,NIP.
 !    This is useful for filling in missing data points on a grid.
 !
 !  History:
 !
-!    The original version of BIVAR was written by Hiroshi Akima in 
-!    August 1975 and rewritten by him in late 1976.  It was incorporated 
-!    into NCAR's public software libraries in January 1977.  In August 
-!    1984 a new version of BIVAR, incorporating changes described in the 
-!    Rocky Mountain Journal of Mathematics article cited below, was 
-!    obtained from Dr Akima by Michael Pernice of NCAR's Scientific 
-!    Computing Division, who evaluated it and made it available in February, 
+!    The original version of BIVAR was written by Hiroshi Akima in
+!    August 1975 and rewritten by him in late 1976.  It was incorporated
+!    into NCAR's public software libraries in January 1977.  In August
+!    1984 a new version of BIVAR, incorporating changes described in the
+!    Rocky Mountain Journal of Mathematics article cited below, was
+!    obtained from Dr Akima by Michael Pernice of NCAR's Scientific
+!    Computing Division, who evaluated it and made it available in February,
 !    1985.
 !
 !  Accuracy:
 !
-!    Accurate to machine precision on the input data points.  Accuracy at 
+!    Accurate to machine precision on the input data points.  Accuracy at
 !    other points greatly depends on the input data.
 !
 !  References:
 !
-!    Hiroshi Akima,  
+!    Hiroshi Akima,
 !    A Method of Bivariate Interpolation and Smooth Surface Fitting
 !      for Values Given at Irregularly Distributed Points,
-!    ACM Transactions on Mathematical Software, 
+!    ACM Transactions on Mathematical Software,
 !    Volume 4, Number 2, June 1978.
 !
-!    Hiroshi Akima,  
+!    Hiroshi Akima,
 !    On Estimating Partial Derivatives for Bivariate Interpolation
 !      of Scattered Data,
 !    Rocky Mountain Journal of Mathematics,
@@ -87,18 +87,18 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
 !
 !  Method:
 !
-!    The XY plane is divided into triangular cells, each cell having 
+!    The XY plane is divided into triangular cells, each cell having
 !    projections of three data points in the plane as its vertices, and
-!    a bivariate quintic polynomial in X and Y is fitted to each 
+!    a bivariate quintic polynomial in X and Y is fitted to each
 !    triangular cell.
 !
-!    The coefficients in the fitted quintic polynomials are determined 
-!    by continuity requirements and by estimates of partial derivatives 
-!    at the vertices and along the edges of the triangles.  The method 
-!    described in the rocky mountain journal reference guarantees that 
+!    The coefficients in the fitted quintic polynomials are determined
+!    by continuity requirements and by estimates of partial derivatives
+!    at the vertices and along the edges of the triangles.  The method
+!    described in the rocky mountain journal reference guarantees that
 !    the generated surface depends continuously on the triangulation.
 !
-!    The resulting interpolating function is invariant under the following 
+!    The resulting interpolating function is invariant under the following
 !    types of linear coordinate transformations:
 !      1) a rotation of the XY coordinate system
 !      2) linear scale transformation of the Z axis
@@ -230,21 +230,21 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
     write ( *, '(a)' ) '  Input parameter MD out of range.'
     stop
   end if
- 
+
   if ( ndp < 4 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDBVIP - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NDP out of range.'
     stop
   end if
- 
+
   if ( nip < 1 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDBVIP - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NIP out of range.'
     stop
   end if
- 
+
   if ( md == 1 ) then
     iwk(1) = ndp
   else
@@ -255,7 +255,7 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
       stop
     end if
   end if
- 
+
   if ( md <= 2 ) then
     iwk(3) = nip
   else
@@ -333,7 +333,7 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
       iwk(jwit), xi(iip), yi(iip), zi(iip) )
 
   end do
- 
+
   return
 end subroutine idbvip
 subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
@@ -345,12 +345,12 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 !
 !  Discussion:
 !
-!    IDGRID sorts the points in ascending order of triangle numbers and 
+!    IDGRID sorts the points in ascending order of triangle numbers and
 !    of the border line segment number.
 !
 !  Parameters:
 !
-!    Input, real XD(NDP), YD(NDP), the X and Y coordinates of the data 
+!    Input, real XD(NDP), YD(NDP), the X and Y coordinates of the data
 !    points.
 !
 !    Input, integer NT, the number of triangles.
@@ -359,7 +359,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 !
 !    Input, integer NL, the number of border line segments.
 !
-!    Input, integer IPL(3*NL), containing the point numbers of the end points 
+!    Input, integer IPL(3*NL), containing the point numbers of the end points
 !    of the border line segments and their respective triangle numbers,
 !
 !    Input, integer NXI, NYI, the number of grid points in the X and Y
@@ -371,7 +371,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 !    number of grid points that belong to each of the
 !    triangles or of the border line segments are to be stored.
 !
-!    Output, integer IGP(NXI*NYI), where the grid point numbers are to be 
+!    Output, integer IGP(NXI*NYI), where the grid point numbers are to be
 !    stored in ascending order of the triangle number and the border line
 !    segment number.
 !
@@ -463,7 +463,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
   jngp1 = 2*(nt0+2*nl0)+1
   jigp0 = 0
   jigp1 = nxinyi + 1
- 
+
   do it0 = 1, nt0
 
     ngp0 = 0
@@ -500,7 +500,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
       end if
 
     end do
- 
+
     if ( insd == 0 ) then
       go to 38
     end if
@@ -545,13 +545,13 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
         go to 36
 
 31      continue
- 
+
         do jigp1i = jigp1,nxinyi
           if ( izi == igp(jigp1i) ) then
             go to 36
           end if
         end do
- 
+
         ngp1 = ngp1+1
         jigp1 = jigp1-1
         igp(jigp1) = izi
@@ -657,13 +657,13 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
         jigp0 = jigp0+1
         igp(jigp0) = izi
         go to 56
- 
+
 51      continue
- 
+
         do jigp1i = jigp1,nxinyi
           if(izi==igp(jigp1i))     go to 56
         end do
- 
+
 53      continue
 
         ngp1 = ngp1+1
@@ -726,16 +726,16 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
     if(insd==0)     go to 78
 
     iximx = nxi
- 
+
 63  continue
 
     do iyi = 1, nyi
- 
+
       yii = yi(iyi)
       if(yii<ymn.or.yii>ymx)        go to 77
- 
+
       do ixi = iximn, iximx
- 
+
         xii = xi(ixi)
         l = 0
         if ( spdt(x1,y1,x2,y2,xii,yii) )     66,65,76
@@ -743,39 +743,39 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
    66       if(spdt(x3,y3,x2,y2,xii,yii))     70,67,76
    67       l = 1
    70       izi = nxi*(iyi-1)+ixi
- 
+
         if ( l /= 1 ) then
           ngp0 = ngp0+1
           jigp0 = jigp0+1
           igp(jigp0) = izi
           go to 76
         end if
- 
+
         do jigp1i = jigp1, nxinyi
           if(izi==igp(jigp1i)) go to 76
         end do
- 
+
         ngp1 = ngp1+1
         jigp1 = jigp1-1
         igp(jigp1) = izi
- 
+
 76      continue
 
       end do
- 
+
 77    continue
 
     end do
- 
+
 78  continue
 
     jngp0 = jngp0+1
     ngp(jngp0) = ngp0
     jngp1 = jngp1-1
     ngp(jngp1) = ngp1
- 
+
   end do
- 
+
   return
 end subroutine idgrid
 subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
@@ -787,8 +787,8 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
 !
 !  Discusstion:
 !
-!    IDLCTN determines what triangle a given point (XII, YII) belongs to.  
-!    When the given point does not lie inside the data area, IDLCTN 
+!    IDLCTN determines what triangle a given point (XII, YII) belongs to.
+!    When the given point does not lie inside the data area, IDLCTN
 !    determines the border line segment when the point lies in an outside
 !    rectangular area, and two border line segments when the point
 !    lies in an outside triangular area.
@@ -801,12 +801,12 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
 !
 !    Input, integer NT, the number of triangles.
 !
-!    Input, integer IPT(3*NT), the point numbers of the vertexes of 
+!    Input, integer IPT(3*NT), the point numbers of the vertexes of
 !    the triangles,
 !
 !    Input, integer NL, the number of border line segments.
 !
-!    Input, integer IPL(3*NL), the point numbers of the end points of 
+!    Input, integer IPL(3*NL), the point numbers of the end points of
 !    the border line segments and their respective triangle numbers.
 !
 !    Input, real XII, YII, the coordinates of the point to be located.
@@ -916,7 +916,7 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
     ymn = min ( yd(idp), ymn )
     ymx = max ( yd(idp), ymx )
   end do
- 
+
   xs1 = ( xmn + xmn + xmx ) / 3.0E+00
   xs2 = ( xmn + xmx + xmx ) / 3.0E+00
   ys1 = ( ymn + ymn + ymx ) / 3.0E+00
@@ -927,7 +927,7 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
 !
   ntsc(1:9) = 0
   idsc(1:9) = 0
- 
+
   it0t3 = 0
   jwk = 0
 
@@ -1027,7 +1027,7 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
   if(spdt(x1,y1,x2,y2,x0,y0) < 0.0E+00 )      go to 60
   if(spdt(x2,y2,x1,y1,x0,y0) < 0.0E+00 )      go to 60
   if(vpdt(x1,y1,x2,y2,x0,y0) > 0.0E+00 )      go to 60
-  
+
   iti = it0
   itipv = it0
 
@@ -1053,7 +1053,7 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
 !  Determine the section in which the point in question lies.
 !
 60 continue
- 
+
   isc = 1
 
   if ( x0 >= xs1 ) then
@@ -1143,7 +1143,7 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
    72   continue
 
   end do
- 
+
   it0 = 1
   iti = it0
   itipv = it0
@@ -1175,12 +1175,12 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
 !
 !    Input, integer NT, the number of triangles.
 !
-!    Input, integer IPT(3*NT), the point numbers of the vertexes of the 
+!    Input, integer IPT(3*NT), the point numbers of the vertexes of the
 !    triangles.
 !
-!    Output, real PD(5*NDP), the estimated zx, zy, zxx, zxy, and zyy values 
-!    at the ith data point are to be stored as  the (5*i-4)th, (5*i-3)rd, 
-!    (5*i-2)nd, (5*i-1)st and (5*i)th elements, respectively, where i = 
+!    Output, real PD(5*NDP), the estimated zx, zy, zxx, zxy, and zyy values
+!    at the ith data point are to be stored as  the (5*i-4)th, (5*i-3)rd,
+!    (5*i-2)nd, (5*i-1)st and (5*i)th elements, respectively, where i =
 !    1, 2, ..., ndp.
 !
 !    Workspace, real WK(NDP).
@@ -1243,17 +1243,17 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
 !  Clear the PD array.
 !
   jpdmx = 5*ndp
- 
+
   pd(1:jpdmx) = 0.0E+00
- 
+
   wk(1:ndp) = 0.0E+00
 !
 !  Estimate ZX and ZY.
 !
   do it = 1, nt0
- 
+
     jpt0 = 3*(it-1)
- 
+
     do iv = 1, 3
       jpt = jpt0+iv
       idp = ipt(jpt)
@@ -1262,7 +1262,7 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
       yv(iv) = yd(idp)
       zv(iv) = zd(idp)
     end do
- 
+
     dx1 = xv(2)-xv(1)
     dy1 = yv(2)-yv(1)
     dz1 = zv(2)-zv(1)
@@ -1273,9 +1273,9 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
     vpy = dz1*dx2-dx1*dz2
     vpz = dx1*dy2-dy1*dx2
     vpzmn = abs(dx1*dx2+dy1*dy2)*epsln
- 
+
     if ( abs(vpz) > vpzmn ) then
- 
+
       d12 = sqrt((xv(2)-xv(1))**2+(yv(2)-yv(1))**2)
       d23 = sqrt((xv(3)-xv(2))**2+(yv(3)-yv(2))**2)
       d31 = sqrt((xv(1)-xv(3))**2+(yv(1)-yv(3))**2)
@@ -1285,7 +1285,7 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
       w2(1) = vpz*w1(1)
       w2(2) = vpz*w1(2)
       w2(3) = vpz*w1(3)
- 
+
       do iv = 1, 3
         idp = ipti(iv)
         jpd0 = 5*(idp-1)
@@ -1294,11 +1294,11 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
         pd(jpd0+2) = pd(jpd0+2)+vpy*wi
         wk(idp) = wk(idp)+vpz*wi
       end do
- 
+
     end if
- 
+
   end do
- 
+
   do idp = 1, ndp
     jpd0 = 5*(idp-1)
     pd(jpd0+1) = -pd(jpd0+1)/wk(idp)
@@ -1308,9 +1308,9 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
 !  Estimate ZXX, ZXY, and ZYY.
 !
   do it = 1, nt0
- 
+
     jpt0 = 3*(it-1)
- 
+
     do iv = 1, 3
       jpt = jpt0+iv
       idp = ipt(jpt)
@@ -1321,7 +1321,7 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
       zxv(iv) = pd(jpd0+1)
       zyv(iv) = pd(jpd0+2)
     end do
- 
+
     dx1 = xv(2)-xv(1)
     dy1 = yv(2)-yv(1)
     dzx1 = zxv(2)-zxv(1)
@@ -1336,9 +1336,9 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
     vpyy = dzy1*dx2-dx1*dzy2
     vpz = dx1*dy2-dy1*dx2
     vpzmn = abs(dx1*dx2+dy1*dy2)*epsln
- 
+
     if ( abs(vpz) > vpzmn ) then
- 
+
       d12 = sqrt((xv(2)-xv(1))**2+(yv(2)-yv(1))**2)
       d23 = sqrt((xv(3)-xv(2))**2+(yv(3)-yv(2))**2)
       d31 = sqrt((xv(1)-xv(3))**2+(yv(1)-yv(3))**2)
@@ -1348,7 +1348,7 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
       w2(1) = vpz*w1(1)
       w2(2) = vpz*w1(2)
       w2(3) = vpz*w1(3)
- 
+
       do iv = 1, 3
         idp = ipti(iv)
         jpd0 = 5*(idp-1)
@@ -1357,18 +1357,18 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
         pd(jpd0+4) = pd(jpd0+4)+(vpxy+vpyx)*wi
         pd(jpd0+5) = pd(jpd0+5)+vpyy*wi
       end do
- 
+
     end if
- 
+
   end do
- 
+
   do idp = 1, ndp
     jpd0 = 5*(idp-1)
     pd(jpd0+3) = -pd(jpd0+3)/wk(idp)
     pd(jpd0+4) = -pd(jpd0+4)/(2.0*wk(idp))
     pd(jpd0+5) = -pd(jpd0+5)/wk(idp)
   end do
- 
+
   return
 end subroutine idpdrv
 subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
@@ -1397,7 +1397,7 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
 !
 !    Input, integer NL, the number of border line segments.
 !
-!    Input, integer IPL(3*NL), the point numbers of the end points of the 
+!    Input, integer IPL(3*NL), the point numbers of the end points of the
 !    border line segments and their respective triangle numbers,
 !
 !    Input, real PDD(5*NDP). the partial derivatives at the data points,
@@ -1542,22 +1542,22 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
 !
   jipt = 3*(it0-1)
   jpd = 0
- 
+
   do i = 1, 3
- 
+
     jipt = jipt+1
     idp = ipt(jipt)
     x(i) = xd(idp)
     y(i) = yd(idp)
     z(i) = zd(idp)
     jpdd = 5*(idp-1)
- 
+
     do kpd = 1, 5
       jpd = jpd+1
       jpdd = jpdd+1
       pd(jpd) = pdd(jpdd)
     end do
- 
+
   end do
 !
 !  Determine the coefficients for the coordinate system
@@ -1589,7 +1589,7 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
   bb = b*b
   bdt2 = 2.0E+00 *b*d
   dd = d*d
- 
+
   do i = 1, 3
     jpd = 5*i
     zu(i) = a*pd(jpd-4)+c*pd(jpd-3)
@@ -1686,22 +1686,22 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
 !
   jipl = 3*(il1-1)
   jpd = 0
- 
+
   do i = 1, 2
- 
+
     jipl = jipl+1
     idp = ipl(jipl)
     x(i) = xd(idp)
     y(i) = yd(idp)
     z(i) = zd(idp)
     jpdd = 5*(idp-1)
- 
+
     do kpd = 1, 5
       jpd = jpd+1
       jpdd = jpdd+1
       pd(jpd) = pdd(jpdd)
     end do
- 
+
   end do
 !
 !  Determine the coefficients for the coordinate system
@@ -1734,7 +1734,7 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
   bb = b*b
   bdt2 = 2.0E+00 * b * d
   dd = d*d
- 
+
   do i = 1, 2
     jpd = 5*i
     zu(i) = a*pd(jpd-4)+c*pd(jpd-3)
@@ -1805,7 +1805,7 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
     y0 = yd(idp)
     z0 = zd(idp)
     jpdd = 5*(idp-1)
- 
+
     do kpd = 1, 5
       jpdd = jpdd+1
       pd(kpd) = pdd(jpdd)
@@ -1833,7 +1833,7 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
   p0 = p00+v*(p01+v*p02)
   p1 = p10+v*p11
   zii = p0+u*(p1+u*p20)
- 
+
   return
 end subroutine idptip
 subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
@@ -1860,21 +1860,21 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 !    Input, integer MD, mode of computation (must be 1, 2, or 3,
 !    else an error return will occur).
 !
-!    1, if this is the first call to this routine, or if the value of 
-!    NDP has been changed from the previous call, or if the contents of 
+!    1, if this is the first call to this routine, or if the value of
+!    NDP has been changed from the previous call, or if the contents of
 !    the XD or YD arrays have been changed from the previous call.
 !
-!    2, if the values of NDP and the XD, YD arrays are unchanged from 
-!    the previous call, but new values for XI, YI are being used.  If 
-!    MD = 2 and NDP has been changed since the previous call to IDSFFT, 
+!    2, if the values of NDP and the XD, YD arrays are unchanged from
+!    the previous call, but new values for XI, YI are being used.  If
+!    MD = 2 and NDP has been changed since the previous call to IDSFFT,
 !    an error return occurs.
 !
-!    3, if the values of NDP, NXI, NYI, XD, YD, XI, YI are unchanged 
-!    from the previous call, i.e. if the only change on input to idsfft 
-!    is in the ZD array.  If MD = 3 and NDP, nxi or nyi has been changed 
+!    3, if the values of NDP, NXI, NYI, XD, YD, XI, YI are unchanged
+!    from the previous call, i.e. if the only change on input to idsfft
+!    is in the ZD array.  If MD = 3 and NDP, nxi or nyi has been changed
 !    since the previous call to idsfft, an error return occurs.
 !
-!    Between the call with MD = 2 or MD = 3 and the preceding call, the 
+!    Between the call with MD = 2 or MD = 3 and the preceding call, the
 !    iwk and wk work arrays should not be disturbed.
 !
 !    Input, integer NDP, the number of data points.  NDP must be at least 4.
@@ -1984,34 +1984,34 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
     write(*,*)'  Input parameter MD out of range.'
     stop
   end if
- 
+
   if ( ndp < 4 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NDP out of range.'
     stop
   end if
- 
+
   if ( nxi < 1 .or. nyi < 1 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NXI or NYI out of range.'
     stop
   end if
- 
+
   if ( nxi > nzi ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NZI is less than NXI.'
     stop
   end if
- 
+
   if ( md <= 1 ) then
 
     iwk(1) = ndp
 
   else
- 
+
     if ( ndp /= iwk(1) ) then
       write ( *, '(a)' ) ' '
       write ( *, '(a)' ) 'IDSFFT - Fatal error!'
@@ -2025,16 +2025,16 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 
     iwk(3) = nxi
     iwk(4) = nyi
-    
+
   else
- 
+
     if ( nxi /= iwk(3) ) then
       write ( *, '(a)' ) ' '
       write ( *, '(a)' ) 'IDSFFT - Fatal error!'
       write ( *, '(a)' ) 'MD = 3 but nxi was changed since last call.'
       stop
     end if
- 
+
     if ( nyi /= iwk(4) ) then
       write ( *, '(a)' ) ' '
       write ( *, '(a)' ) 'IDSFFT - Fatal error!'
@@ -2057,17 +2057,17 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 !  Triangulate the XY plane.
 !
   if ( md == 1 ) then
- 
+
     call idtang ( ndp, xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), &
       iwk(jwiwl), iwk(jwiwp), wk )
 
     iwk(5) = nt
     iwk(6) = nl
- 
+
     if ( nt == 0 ) then
       return
     end if
- 
+
   else
 
     nt = iwk(5)
@@ -2077,12 +2077,12 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 !
 !  Sort output grid points in ascending order of the triangle
 !  number and the border line segment number.
-! 
+!
   if ( md <= 2 ) then
- 
+
     call idgrid ( xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), nxi, &
       nyi, xi, yi, iwk(jwngp0+1), iwk(jwigp0+1) )
- 
+
   end if
 !
 !  Estimate partial derivatives at all data points.
@@ -2095,7 +2095,7 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
   jig0mx = 0
   jig1mn = nxi*nyi+1
   nngp = nt+2*nl
- 
+
   do jngp = 1, nngp
 
     iti = jngp
@@ -2116,7 +2116,7 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 
       jig0mn = jig0mx+1
       jig0mx = jig0mx+ngp0
- 
+
       do jigp = jig0mn, jig0mx
 
         jwigp = jwigp0+jigp
@@ -2128,7 +2128,7 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
           wk, iti, xi(ixi), yi(iyi), zi(ixi,iyi) )
 
       end do
- 
+
     end if
 
     jwngp = jwngp0+2*nngp+1-jngp
@@ -2138,7 +2138,7 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 
       jig1mx = jig1mn-1
       jig1mn = jig1mn-ngp1
- 
+
       do jigp = jig1mn, jig1mx
 
         jwigp = jwigp0+jigp
@@ -2152,9 +2152,9 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
       end do
 
     end if
- 
+
   end do
- 
+
   return
 end subroutine idsfft
 subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
@@ -2184,13 +2184,13 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 !
 !    Output, integer NT, the number of triangles,
 !
-!    Output, integer IPT(6*NDP-15), where the point numbers of the 
+!    Output, integer IPT(6*NDP-15), where the point numbers of the
 !    vertexes of the IT-th triangle are to be stored as entries
 !    3*IT-2, 3*IT-1, and 3*IT, for IT = 1 to NT.
 !
 !    Output, integer NL, the number of border line segments.
 !
-!    Output, integer IPL(6*NDP), where the point numbers of the end 
+!    Output, integer IPL(6*NDP), where the point numbers of the end
 !    points of the (il)th border line segment and its respective triangle
 !    number are to be stored as the (3*il-2)nd, (3*il-1)st, and (3*il)th
 !    elements, il = 1,2,..., nl.
@@ -2316,35 +2316,35 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
   dsqmn = dsqf(xd(1),yd(1),xd(2),yd(2))
   ipmn1 = 1
   ipmn2 = 2
- 
+
   do ip1 = 1, ndp-1
- 
+
     x1 = xd(ip1)
     y1 = yd(ip1)
     ip1p1 = ip1+1
- 
+
     do ip2 = ip1p1, ndp
- 
+
       dsqi = dsqf(x1,y1,xd(ip2),yd(ip2))
-	  
+
       if ( ABS(dsqi) <= epsilon(1.0) ) then
         write ( *, '(a)' ) ' '
         write ( *, '(a)' ) 'IDTANG - Fatal error!'
         write ( *, '(a)' ) '  Two of the input data points are identical.'
-		write ( *, * ) 'at i =',ip1,ip2  
+		write ( *, * ) 'at i =',ip1,ip2
 		write(*,*) 'dsqi=', dsqi,'x1=',x1,xd(ip2)
- 
+
         stop
       end if
- 
+
       if(dsqi<dsqmn) then
         dsqmn = dsqi
         ipmn1 = ip1
         ipmn2 = ip2
       end if
- 
+
     end do
- 
+
   end do
 !
 !  Compute the midpoint of the closest two data points.
@@ -2357,7 +2357,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 !  numbers in the IWP array.
 !
   jp1 = 2
- 
+
   do ip1 = 1, ndp
     if ( ip1 /= ipmn1 .and. ip1 /= ipmn2 ) then
       jp1 = jp1+1
@@ -2365,24 +2365,24 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
       wk(jp1) = dsqf(xdmp,ydmp,xd(ip1),yd(ip1))
     end if
   end do
- 
+
   do jp1 = 3, ndp-1
- 
+
     dsqmn = wk(jp1)
     jpmn = jp1
- 
+
     do jp2 = jp1, ndp
       if(wk(jp2)<dsqmn) then
         dsqmn = wk(jp2)
         jpmn = jp2
       end if
     end do
- 
+
     its = iwp(jp1)
     iwp(jp1) = iwp(jpmn)
     iwp(jpmn) = its
     wk(jpmn) = wk(jp1)
- 
+
   end do
 !
 !  If necessary, modify the ordering in such a way that the
@@ -2392,49 +2392,49 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
   y1 = yd(ipmn1)
   x2 = xd(ipmn2)
   y2 = yd(ipmn2)
- 
+
   do jp = 3, ndp
     ip = iwp(jp)
     sp = spdt(xd(ip),yd(ip),x1,y1,x2,y2)
     vp = vpdt(xd(ip),yd(ip),x1,y1,x2,y2)
     if ( abs(vp) > ( abs(sp) * epsln ) )   go to 37
   end do
- 
+
   write ( *, '(a)' ) ' '
   write ( *, '(a)' ) 'IDTANG - Fatal error!'
   write ( *, '(a)' ) '  All collinear data points.'
   stop
- 
+
    37 continue
- 
+
   if ( jp /= 3 ) then
- 
+
     jpmx = jp
- 
+
     do jpc = 4, jpmx
       jp = jpmx+4-jpc
       iwp(jp) = iwp(jp-1)
     end do
- 
+
     iwp(3) = ip
- 
+
   end if
 !
-!  Form the first triangle.  
+!  Form the first triangle.
 !
-!  Store point numbers of the vertexes of the triangle in the IPT array, 
+!  Store point numbers of the vertexes of the triangle in the IPT array,
 !  store point numbers of the border line segments and the triangle number in
 !  the IPL array.
 !
   ip1 = ipmn1
   ip2 = ipmn2
   ip3 = iwp(3)
- 
+
   if ( vpdt(xd(ip1),yd(ip1),xd(ip2),yd(ip2),xd(ip3),yd(ip3)) < 0.0E+00 ) then
     ip1 = ipmn2
     ip2 = ipmn1
   end if
- 
+
   nt0 = 1
   ntt3 = 3
   ipt(1) = ip1
@@ -2513,34 +2513,34 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 !  line segments contained in the first part of the array.
 !
 55   continue
- 
+
     if ( iliv /= 1 ) then
- 
+
       nlsh = iliv-1
       nlsht3 = nlsh*3
- 
+
       do jl1 = 1,nlsht3
         jl2 = jl1+nlt3
         ipl(jl2) = ipl(jl1)
       end do
- 
+
       do jl1 = 1,nlt3
         jl2 = jl1+nlsht3
         ipl(jl1) = ipl(jl2)
       end do
- 
+
       ilvs = ilvs-nlsh
- 
+
     end if
 !
-!  Add triangles to the IPT array, 
-!  update border line segments in the IPL array, 
+!  Add triangles to the IPT array,
+!  update border line segments in the IPL array,
 !  set flags for the border line segments to be reexamined in the IWL array.
 !
     jwl = 0
- 
+
     do il = ilvs, nl0
- 
+
       ilt3 = il*3
       ipl1 = ipl(ilt3-2)
       ipl2 = ipl(ilt3-1)
@@ -2560,7 +2560,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
         ipl(ilt3-1) = ip1
         ipl(ilt3)   = nt0
       end if
- 
+
       if ( il == nl0 ) then
         nln = ilvs+1
         nlnt3 = nln*3
@@ -2574,7 +2574,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 !
       itt3 = it*3
       ipti = ipt(itt3-2)
- 
+
       if ( ipti == ipl1 .or. ipti == ipl2 ) then
         ipti = ipt(itt3-1)
         if ( ipti == ipl1 .or. ipti == ipl2 ) then
@@ -2604,13 +2604,13 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
         iwl(jwl)   = ipl2
 
       end if
- 
+
     end do
- 
+
     nl0 = nln
     nlt3 = nlnt3
     nlf = jwl/2
- 
+
     if ( nlf == 0 ) then
       go to 79
     end if
@@ -2716,7 +2716,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 76       continue
 
       end do
- 
+
       nlfc = nlf
       nlf = jwl/2
 !
@@ -2726,12 +2726,12 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 
       jwl1mn = 2*nlfc+1
       nlft2 = nlf*2
- 
+
       do jwl1 = jwl1mn,nlft2
         jwl = jwl1+1-jwl1mn
         iwl(jwl) = iwl(jwl1)
       end do
- 
+
       nlf = jwl/2
 
     end do
@@ -2744,21 +2744,21 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 !  are listed counter-clockwise.
 !
   do itt3 = 3, ntt3, 3
- 
+
     ip1 = ipt(itt3-2)
     ip2 = ipt(itt3-1)
     ip3 = ipt(itt3)
- 
+
     if(vpdt(xd(ip1),yd(ip1),xd(ip2),yd(ip2),xd(ip3),yd(ip3)) < 0.0E+00 ) then
       ipt(itt3-2) = ip2
       ipt(itt3-1) = ip1
     end if
- 
+
   end do
- 
+
   nt = nt0
   nl = nl0
- 
+
   return
 end subroutine idtang
 function idxchg ( x, y, i1, i2, i3, i4 )
@@ -2831,12 +2831,12 @@ function idxchg ( x, y, i1, i2, i3, i4 )
   y4 = y(i4)
 
   idx = 0
- 
+
   u3 = (y2-y3)*(x1-x3)-(x2-x3)*(y1-y3)
   u4 = (y1-y4)*(x2-x4)-(x1-x4)*(y2-y4)
- 
+
   if ( u3 * u4 > 0.0E+00 ) then
- 
+
     u1 = (y3-y1)*(x4-x1)-(x3-x1)*(y4-y1)
     u2 = (y4-y2)*(x3-x2)-(x4-x2)*(y3-y2)
 
@@ -2851,15 +2851,15 @@ function idxchg ( x, y, i1, i2, i3, i4 )
     s2sq = u2*u2 / (c1sq*max(a2sq,a3sq))
     s3sq = u3*u3 / (c3sq*max(a3sq,a1sq))
     s4sq = u4*u4 / (c3sq*max(a4sq,a2sq))
- 
+
     if ( min ( s3sq, s4sq ) - min ( s1sq, s2sq ) > epsln ) then
       idx = 1
     end if
- 
+
   end if
- 
+
   idxchg = idx
- 
+
   return
 end function idxchg
 subroutine timestamp ( )

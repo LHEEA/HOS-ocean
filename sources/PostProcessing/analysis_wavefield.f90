@@ -148,7 +148,7 @@ DO j1=1,n_waves-2
 	! Lengths up/down crossing
 	L_up(j1)    = x(idx_zeros(i_crest+2))-x(idx_zeros(i_crest))
 	L_down(j1)  = x(idx_zeros(i_trough+2))-x(idx_zeros(i_trough))
-	! Indexes up-crossing and down-crossing wave beginning	
+	! Indexes up-crossing and down-crossing wave beginning
 	idx_up(j1)   = idx_zeros(i_crest)
 	idx_down(j1) = idx_zeros(i_trough)
 ENDDO
@@ -168,7 +168,7 @@ ELSE
 ENDIF
 !
 L_down(j1)     = x(idx_zeros(i_trough+2))-x(idx_zeros(i_trough))
-! Indexes up-crossing and down-crossing wave beginning	
+! Indexes up-crossing and down-crossing wave beginning
 idx_up(j1)   = idx_zeros(i_crest)
 idx_down(j1) = idx_zeros(i_trough)
 !
@@ -182,16 +182,16 @@ H_down(j1)     = crest(j1) - trough(j1)
 ! Longueurs up/down crossing
 IF (shift == 1) THEN
 	L_up(j1)  = x(n1)-x(idx_zeros(i_crest))+x(idx_zeros(1))
-	! Index up-crossing wave beginning	
+	! Index up-crossing wave beginning
 	idx_up(j1) = idx_zeros(i_crest)
 ELSE
 	L_up(j1)  = x(idx_zeros(3))-x(idx_zeros(1))
-	! Index up-crossing wave beginning	
+	! Index up-crossing wave beginning
 	idx_up(j1) = idx_zeros(1)
 ENDIF
 !
 L_down(j1)     = x(n1)-x(idx_zeros(i_trough))+x(idx_zeros(2-shift))
-! Index down-crossing wave beginning	
+! Index down-crossing wave beginning
 idx_down(j1) = idx_zeros(i_trough)
 !
 END SUBROUTINE wave_by_wave
@@ -235,7 +235,7 @@ INTEGER, ALLOCATABLE, DIMENSION(:)   :: idx_crest_tmp,idx_trough_tmp
 INTEGER, ALLOCATABLE, DIMENSION(:)   :: idx_up_tmp,idx_down_tmp
 REAL(RP), ALLOCATABLE, DIMENSION(:)  :: crest_tmp,trough_tmp,H_up_tmp,H_down_tmp,L_up_tmp,L_down_tmp
 !
-! one has to perform recursive analysis 
+! one has to perform recursive analysis
 DO i2=1,n2
 	CALL wave_by_wave(signal(:,i2),x,n1,n_waves_x(i2),H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,&
 		crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
@@ -500,7 +500,7 @@ END SUBROUTINE locate_freak_3D
 SUBROUTINE sort_shell(arr)
 !
 ! From Numerical Recipies in Fortran
-! This routine sorts an array arr into ascending order by Shell's method (diminishing increment 
+! This routine sorts an array arr into ascending order by Shell's method (diminishing increment
 ! sort). arr is replaced on output by its sorted arrangment
 IMPLICIT NONE
 !
@@ -570,7 +570,7 @@ ave=sum(data(:))/n
 ! Second pass to get the first (absolute), second, third, and
 ! fourth moments of the deviation from the mean.
 !
-s(:)=data(:)-ave 
+s(:)=data(:)-ave
 ep=sum(s(:))
 adev=sum(abs(s(:)))/n
 p(:)=s(:)*s(:)

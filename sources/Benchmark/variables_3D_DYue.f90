@@ -180,7 +180,7 @@ extend_C(1:n1o2p1,Nd2-n2m1o2m1:Nd2) = a(1:n1o2p1,n2o2p1+1:n2)
 !END IF
 ! FIXME : test may 2013... sep 2014: not useful
 !IF (iseven(n1) .AND. p1 /= 1) THEN
-!    extend_C(n1o2p1,1:Nd2)       = ((0.0_rp, 0.0_rp)) 
+!    extend_C(n1o2p1,1:Nd2)       = ((0.0_rp, 0.0_rp))
 !    !extend_C(n1o2p1,1:Nd2)       = extend_C(n1o2p1,1:Nd2) * 0.5_rp
 !ENDIF
 ! Added, sep 2014: really useful?

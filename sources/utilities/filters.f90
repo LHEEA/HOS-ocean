@@ -61,7 +61,7 @@ ELSEIF(filt_rad == 1)THEN
     	    IF(k_abs(i1,i2) .gt. k_filt)THEN
                 temp_C_n(i1,i2)           = ((0.0_rp, 0.0_rp))
                 temp_C_n(i1,n2-(i2+1)+2)  = ((0.0_rp, 0.0_rp))
-            ENDIF                                
+            ENDIF
         ENDDO
     ENDDO
 ENDIF
@@ -136,7 +136,7 @@ END IF
 ! GD change Feb 2013 : uncommented
 ! FIXME: check the influence, both are needed? n2 not sure...
 ! FIXME: influence to test on regular waves+irregular waves
-! Removed 09/2014 
+! Removed 09/2014
 IF ((i_case == 9).OR.(i_case == 3).OR.(i_case == 31).OR.(i_case == 32)) THEN
    !IF (iseven(n1)) ns1 = MIN(ns1, n1o2p1-1)
    !IF (iseven(n2)) ns2 = MIN(ns2, n2o2p1-1)
