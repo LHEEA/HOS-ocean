@@ -332,7 +332,7 @@ E_o = calc_energy(a_eta, a_phis, da_eta)
 ! Display the error on vertical velocity at initial stage
 SELECT CASE (i_case)
 	CASE(81,82,83,84,809)
-	    print*,'erreur W abs.', MAXVAL(ABS(RF_obj%W-phiz(:,1))),(MAXVAL(ABS(RF_obj%W)))
+	    print*,'erreur W abs.', MAXVAL(ABS(RF_obj%W-phiz(1:RF_obj%N_space,1))),(MAXVAL(ABS(RF_obj%W)))
 END SELECT
 !
 END SUBROUTINE initiate

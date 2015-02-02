@@ -312,7 +312,7 @@ DO ii1 = 1, imax-imin+1
 				vitz(ii1,ii2) = vitz(ii1,ii2) + 1.0_rp*ABS(vitz_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(vitz_l),REAL(vitz_l,RP)))
 				phit(ii1,ii2) = phit(ii1,ii2) + 1.0_rp*ABS(phit_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(phit_l),REAL(phit_l,RP)))
 				dudt(ii1,ii2) = dudt(ii1,ii2) + 1.0_rp*ABS(dudt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dudt_l),REAL(dudt_l,RP)))
-				dvdt(ii1,ii2) = dudt(ii1,ii2) + 1.0_rp*ABS(dvdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dvdt_l),REAL(dvdt_l,RP)))
+				dvdt(ii1,ii2) = dvdt(ii1,ii2) + 1.0_rp*ABS(dvdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dvdt_l),REAL(dvdt_l,RP)))
 				dwdt(ii1,ii2) = dwdt(ii1,ii2) + 1.0_rp*ABS(dwdt_l)*COS(kx(i1)*xvect(ii1)+ATAN2(AIMAG(dwdt_l),REAL(dwdt_l,RP)))
 			ENDDO
 		ENDDO
@@ -446,11 +446,11 @@ ELSE
    dely = ylen_star / n2
 END IF
 !
-imin = FLOOR(x_min/L/delx) + 1
-imax = CEILING(x_max/L/delx) + 1
+imin = MAX(1,FLOOR(x_min/L/delx) + 1)
+imax = MIN(n1,CEILING(x_max/L/delx) + 1)
 if(n2.NE.1) then
-	jmin = FLOOR(y_min/L/dely) + 1
-	jmax = CEILING(y_max/L/dely) + 1
+	jmin = MAX(1,FLOOR(y_min/L/dely) + 1)
+	jmax = MIN(n2,CEILING(y_max/L/dely) + 1)
 else
 	jmin = 1
 	jmax = 1

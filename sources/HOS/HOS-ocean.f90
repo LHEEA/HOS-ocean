@@ -417,13 +417,19 @@ END IF
  CALL fourier_2_space(a_eta,  eta)
  CALL fourier_2_space(a_phis, phis)
 ! Storing t=0 as reference
-IF(i_case.NE.3 .and. i_case.NE.31 .and. i_case.NE.32) THEN
+IF(i_case.NE.3 .and. i_case.NE.31 .and. i_case.NE.32.AND. &
+	i_case.NE.81.AND.i_case.NE.82.AND.i_case.NE.83.AND.i_case.NE.84.AND.i_case.NE.809) THEN
    eta_ref(1:n1,1:n2)  = eta(1:n1,1:n2) / L
    phis_ref(1:n1,1:n2) = phis(1:n1,1:n2) / (L**2 / T)
 ELSE ! nondimensional initialization
    eta_ref(1:n1,1:n2)  = eta(1:n1,1:n2)
    phis_ref(1:n1,1:n2) = phis(1:n1,1:n2)
 ENDIF
+!
+! Analytical integration of the linear part
+! Evaluates the modal amplitudes (FT)
+ CALL space_2_fourier(eta_ref,  a_eta)
+ CALL space_2_fourier(phis_ref, a_phis)
 !
 ! guessing deta_dt at t=0 for energy output at t=0
 CALL RK_adapt_2var_3D_in_mo_lin(0, RK_param, 0.0_rp, 0.0_rp, a_phis, a_eta, da_eta)
@@ -442,11 +448,6 @@ error_old = toler
 ! Output files
 !
 CALL init_output(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, i_prob=i_prob, i_sw=i_sw)
-!
-! Analytical integration of the linear part
-! Evaluates the modal amplitudes (FT)
- CALL space_2_fourier(eta_ref,  a_eta)
- CALL space_2_fourier(phis_ref, a_phis)
 !
 !
 IF (err == 'rel') THEN
