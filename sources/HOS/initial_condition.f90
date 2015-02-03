@@ -714,7 +714,7 @@ ELSEIF(i_int == 2) THEN
 	    IF(omega_n2(i1,i2) .ge. freq_ww(1) .and. omega_n2(i1,i2) .le. freq_ww(ifreq)) THEN
 	        xi=k_abs(i1,i2)*cos(theta_abs(i1,i2))
 	        yi=k_abs(i1,i2)*sin(theta_abs(i1,i2))
-		        CALL IDBVIP(I_cpt,ndp,REAL(xd,RP),REAL(yd,RP),REAL(zd,RP),1,REAL(xi,RP),REAL(yi,RP),REAL(zi,RP),IWK,REAL(WK,RP))
+		        CALL IDBVIP(I_cpt,ndp,REAL(xd),REAL(yd),REAL(zd),1,REAL(xi),REAL(yi),REAL(zi),IWK,REAL(WK))
 	        phi_E(i1,i2) = zi(1)
 	        I_cpt = 2
 	    ENDIF
