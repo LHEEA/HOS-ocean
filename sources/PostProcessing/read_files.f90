@@ -1,8 +1,8 @@
 MODULE read_files
 !
 ! This module contains the input related routines
-!  Subroutines :	read_3d
-!					read_modes
+!  Subroutines :    read_3d
+!                   read_modes
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
@@ -61,16 +61,16 @@ INTEGER           :: i1,i2
 OPEN(i_unit,file=filename,status='unknown')
 ! Header of the file
 DO i1=1,n_hdr
-	READ(i_unit,'(1A)')
+    READ(i_unit,'(1A)')
 ENDDO
 !
 ! Time = 0
 !
 IF (tecplot == 11) THEN
-	READ(i_unit,103) test,time,test2,n1,test2,n2
+    READ(i_unit,103) test,time,test2,n1,test2,n2
 ELSE
-	print*, 'This has to be done'
-	stop
+    PRINT*, 'This has to be done'
+    stop
 ENDIF
 dt_out = time
 !
@@ -78,19 +78,19 @@ dt_out = time
 ALLOCATE(x(n1),y(n2),eta(n1,n2), phis(n1,n2))
 !
 DO i2=1,n2
-	DO i1=1,n1
-		READ(i_unit,102) x(i1), y(i2), eta(i1,i2), phis(i1,i2)
-	ENDDO
+    DO i1=1,n1
+        READ(i_unit,102) x(i1), y(i2), eta(i1,i2), phis(i1,i2)
+    ENDDO
 ENDDO
 !
 ! Next time step to evaluate dt_out
 !
 IF (tecplot == 11) THEN
-	READ(i_unit,'(A,F9.2)') test, time
-	BACKSPACE(i_unit) ! Going back to previous line
+    READ(i_unit,'(A,F9.2)') test, time
+    BACKSPACE(i_unit) ! Going back to previous line
 ELSE
-	print*, 'This has to be done'
-	stop
+    PRINT*, 'This has to be done'
+    stop
 ENDIF
 !
 ! Define the time step of outputs in filename
@@ -121,40 +121,40 @@ INTEGER  :: i1,i2,istep,nstep,ios
 !
 ! Check that time different from zero
 IF (time_cur < dt_out/2.d0) THEN
-	print*, 'The CALL to this routine is useless: init_read is sufficient'
-	STOP
+    PRINT*, 'The CALL to this routine is useless: init_read is sufficient'
+    STOP
 ENDIF
 !
 IF (tecplot /= 11) THEN
-	print*, 'Other output formats that tecplot 11 have to be done'
-	STOP
+    PRINT*, 'Other output formats that tecplot 11 have to be done'
+    STOP
 ENDIF
 !
 nstep = NINT(time_cur/dt_out)-NINT(time_prev/dt_out) !NINT((time_cur-time_prev)/dt_out)
 !
 DO istep = 1, nstep-1
-	READ(i_unit,'(1A)',IOSTAT=ios)
-	IF (ios /= 0) THEN
-		print*, 'Time is larger than maximum time in: ', file_3d
-		print*, 'time max. = ', (istep-2)*dt_out
-		STOP
-	ENDIF
-	DO i2=1,n2
-		DO i1=1,n1
-			READ(i_unit,'(1A)')
-		ENDDO
-	ENDDO
+    READ(i_unit,'(1A)',IOSTAT=ios)
+    IF (ios /= 0) THEN
+        PRINT*, 'Time is larger than maximum time in: ', file_3d
+        PRINT*, 'time max. = ', (istep-2)*dt_out
+        STOP
+    ENDIF
+    DO i2=1,n2
+        DO i1=1,n1
+            READ(i_unit,'(1A)')
+        ENDDO
+    ENDDO
 ENDDO
 !
 ! The correct time step
 !
 READ(i_unit,'(A,F9.2)') test,time
-print*, 'time=',time
+PRINT*, 'time=',time
 !
 DO i2=1,n2
-	DO i1=1,n1
-		READ(i_unit,104) eta(i1,i2), phis(i1,i2)
-	ENDDO
+    DO i1=1,n1
+        READ(i_unit,104) eta(i1,i2), phis(i1,i2)
+    ENDDO
 ENDDO
 !
 104 FORMAT((ES12.5,1X),ES12.5)
@@ -214,12 +214,12 @@ it = NINT(time/dt_out)+1
 OPEN(i_unit,file=filename,status='OLD', FORM='FORMATTED', ACCESS='DIRECT',RECL=18*(2*n1o2p1))
 !
 DO i2=1,n2
-	READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+1+6*(i2-1)) (modesspecx(i1,i2), i1=1,n1o2p1)
-	READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+2+6*(i2-1)) (modesspecy(i1,i2), i1=1,n1o2p1)
-	READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+3+6*(i2-1)) (modesspecz(i1,i2), i1=1,n1o2p1)
-	READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+4+6*(i2-1)) (modesspect(i1,i2), i1=1,n1o2p1)
-	READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+5+6*(i2-1)) (modesFS(i1,i2)   , i1=1,n1o2p1)
-	READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+6+6*(i2-1)) (modesFSt(i1,i2)  , i1=1,n1o2p1)
+    READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+1+6*(i2-1)) (modesspecx(i1,i2), i1=1,n1o2p1)
+    READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+2+6*(i2-1)) (modesspecy(i1,i2), i1=1,n1o2p1)
+    READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+3+6*(i2-1)) (modesspecz(i1,i2), i1=1,n1o2p1)
+    READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+4+6*(i2-1)) (modesspect(i1,i2), i1=1,n1o2p1)
+    READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+5+6*(i2-1)) (modesFS(i1,i2)   , i1=1,n1o2p1)
+    READ(i_unit,'(5000(ES17.10,1X))',REC=((it)*n2*6)+6+6*(i2-1)) (modesFSt(i1,i2)  , i1=1,n1o2p1)
 ENDDO
 !
 CLOSE(i_unit)

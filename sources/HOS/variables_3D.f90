@@ -51,7 +51,7 @@ INTEGER, PARAMETER :: md1 = ((p1+1) * m1) / 2 ! required modes
 INTEGER, PARAMETER :: md2 = ((p2+1) * m2) / 2 ! required modes
 !
 CHARACTER(LEN=3), PARAMETER       :: err = 'abs' ! ou 'rel'
-INTEGER, PARAMETER  			  :: RF_dealias = 1
+INTEGER, PARAMETER                :: RF_dealias = 1
 !
 !
 INTEGER, PARAMETER  :: n2_all  = n2
@@ -72,28 +72,28 @@ INTEGER, PARAMETER  :: md1o2p1  = md1/2+1
 INTEGER, PARAMETER  :: md2o2p1 = md2/2 + 1
 !
 COMPLEX(CP), DIMENSION(md1o2p1,n2)  :: ikx, iky
-COMPLEX(CP), DIMENSION(md1o2p1,Nd2)	:: ikx_big, iky_big
+COMPLEX(CP), DIMENSION(md1o2p1,Nd2) :: ikx_big, iky_big
 !
 ! Wavenumbers
-REAL(RP), DIMENSION(md1o2p1)   	:: kx, kx2, kx3
-REAL(RP), DIMENSION(Nd2o2p1) 	:: ky, ky2, ky3
+REAL(RP), DIMENSION(md1o2p1)   :: kx, kx2, kx3
+REAL(RP), DIMENSION(Nd2o2p1)   :: ky, ky2, ky3
 ! Spatial mesh
 REAL(RP), DIMENSION(m1)    :: x
 REAL(RP), DIMENSION(n2)    :: y
 !
-COMPLEX(CP), DIMENSION(m1o2p1,n2)      		:: a_eta, a_phis, temp_C_n
-COMPLEX(CP), DIMENSION(md1o2p1,Nd2)    		:: temp_C_Nd, temp2_C_Nd
-REAL(RP), DIMENSION(m1,n2)           		:: phiz, W1, phis, eta
-REAL(RP), DIMENSION(m1,n2)           		:: temp_R_n
-REAL(RP), DIMENSION(md1,Nd2)         		:: temp_R_Nd, temp2_R_Nd, temp3_R_Nd
-REAL(RP), DIMENSION(md1,Nd2,M+1)     		:: etapm_ext
+COMPLEX(CP), DIMENSION(m1o2p1,n2)           :: a_eta, a_phis, temp_C_n
+COMPLEX(CP), DIMENSION(md1o2p1,Nd2)         :: temp_C_Nd, temp2_C_Nd
+REAL(RP), DIMENSION(m1,n2)                  :: phiz, W1, phis, eta
+REAL(RP), DIMENSION(m1,n2)                  :: temp_R_n
+REAL(RP), DIMENSION(md1,Nd2)                :: temp_R_Nd, temp2_R_Nd, temp3_R_Nd
+REAL(RP), DIMENSION(md1,Nd2,M+1)            :: etapm_ext
 REAL(RP), DIMENSION(md1,Nd2,MAX((M+1)/2,5)) :: gradeta_square_ext
-REAL(RP), DIMENSION(md1,Nd2)         		:: etax, phisx, etay, phisy, gradeta2
-REAL(RP), DIMENSION(md1,Nd2)         		:: geta2phiz, phiz2, geta2phiz2
-REAL(RP), DIMENSION(M)               		:: oneoj
-REAL(RP), DIMENSION(md1o2p1,Nd2,MAX(M,2))	:: kth
-REAL(RP), DIMENSION(md1o2p1,Nd2)       		:: k4
-REAL(RP), DIMENSION(md1o2p1,Nd2o2p1)   		:: omega, omega_p, omega_m, k, c, goomega
+REAL(RP), DIMENSION(md1,Nd2)                :: etax, phisx, etay, phisy, gradeta2
+REAL(RP), DIMENSION(md1,Nd2)                :: geta2phiz, phiz2, geta2phiz2
+REAL(RP), DIMENSION(M)                      :: oneoj
+REAL(RP), DIMENSION(md1o2p1,Nd2,MAX(M,2))   :: kth
+REAL(RP), DIMENSION(md1o2p1,Nd2)            :: k4
+REAL(RP), DIMENSION(md1o2p1,Nd2o2p1)        :: omega, omega_p, omega_m, k, c, goomega
 ! dealiasing
 INTEGER :: i_dealias(2), N_dea(2), order_max(2)
 ! differentiation
@@ -133,7 +133,7 @@ INTEGER :: i_3d, i_a_3d, i_2d, i_prob
 !
 ! Irregular waves
 INTEGER  :: i_sw ! Outputs...
-INTEGER  :: n                    		! Spreading parameter
+INTEGER  :: n                    ! Spreading parameter
 REAL(RP) :: E_cible,gamma,beta,Ta,Tp_real,Hs_real,Tp
 !
 REAL(RP), DIMENSION(md1o2p1,n2)  :: omega_n2,goomega_n2
@@ -172,7 +172,7 @@ extend_C(1:n1o2p1,Nd2-n2m1o2m1:Nd2) = a(1:n1o2p1,n2o2p1+1:n2)
 !   ! FIXME : check this is equivalent : should be ok...
 !   ! FIXME : does not work for n2 odd... but n2 even!
 !   extend_C(1:n1o2p1,Nd2-n2m1o2m1-1) = extend_C(1:n1o2p1,n2o2p1)
-!END IF
+!ENDIF
 !IF (iseven(n2)) extend_C(1:Nd1o2p1,n2o2p1) = 0.0_cp
 !! FIXME : test may 2013
 !IF (iseven(n1) .AND. p1 /= 1) THEN
@@ -185,8 +185,8 @@ IF (iseven(n2) .AND. p2 /= 1) THEN
     extend_C(1:n1o2p1,n2o2p1)       = extend_C(1:n1o2p1,n2o2p1)*0.5_rp
     extend_C(1:n1o2p1,Nd2-n2o2p1+2) = extend_C(1:n1o2p1,n2o2p1)
     IF (iseven(n1) .AND. p1 /= 1) THEN
-    	extend_C(n1o2p1,n2o2p1) = extend_C(n1o2p1,n2o2p1)*2.0_rp
-    	extend_C(n1o2p1,Nd2-n2o2p1+2) = extend_C(n1o2p1,n2o2p1)
+        extend_C(n1o2p1,n2o2p1) = extend_C(n1o2p1,n2o2p1)*2.0_rp
+        extend_C(n1o2p1,Nd2-n2o2p1+2) = extend_C(n1o2p1,n2o2p1)
     ENDIF
 ENDIF
 !
@@ -206,7 +206,7 @@ reduce_C(1:n1o2p1,1:n2o2p1)    = a_big(1:n1o2p1,1:n2o2p1)
 reduce_C(1:n1o2p1,n2o2p1+1:n2) = a_big(1:n1o2p1,Nd2-n2m1o2m1:Nd2)
 !IF (iseven(n2) .AND. p2 /= 1) THEN
 !   reduce_C(1:n1o2p1,n2o2p1) = reduce_C(1:n1o2p1,n2o2p1) * 2.0_rp
-!END IF
+!ENDIF
 ! Set to zero since it has to be real? (or check if it is the case?)
 IF (iseven(n1) .AND. p1 /= 1) THEN
     reduce_C(n1o2p1,1:n2) = ((0.0_rp, 0.0_rp))

@@ -29,7 +29,7 @@ USE type
 IMPLICIT NONE
 !
 INTERFACE swap
-   MODULE PROCEDURE swap_i,swap_r,swap_rv,swap_c, &
+    MODULE PROCEDURE swap_i,swap_r,swap_rv,swap_c, &
         swap_cv,swap_cm,swap_z,swap_zv,swap_zm, &
         masked_swap_rs,masked_swap_rv,masked_swap_rm
 END INTERFACE
@@ -116,9 +116,9 @@ REAL(RP), INTENT(INOUT) :: a,b
 LOGICAL, INTENT(IN) :: mask
 REAL(RP) :: swp
 if (mask) then
-   swp=a
-   a=b
-   b=swp
+    swp=a
+    a=b
+    b=swp
 end if
 END SUBROUTINE masked_swap_rs
 !
@@ -127,9 +127,9 @@ REAL(RP), DIMENSION(:), INTENT(INOUT) :: a,b
 LOGICAL, DIMENSION(:), INTENT(IN) :: mask
 REAL(RP), DIMENSION(size(a)) :: swp
 where (mask)
-   swp=a
-   a=b
-   b=swp
+    swp=a
+    a=b
+    b=swp
 end where
 END SUBROUTINE masked_swap_rv
 !
@@ -138,9 +138,9 @@ REAL(RP), DIMENSION(:,:), INTENT(INOUT) :: a,b
 LOGICAL, DIMENSION(:,:), INTENT(IN) :: mask
 REAL(RP), DIMENSION(size(a,1),size(a,2)) :: swp
 where (mask)
-   swp=a
-   a=b
-   b=swp
+    swp=a
+    a=b
+    b=swp
 end where
 END SUBROUTINE masked_swap_rm
 !
@@ -155,23 +155,23 @@ INTEGER      :: k,k2
 REAL(RP) :: temp
 IF (n>0) arth(1)=first
 IF(n<=NPAR_ARTH) THEN
-   DO k=2,n
-      arth(k)=arth(k-1)+increment
-   END DO
+    DO k=2,n
+        arth(k)=arth(k-1)+increment
+    ENDDO
 ELSE
-   DO k=2,NPAR2_ARTH
-      arth(k)=arth(k-1)+increment
-   END DO
-   temp=increment*NPAR2_ARTH
-   k=NPAR2_ARTH
-   DO
-      IF (k>=n) EXIT
-      k2=k+k
-      arth(k+1:min(k2,n))=temp+arth(1:min(k,n-k))
-      temp=temp+temp
-      k=k2
-   END DO
-END IF
+    DO k=2,NPAR2_ARTH
+        arth(k)=arth(k-1)+increment
+    ENDDO
+    temp=increment*NPAR2_ARTH
+    k=NPAR2_ARTH
+    DO
+        IF (k>=n) EXIT
+        k2=k+k
+        arth(k+1:min(k2,n))=temp+arth(1:min(k,n-k))
+        temp=temp+temp
+        k=k2
+    ENDDO
+ENDIF
 END FUNCTION arth
 !
 END MODULE nrutil_tmp

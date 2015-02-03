@@ -37,11 +37,11 @@ USE variables_3D
 IMPLICIT NONE
 !
 INTERFACE read_datum
-     MODULE PROCEDURE read_datum_i, read_datum_r, read_datum_c
+    MODULE PROCEDURE read_datum_i, read_datum_r, read_datum_c
 END INTERFACE
 !
 INTERFACE write_datum
-     MODULE PROCEDURE write_datum_i, write_datum_r, write_datum_c
+    MODULE PROCEDURE write_datum_i, write_datum_r, write_datum_c
 END INTERFACE
 !
 INTEGER, PARAMETER            :: N_descr = 33
@@ -80,7 +80,7 @@ CALL read_blank_line(unit)
 WRITE(*,*)
 CALL read_datum(unit, T_stop)          ! Duration of the simulation
 CALL read_datum(unit, f_out)           ! Sampling frequency (output)
-CALL read_datum(unit, toler)		   ! Tolerance of RK scheme
+CALL read_datum(unit, toler)           ! Tolerance of RK scheme
 CALL read_datum(unit, n)               ! Dommermuth initialisation
 CALL read_datum(unit, Ta)              ! Dommermuth initialisation
 CALL read_blank_line(unit)
@@ -141,9 +141,9 @@ CALL build_read_format('R')
 READ(unit,format_read,ERR=101,END=101) description, input
 WRITE(*,'(A," : ",ES25.16)') description(1:N_descr), input
 IF (ABS(input) > tiny .AND. ABS(input) * 1.0E+16_rp < 1.0E+5_rp) THEN
-   WRITE(*,'(A,A)') 'Numeric point is probably missing in current input ',description
-   STOP
-END IF
+    WRITE(*,'(A,A)') 'Numeric point is probably missing in current input ',description
+    STOP
+ENDIF
 RETURN
 101 CALL error_message(description)
 !
@@ -193,12 +193,12 @@ format_read(0) = '(A'
 format_read(1) = int2str(N_tot)
 format_read(2) = ','
 SELECT CASE (code)
-   CASE('I')          ! Integer
-      format_read(3) = 'I5'
-   CASE('F','R')      ! Real number
-      format_read(3) = 'ES25.16'
-   CASE('S','C','A')  ! Character string
-      format_read(3) = 'A'
+    CASE('I')          ! Integer
+        format_read(3) = 'I5'
+    CASE('F','R')      ! Real number
+        format_read(3) = 'ES25.16'
+    CASE('S','C','A')  ! Character string
+        format_read(3) = 'A'
 END SELECT
 format_read(4) = ')'
 ! WRITE(*,*) format_read
@@ -243,10 +243,10 @@ CALL write_datum(unit, Ta,                'Ta',             'Dommermuth initiali
 CALL write_blank_line(unit,'--- Physical parameters')
 CALL write_datum(unit, grav,              'grav',           'Gravity')
 IF (ABS(depth-1.0e15_rp) <= epsilon(1.0e15_rp)) THEN
-   CALL write_datum(unit, -1.0_rp,             'depth',          'Water depth')
+    CALL write_datum(unit, -1.0_rp,             'depth',          'Water depth')
 ELSE
-   CALL write_datum(unit, depth,             'depth',          'Water depth')
-END IF
+    CALL write_datum(unit, depth,             'depth',          'Water depth')
+ENDIF
 !
 CALL write_blank_line(unit,'--- Irregular waves')
 CALL write_datum(unit, Tp_real,         'Tp_real',      'Peak period in s')
@@ -342,12 +342,12 @@ CHARACTER(LEN=*) :: code
 !
 format_write(0) = '("#",A'//TRIM(int2str(N_descr))//',":: ",A'//TRIM(int2str(N_tot-(N_descr+3)-3))//',":: ",'
 SELECT CASE (code)
-   CASE('I')          ! Integer
-      format_write(1) = 'I5'
-   CASE('F','R')      ! Real number
-      format_write(1) = 'ES25.16'
-   CASE('S','C','A')  ! Character string
-      format_write(1) = 'A'
+    CASE('I')          ! Integer
+        format_write(1) = 'I5'
+    CASE('F','R')      ! Real number
+        format_write(1) = 'ES25.16'
+    CASE('S','C','A')  ! Character string
+        format_write(1) = 'A'
 END SELECT
 format_write(2) = ')'
 !

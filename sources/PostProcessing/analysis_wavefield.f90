@@ -55,35 +55,35 @@ n_zeros   = 0
 !
 ! First step: locate zero-crossings
 DO i1=2,n1
-	IF((signal(i1)*signal(i1-1)).LT.0.0_rp) THEN
-		n_zeros            = n_zeros+1
-		idx_zeros(n_zeros) = i1-1
-	ENDIF
+    IF((signal(i1)*signal(i1-1)).LT.0.0_rp) THEN
+        n_zeros            = n_zeros+1
+        idx_zeros(n_zeros) = i1-1
+    ENDIF
 ENDDO
 IF((signal(1)*signal(n1)).LT.0.0_rp) THEN
-	n_zeros            = n_zeros+1
-	idx_zeros(n_zeros) = n1
+    n_zeros            = n_zeros+1
+    idx_zeros(n_zeros) = n1
 ENDIF
 !
 ! Check if we start with signal>0 (shift=1) or signal<0 (shift=0)?
 IF (signal(1) > tiny) THEN
-	shift = 1
+    shift = 1
 ELSE
-	shift = 0
+    shift = 0
 ENDIF
 !
 ! Number of waves inside the domain
 IF(.NOT.iseven(n_zeros)) THEN
-  write(*,*) 'n_zeros is not even... there is a problem'
+  WRITE(*,*) 'n_zeros is not even... there is a problem'
   STOP
 ENDIF
 n_waves = n_zeros/2
 !
 ! Test on the number of waves detected
 IF (n_waves < 2) THEN
-	print*, 'Too small number of waves in wave-by-wave analysis'
-	print*, 'If 3D analysis of wave-field, you should restrict to 2D'
-	STOP
+    PRINT*, 'Too small number of waves in wave-by-wave analysis'
+    PRINT*, 'If 3D analysis of wave-field, you should restrict to 2D'
+    STOP
 ENDIF
 !
 ! Allocation on the number of waves
@@ -94,14 +94,14 @@ ALLOCATE(idx_crest(n_waves),idx_trough(n_waves),crest(n_waves),trough(n_waves) &
 !
 ! Evaluate the index of each crest and trough and their amplitudes
 DO j1=1,n_waves-1
-	i_crest  = (2*j1+1)-shift ! beginning of a crest
-	i_trough = (2*j1)-shift   ! beginning of a trough
-	! Indexes
-	idx_crest(j1)  = idx_zeros(i_crest)-1  + MAXLOC(signal(idx_zeros(i_crest):idx_zeros(i_crest+1)),1)
-	idx_trough(j1) = idx_zeros(i_trough)-1 + MINLOC(signal(idx_zeros(i_trough):idx_zeros(i_trough+1)),1)
-	! Elevations
-	crest(j1)      = MAXVAL(signal(idx_zeros(i_crest):idx_zeros(i_crest+1)),1)
-	trough(j1)     = MINVAL(signal(idx_zeros(i_trough):idx_zeros(i_trough+1)),1)
+    i_crest  = (2*j1+1)-shift ! beginning of a crest
+    i_trough = (2*j1)-shift   ! beginning of a trough
+    ! Indexes
+    idx_crest(j1)  = idx_zeros(i_crest)-1  + MAXLOC(signal(idx_zeros(i_crest):idx_zeros(i_crest+1)),1)
+    idx_trough(j1) = idx_zeros(i_trough)-1 + MINLOC(signal(idx_zeros(i_trough):idx_zeros(i_trough+1)),1)
+    ! Elevations
+    crest(j1)      = MAXVAL(signal(idx_zeros(i_crest):idx_zeros(i_crest+1)),1)
+    trough(j1)     = MINVAL(signal(idx_zeros(i_trough):idx_zeros(i_trough+1)),1)
 ENDDO
 !
 ! Different cases to treat with periodicity...
@@ -111,46 +111,46 @@ ENDDO
 ! (2-shift) gives the first down-crossing
 !IF(MAXVAL(signal(idx_zeros(n_zeros-shift):n1)).GT.(MAXVAL(signal(1:idx_zeros((3)-shift))))) THEN
 IF(MAXVAL(signal(idx_zeros(n_zeros-shift):n1),1).GT.(MAXVAL(signal(1:idx_zeros(2-shift)),1))) THEN
-  i_tmp               = MAXLOC(signal(idx_zeros(n_zeros-shift):n1),1)
-  idx_crest(n_waves)  = idx_zeros(n_zeros-shift)-1+i_tmp
-  ! Crest-amplitude
-  crest(n_waves)      = MAXVAL(signal(idx_zeros(n_zeros-shift):n1),1)
+    i_tmp               = MAXLOC(signal(idx_zeros(n_zeros-shift):n1),1)
+    idx_crest(n_waves)  = idx_zeros(n_zeros-shift)-1+i_tmp
+    ! Crest-amplitude
+    crest(n_waves)      = MAXVAL(signal(idx_zeros(n_zeros-shift):n1),1)
 ELSE
-  i_tmp               = MAXLOC(signal(1:idx_zeros(2-shift)),1)
-  idx_crest(n_waves)  = n1+i_tmp
-  ! Crest-amplitude
-  crest(n_waves)      = MAXVAL(signal(1:idx_zeros(2-shift)),1)
+    i_tmp               = MAXLOC(signal(1:idx_zeros(2-shift)),1)
+    idx_crest(n_waves)  = n1+i_tmp
+    ! Crest-amplitude
+    crest(n_waves)      = MAXVAL(signal(1:idx_zeros(2-shift)),1)
 ENDIF
 !
 ! Locate minimum of last wave w.r.t. periodic condition
 ! (n_zeros-shift) gives the last down crossing
 ! (2-shift) gives the first down-crossing
 IF(MINVAL(signal(idx_zeros(n_zeros-shift):n1)).LT.MINVAL(signal(1:idx_zeros(2-shift)))) THEN
-  i_tmp                = MINLOC(signal(idx_zeros((2*n_waves)-shift):n1),1)
-  idx_trough(n_waves)  = idx_zeros(n_zeros-shift)-1+i_tmp
-  ! Trough-amplitude
-  trough(n_waves)      = MINVAL(signal(idx_zeros(n_zeros-shift):n1),1)
+    i_tmp                = MINLOC(signal(idx_zeros((2*n_waves)-shift):n1),1)
+    idx_trough(n_waves)  = idx_zeros(n_zeros-shift)-1+i_tmp
+    ! Trough-amplitude
+    trough(n_waves)      = MINVAL(signal(idx_zeros(n_zeros-shift):n1),1)
 ELSE
-  i_tmp                = MINLOC(signal(1:idx_zeros(2-shift)),1)
-  idx_trough(n_waves)  = n1+i_tmp
-  ! Trough-amplitude
-  trough(n_waves)      = MINVAL(signal(1:idx_zeros(2-shift)),1)
+    i_tmp                = MINLOC(signal(1:idx_zeros(2-shift)),1)
+    idx_trough(n_waves)  = n1+i_tmp
+    ! Trough-amplitude
+    trough(n_waves)      = MINVAL(signal(1:idx_zeros(2-shift)),1)
 ENDIF
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 DO j1=1,n_waves-2
-	i_crest  = (2*j1+1)-shift ! beginning of a crest
-	i_trough = (2*j1)-shift   ! beginning of a trough
-	! Heights up/down crossing
-	H_up(j1)       = crest(j1) - trough(j1+1)
-	H_down(j1)     = crest(j1) - trough(j1)
-	! Lengths up/down crossing
-	L_up(j1)    = x(idx_zeros(i_crest+2))-x(idx_zeros(i_crest))
-	L_down(j1)  = x(idx_zeros(i_trough+2))-x(idx_zeros(i_trough))
-	! Indexes up-crossing and down-crossing wave beginning
-	idx_up(j1)   = idx_zeros(i_crest)
-	idx_down(j1) = idx_zeros(i_trough)
+    i_crest  = (2*j1+1)-shift ! beginning of a crest
+    i_trough = (2*j1)-shift   ! beginning of a trough
+    ! Heights up/down crossing
+    H_up(j1)       = crest(j1) - trough(j1+1)
+    H_down(j1)     = crest(j1) - trough(j1)
+    ! Lengths up/down crossing
+    L_up(j1)    = x(idx_zeros(i_crest+2))-x(idx_zeros(i_crest))
+    L_down(j1)  = x(idx_zeros(i_trough+2))-x(idx_zeros(i_trough))
+    ! Indexes up-crossing and down-crossing wave beginning
+    idx_up(j1)   = idx_zeros(i_crest)
+    idx_down(j1) = idx_zeros(i_trough)
 ENDDO
 !
 ! Specific treatment of 2 last waves which may encounter periodic boundary
@@ -162,9 +162,9 @@ i_trough = (2*j1)-shift   ! beginning of a trough
 H_up(j1)       = crest(j1) - trough(j1+1)
 H_down(j1)     = crest(j1) - trough(j1)
 IF (shift == 1) THEN
-	L_up(j1)    = x(idx_zeros(i_crest+2))-x(idx_zeros(i_crest))
+    L_up(j1)    = x(idx_zeros(i_crest+2))-x(idx_zeros(i_crest))
 ELSE
-	L_up(j1)    = x(n1)-x(idx_zeros(i_crest))+x(idx_zeros(1))
+    L_up(j1)    = x(n1)-x(idx_zeros(i_crest))+x(idx_zeros(1))
 ENDIF
 !
 L_down(j1)     = x(idx_zeros(i_trough+2))-x(idx_zeros(i_trough))
@@ -181,13 +181,13 @@ H_up(j1)       = crest(j1) - trough(1)
 H_down(j1)     = crest(j1) - trough(j1)
 ! Longueurs up/down crossing
 IF (shift == 1) THEN
-	L_up(j1)  = x(n1)-x(idx_zeros(i_crest))+x(idx_zeros(1))
-	! Index up-crossing wave beginning
-	idx_up(j1) = idx_zeros(i_crest)
+    L_up(j1)  = x(n1)-x(idx_zeros(i_crest))+x(idx_zeros(1))
+    ! Index up-crossing wave beginning
+    idx_up(j1) = idx_zeros(i_crest)
 ELSE
-	L_up(j1)  = x(idx_zeros(3))-x(idx_zeros(1))
-	! Index up-crossing wave beginning
-	idx_up(j1) = idx_zeros(1)
+    L_up(j1)  = x(idx_zeros(3))-x(idx_zeros(1))
+    ! Index up-crossing wave beginning
+    idx_up(j1) = idx_zeros(1)
 ENDIF
 !
 L_down(j1)     = x(n1)-x(idx_zeros(i_trough))+x(idx_zeros(2-shift))
@@ -237,97 +237,97 @@ REAL(RP), ALLOCATABLE, DIMENSION(:)  :: crest_tmp,trough_tmp,H_up_tmp,H_down_tmp
 !
 ! one has to perform recursive analysis
 DO i2=1,n2
-	CALL wave_by_wave(signal(:,i2),x,n1,n_waves_x(i2),H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,&
-		crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
-	!
-	IF (n_waves_x(i2) > n1/4) THEN
-		print*, 'Not enough points per wavelength in x'
-		print*,'n_waves =', n_waves_x(i2), 'n1 =', n1
-		stop
-	ENDIF
-	!
-	DO i1=1,n_waves_x(i2)
-		H_up_x(i1,i2)       = H_up_tmp(i1)
-		L_up_x(i1,i2)       = L_up_tmp(i1)
-		idx_up_x(i1,i2)     = idx_up_tmp(i1)
-		H_down_x(i1,i2)     = H_down_tmp(i1)
-		L_down_x(i1,i2)     = L_down_tmp(i1)
-		idx_down_x(i1,i2)   = idx_down_tmp(i1)
-		crest_x(i1,i2)      = crest_tmp(i1)
-		idx_crest_x(i1,i2)  = idx_crest_tmp(i1)
-		trough_x(i1,i2)     = trough_tmp(i1)
-		idx_trough_x(i1,i2) = idx_trough_tmp(i1)
-	ENDDO
-	!
-	DEALLOCATE(H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+    CALL wave_by_wave(signal(:,i2),x,n1,n_waves_x(i2),H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,&
+        crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+    !
+    IF (n_waves_x(i2) > n1/4) THEN
+        PRINT*, 'Not enough points per wavelength in x'
+        PRINT*,'n_waves =', n_waves_x(i2), 'n1 =', n1
+        STOP
+    ENDIF
+    !
+    DO i1=1,n_waves_x(i2)
+        H_up_x(i1,i2)       = H_up_tmp(i1)
+        L_up_x(i1,i2)       = L_up_tmp(i1)
+        idx_up_x(i1,i2)     = idx_up_tmp(i1)
+        H_down_x(i1,i2)     = H_down_tmp(i1)
+        L_down_x(i1,i2)     = L_down_tmp(i1)
+        idx_down_x(i1,i2)   = idx_down_tmp(i1)
+        crest_x(i1,i2)      = crest_tmp(i1)
+        idx_crest_x(i1,i2)  = idx_crest_tmp(i1)
+        trough_x(i1,i2)     = trough_tmp(i1)
+        idx_trough_x(i1,i2) = idx_trough_tmp(i1)
+    ENDDO
+    !
+    DEALLOCATE(H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
 ENDDO
 !
 ! transverse analysis
 DO i1=1,n1
-	CALL wave_by_wave(signal(i1,:),y,n2,n_waves_y(i1),H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,&
-		crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
-	!
-	IF (n_waves_y(i1) > n2/4) THEN
-		print*, 'Not enough points per wavelength in y'
-		print*,'n_waves =', n_waves_y(i1), 'n2 =', n2
-		stop
-	ENDIF
-	!
-	DO i2=1,n_waves_y(i1)
-		H_up_y(i1,i2)       = H_up_tmp(i2)
-		L_up_y(i1,i2)       = L_up_tmp(i2)
-		idx_up_y(i1,i2)     = idx_up_tmp(i2)
-		H_down_y(i1,i2)     = H_down_tmp(i2)
-		L_down_y(i1,i2)     = L_down_tmp(i2)
-		idx_down_y(i1,i2)   = idx_down_tmp(i2)
-		crest_y(i1,i2)      = crest_tmp(i2)
-		idx_crest_y(i1,i2)  = idx_crest_tmp(i2)
-		trough_y(i1,i2)     = trough_tmp(i2)
-		idx_trough_y(i1,i2) = idx_trough_tmp(i2)
-	ENDDO
-	!
-	DEALLOCATE(H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+    CALL wave_by_wave(signal(i1,:),y,n2,n_waves_y(i1),H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,&
+        crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
+    !
+    IF (n_waves_y(i1) > n2/4) THEN
+        PRINT*, 'Not enough points per wavelength in y'
+        PRINT*,'n_waves =', n_waves_y(i1), 'n2 =', n2
+        stop
+    ENDIF
+    !
+    DO i2=1,n_waves_y(i1)
+        H_up_y(i1,i2)       = H_up_tmp(i2)
+        L_up_y(i1,i2)       = L_up_tmp(i2)
+        idx_up_y(i1,i2)     = idx_up_tmp(i2)
+        H_down_y(i1,i2)     = H_down_tmp(i2)
+        L_down_y(i1,i2)     = L_down_tmp(i2)
+        idx_down_y(i1,i2)   = idx_down_tmp(i2)
+        crest_y(i1,i2)      = crest_tmp(i2)
+        idx_crest_y(i1,i2)  = idx_crest_tmp(i2)
+        trough_y(i1,i2)     = trough_tmp(i2)
+        idx_trough_y(i1,i2) = idx_trough_tmp(i2)
+    ENDDO
+    !
+    DEALLOCATE(H_up_tmp,L_up_tmp,idx_up_tmp,H_down_tmp,L_down_tmp,idx_down_tmp,crest_tmp,idx_crest_tmp,trough_tmp,idx_trough_tmp)
 ENDDO
 !
 ! Determine the number of 3D-waves
 n_waves=0
 DO i1=1,n1
-  DO j1=1,n_waves_y(i1)
-	 DO i2=1,n2
-		DO j2=1,n_waves_x(i2)
-		   IF((i1.EQ.idx_crest_x(j2,i2)).AND.(i2.EQ.idx_crest_y(i1,j1))) THEN
-			  n_waves = n_waves+1
-		   ENDIF
-		ENDDO
-	 ENDDO
-  ENDDO
+    DO j1=1,n_waves_y(i1)
+        DO i2=1,n2
+            DO j2=1,n_waves_x(i2)
+                IF((i1.EQ.idx_crest_x(j2,i2)).AND.(i2.EQ.idx_crest_y(i1,j1))) THEN
+                    n_waves = n_waves+1
+                ENDIF
+            ENDDO
+        ENDDO
+    ENDDO
 ENDDO
 !
 ! Allocate
 ALLOCATE(H_up(n_waves),H_down(n_waves),crest(n_waves),L_up(n_waves),idx_up(n_waves),idx_crest(n_waves),&
-	L_up_t(n_waves),idx_up_t(n_waves),idx_crest_t(n_waves))
+    L_up_t(n_waves),idx_up_t(n_waves),idx_crest_t(n_waves))
 !
 n_waves=0
 DO i1=1,n1
-  DO j1=1,n_waves_y(i1)
-	 DO i2=1,n2
-		DO j2=1,n_waves_x(i2)
-		   IF((i1.EQ.idx_crest_x(j2,i2)).AND.(i2.EQ.idx_crest_y(i1,j1))) THEN
-		   		n_waves = n_waves+1
-			  	H_up(n_waves)       = H_up_x(j2,i2)
-			  	H_down(n_waves)     = H_down_x(j2,i2)
-			  	crest(n_waves)      = crest_x(j2,i2)
-			  	L_up(n_waves)       = L_up_x(j2,i2)
-			  	idx_up(n_waves)     = idx_up_x(j2,i2)
-			  	idx_crest(n_waves)  = idx_crest_x(j2,i2)
-			  	! transverse
-			  	L_up_t(n_waves)       = L_up_y(i1,j1)
-			  	idx_up_t(n_waves)     = idx_up_y(i1,j1)
-			  	idx_crest_t(n_waves)  = idx_crest_y(i1,j1)
-		   ENDIF
-		ENDDO
-	 ENDDO
-  ENDDO
+    DO j1=1,n_waves_y(i1)
+        DO i2=1,n2
+            DO j2=1,n_waves_x(i2)
+                IF((i1.EQ.idx_crest_x(j2,i2)).AND.(i2.EQ.idx_crest_y(i1,j1))) THEN
+                    n_waves = n_waves+1
+                    H_up(n_waves)       = H_up_x(j2,i2)
+                    H_down(n_waves)     = H_down_x(j2,i2)
+                    crest(n_waves)      = crest_x(j2,i2)
+                    L_up(n_waves)       = L_up_x(j2,i2)
+                    idx_up(n_waves)     = idx_up_x(j2,i2)
+                    idx_crest(n_waves)  = idx_crest_x(j2,i2)
+                    ! transverse
+                    L_up_t(n_waves)       = L_up_y(i1,j1)
+                    idx_up_t(n_waves)     = idx_up_y(i1,j1)
+                    idx_crest_t(n_waves)  = idx_crest_y(i1,j1)
+                ENDIF
+            ENDDO
+        ENDDO
+    ENDDO
 ENDDO
 !
 END SUBROUTINE wave_by_wave_3D
@@ -380,40 +380,40 @@ INTEGER :: j1, i_freak
 ! Number of freak waves
 n_freak=0
 DO j1=1,n_waves
-   IF(H(j1).GT.H_lim) THEN
-      n_freak = n_freak + 1
-   ENDIF
+    IF(H(j1).GT.H_lim) THEN
+        n_freak = n_freak + 1
+    ENDIF
 ENDDO
 !
 ! Allocate freak waves parameters
 IF(n_freak.NE.0) THEN
-	ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+    ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
 ELSE
-	n_freak=1
-	ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
-	! Initialize
-	H_freak(n_freak) = 0.0_rp
-	x_freak(n_freak) = 0.0_rp
-	L_freak(n_freak) = 0.0_rp
-	idx_freak(n_freak) = 0
-	!
-	n_freak=0
+    n_freak=1
+    ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+    ! Initialize
+    H_freak(n_freak) = 0.0_rp
+    x_freak(n_freak) = 0.0_rp
+    L_freak(n_freak) = 0.0_rp
+    idx_freak(n_freak) = 0
+    !
+    n_freak=0
 ENDIF
 !
 i_freak = 0
 !
 DO j1=1,n_waves
-	IF(H(j1).GT.H_lim) THEN
-		i_freak                  = i_freak+1
-		H_freak(i_freak)         = H(j1)
-		L_freak(i_freak)         = L(j1)
-		IF (idx_crest(j1).GT.n1) THEN
-			x_freak(i_freak)      = x(n1)+x(idx_crest(j1)-n1)
-		ELSE
-			x_freak(i_freak)      = x(idx_crest(j1))
-		ENDIF
-		idx_freak(i_freak) = idx_start(j1) ! index of the beginning of the corresponding wave
-	ENDIF
+    IF(H(j1).GT.H_lim) THEN
+        i_freak                  = i_freak+1
+        H_freak(i_freak)         = H(j1)
+        L_freak(i_freak)         = L(j1)
+        IF (idx_crest(j1).GT.n1) THEN
+            x_freak(i_freak)      = x(n1)+x(idx_crest(j1)-n1)
+        ELSE
+            x_freak(i_freak)      = x(idx_crest(j1))
+        ENDIF
+        idx_freak(i_freak) = idx_start(j1) ! index of the beginning of the corresponding wave
+    ENDIF
 ENDDO
 !
 !
@@ -422,7 +422,7 @@ END SUBROUTINE locate_freak
 !
 !
 SUBROUTINE locate_freak_3D(H,L,idx_crest,idx_start,L_t,idx_crest_t,idx_start_t,n_waves,x,y,n1,n2,H_lim, &
-	n_freak,H_freak,L_freak,x_freak,idx_freak,L_freak_t,y_freak,idx_freak_t)
+    n_freak,H_freak,L_freak,x_freak,idx_freak,L_freak_t,y_freak,idx_freak_t)
 !
 ! This subroutine locate the freak waves in a given 3D wavefield
 !
@@ -444,52 +444,52 @@ INTEGER :: j1, i_freak
 ! Number of freak waves
 n_freak=0
 DO j1=1,n_waves
-   IF(H(j1).GT.H_lim) THEN
-      n_freak = n_freak + 1
-   ENDIF
+    IF(H(j1).GT.H_lim) THEN
+        n_freak = n_freak + 1
+    ENDIF
 ENDDO
 !
 ! Allocate freak waves parameters
 IF(n_freak.NE.0) THEN
-	ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
-	ALLOCATE(y_freak(n_freak),L_freak_t(n_freak), idx_freak_t(n_freak))
+    ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+    ALLOCATE(y_freak(n_freak),L_freak_t(n_freak), idx_freak_t(n_freak))
 ELSE
-	n_freak=1
-	ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
-	ALLOCATE(y_freak(n_freak),L_freak_t(n_freak), idx_freak_t(n_freak))
-	! Initialize
-	H_freak(n_freak) = 0.0_rp
-	x_freak(n_freak) = 0.0_rp
-	L_freak(n_freak) = 0.0_rp
-	idx_freak(n_freak) = 0
-	y_freak(n_freak) = 0.0_rp
-	L_freak_t(n_freak) = 0.0_rp
-	idx_freak_t(n_freak) = 0
-	n_freak=0
+    n_freak=1
+    ALLOCATE(H_freak(n_freak),x_freak(n_freak),L_freak(n_freak), idx_freak(n_freak))
+    ALLOCATE(y_freak(n_freak),L_freak_t(n_freak), idx_freak_t(n_freak))
+    ! Initialize
+    H_freak(n_freak) = 0.0_rp
+    x_freak(n_freak) = 0.0_rp
+    L_freak(n_freak) = 0.0_rp
+    idx_freak(n_freak) = 0
+    y_freak(n_freak) = 0.0_rp
+    L_freak_t(n_freak) = 0.0_rp
+    idx_freak_t(n_freak) = 0
+    n_freak=0
 ENDIF
 !
 i_freak = 0
 !
 DO j1=1,n_waves
-	IF(H(j1).GT.H_lim) THEN
-		i_freak                  = i_freak+1
-		H_freak(i_freak)         = H(j1)
-		L_freak(i_freak)         = L(j1)
-		IF (idx_crest(j1).GT.n1) THEN
-			x_freak(i_freak)      = x(n1)+x(idx_crest(j1)-n1)
-		ELSE
-			x_freak(i_freak)      = x(idx_crest(j1))
-		ENDIF
-		idx_freak(i_freak) = idx_start(j1) ! index of the beginning of the corresponding wave
-		! Transverse
-		L_freak_t(i_freak)         = L_t(j1)
-		IF (idx_crest_t(j1).GT.n2) THEN
-			y_freak(i_freak)      = y(n2)+y(idx_crest_t(j1)-n2)
-		ELSE
-			y_freak(i_freak)      = y(idx_crest_t(j1))
-		ENDIF
-		idx_freak_t(i_freak) = idx_start_t(j1) ! index of the beginning of the corresponding wave
-	ENDIF
+    IF(H(j1).GT.H_lim) THEN
+        i_freak                  = i_freak+1
+        H_freak(i_freak)         = H(j1)
+        L_freak(i_freak)         = L(j1)
+        IF (idx_crest(j1).GT.n1) THEN
+            x_freak(i_freak)      = x(n1)+x(idx_crest(j1)-n1)
+        ELSE
+            x_freak(i_freak)      = x(idx_crest(j1))
+        ENDIF
+        idx_freak(i_freak) = idx_start(j1) ! index of the beginning of the corresponding wave
+        ! Transverse
+        L_freak_t(i_freak)         = L_t(j1)
+        IF (idx_crest_t(j1).GT.n2) THEN
+            y_freak(i_freak)      = y(n2)+y(idx_crest_t(j1)-n2)
+        ELSE
+            y_freak(i_freak)      = y(idx_crest_t(j1))
+        ENDIF
+        idx_freak_t(i_freak) = idx_start_t(j1) ! index of the beginning of the corresponding wave
+    ENDIF
 ENDDO
 !
 !
@@ -514,30 +514,30 @@ inc = 1
 !
 ! Determine the starting increment
 DO
-   inc = 3*inc+1
-   IF (inc > n) exit
+    inc = 3*inc+1
+    IF (inc > n) EXIT
 ENDDO
 !
 ! Loop over the partial sorts
 DO
-   inc = inc / 3
-   ! Outer loop of straight insertion
-   DO i = inc+1,n
-       v=arr(i)
-       j=i
-       ! Inner loop of straight insertion
-       DO
-           if (arr(j-inc) <= v) exit
-           arr(j) = arr(j-inc)
-           j=j-inc
-           if (j<= inc) exit
+    inc = inc / 3
+    ! Outer loop of straight insertion
+    DO i = inc+1,n
+        v=arr(i)
+        j=i
+        ! Inner loop of straight insertion
+        DO
+            IF (arr(j-inc) <= v) EXIT
+            arr(j) = arr(j-inc)
+            j=j-inc
+            IF (j<= inc) EXIT
        ENDDO
        arr(j)=v
-   ENDDO
-   if (inc<= 1) exit
+    ENDDO
+    IF (inc<= 1) EXIT
 ENDDO
 !
-END SUBROUTINE sort_shell
+END SUBROUTINE
 !
 !
 !
@@ -558,10 +558,10 @@ REAL(RP),INTENT(IN)   :: data(n)
 REAL(RP) :: ep
 REAL(RP), DIMENSION(size(data)) :: p,s
 !
-if (n <= 1) then
-   write(*,*) 'ERREUR : moment: n must be at least 2'
-   STOP
-endif
+IF (n <= 1) THEN
+    WRITE(*,*) 'ERREUR : moment: n must be at least 2'
+    STOP
+ENDIF
 !
 ! First pass to get the mean.
 !
@@ -586,14 +586,14 @@ var=(var-(ep**2.d0)/n)/REAL(n-1,RP)
 !
 sdev=sqrt(var)
 !
-if (ABS(var) > tiny) then
-   skew=skew/(n*sdev**3)
-   curt=curt/(n*var**2)-3.0_sp
-else
-   write(*,*) 'ERREUR : moment: no skew or kurtosis when zero variance'
-   STOP
-end if
+IF (ABS(var) > tiny) THEN
+    skew=skew/(n*sdev**3)
+    curt=curt/(n*var**2)-3.0_sp
+ELSE
+    WRITE(*,*) 'ERREUR : moment: no skew or kurtosis when zero variance'
+    STOP
+ENDIF
 !
-END SUBROUTINE moment
+END SUBROUTINE
 !
 END MODULE analysis_wavefield

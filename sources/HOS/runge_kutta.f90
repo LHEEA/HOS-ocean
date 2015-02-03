@@ -33,12 +33,12 @@ USE velocities
 IMPLICIT NONE
 !
 TYPE :: RK_parameters
-   INTEGER :: s=6
-   REAL(RP), DIMENSION(6,6) :: A ! Butcher array
-   REAL(RP), DIMENSION(6)   :: b ! Butcher array: increment factor for slope
-   REAL(RP), DIMENSION(6)   :: c ! Butcher array: increment factor for abscissa
-   REAL(RP), DIMENSION(6)   :: e ! Butcher array: weighting factors for the error estimate
-   INTEGER                  :: p
+    INTEGER :: s=6
+    REAL(RP), DIMENSION(6,6) :: A ! Butcher array
+    REAL(RP), DIMENSION(6)   :: b ! Butcher array: increment factor for slope
+    REAL(RP), DIMENSION(6)   :: c ! Butcher array: increment factor for abscissa
+    REAL(RP), DIMENSION(6)   :: e ! Butcher array: weighting factors for the error estimate
+    INTEGER                  :: p
 END TYPE
 !
 CONTAINS
@@ -161,86 +161,86 @@ COMPLEX(CP)               :: exp_p_exp, exp_m_exp
 COMPLEX(CP)               :: da_eta_dt, da_phis_dt
 REAL(RP)                  :: ti, tf
 !
-!	CPU times inlet
+!  CPU times inlet
 IF (iCPUtime.EQ.1) THEN
-	PRINT*,'entering subroutine runge4'
-	CALL CPU_TIME(ti)
+    PRINT*,'entering SUBROUTINE runge4'
+    CALL CPU_TIME(ti)
 ENDIF
 !
 k_var_2(:,:,2:RK_param%s-1) = ((0.0_rp, 0.0_rp))
 k_var_1(:,:,2:RK_param%s-1) = ((0.0_rp, 0.0_rp))
 time = t_o
 !
- CALL solveHOS_lin(var_1, k_var_1(:,:,1), var_2, k_var_2(:,:,1), time)
+CALL solveHOS_lin(var_1, k_var_1(:,:,1), var_2, k_var_2(:,:,1), time)
 !
 DO jloop = 2, RK_param%s
-   ! free surface modes (elevation and potential)
-   var_1m = ((0.0_rp, 0.0_rp))
-   var_2m = ((0.0_rp, 0.0_rp))
-   ! Current (jloop) Runge Kutta time step increment
-   dt = h * RK_param%c(jloop)
-   !
-   ! remaining modes
-   DO i2=1,n2
-      ! x and y varying modes
-      DO i1=1,n1o2p1
-         tmp1 = ((0.0_rp, 0.0_rp))
-         tmp2 = ((0.0_rp, 0.0_rp))
-         DO ns = 1, jloop-1 ! explicit RK
-            CALL calc_exps(t_o + h * RK_param%c(ns), t_o, i1, i2)
-            da_eta_dt  = k_var_2(i1,i2,ns) * goomega_n2(i1,i2)
-            da_phis_dt = k_var_1(i1,i2,ns)
-            tmp2 = tmp2 + (    exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) * RK_param%A(jloop, ns)
-            tmp1 = tmp1 + (i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt) * RK_param%A(jloop, ns)
-         END DO
-         CALL calc_exps(t_o, t_o + dt, i1, i2)
-         da_eta_dt  = var_2(i1,i2) * goomega_n2(i1,i2) + h * tmp2
-         da_phis_dt = var_1(i1,i2)                     + h * tmp1
-         var_2m(i1,i2) = (   exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) / goomega_n2(i1,i2)
-         var_1m(i1,i2) = i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt
-      END DO
-   END DO
-   !
-   time = t_o + dt
-   CALL solveHOS_lin(var_1m, k_var_1(:,:,jloop), var_2m, k_var_2(:,:,jloop), time)
-
-   IF (abs(dt-h) < tiny) THEN ! evaluate deta_dt
-     CALL fourier_2_space(k_var_2(:,:,jloop),d_var2_r)
-     d_var2_r = d_var2_r + W1
-     CALL space_2_fourier(d_var2_r,d_var_2)
-   ENDIF
+    ! free surface modes (elevation and potential)
+    var_1m = ((0.0_rp, 0.0_rp))
+    var_2m = ((0.0_rp, 0.0_rp))
+    ! Current (jloop) Runge Kutta time step increment
+    dt = h * RK_param%c(jloop)
     !
-END DO
+    ! remaining modes
+    DO i2=1,n2
+        ! x and y varying modes
+        DO i1=1,n1o2p1
+            tmp1 = ((0.0_rp, 0.0_rp))
+            tmp2 = ((0.0_rp, 0.0_rp))
+            DO ns = 1, jloop-1 ! explicit RK
+                CALL calc_exps(t_o + h * RK_param%c(ns), t_o, i1, i2)
+                da_eta_dt  = k_var_2(i1,i2,ns) * goomega_n2(i1,i2)
+                da_phis_dt = k_var_1(i1,i2,ns)
+                tmp2 = tmp2 + (    exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) * RK_param%A(jloop, ns)
+                tmp1 = tmp1 + (i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt) * RK_param%A(jloop, ns)
+            ENDDO
+            CALL calc_exps(t_o, t_o + dt, i1, i2)
+            da_eta_dt  = var_2(i1,i2) * goomega_n2(i1,i2) + h * tmp2
+            da_phis_dt = var_1(i1,i2)                     + h * tmp1
+            var_2m(i1,i2) = (   exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) / goomega_n2(i1,i2)
+            var_1m(i1,i2) = i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt
+        ENDDO
+    ENDDO
+    !
+    time = t_o + dt
+    CALL solveHOS_lin(var_1m, k_var_1(:,:,jloop), var_2m, k_var_2(:,:,jloop), time)
+
+    IF (abs(dt-h) < tiny) THEN ! evaluate deta_dt
+        CALL fourier_2_space(k_var_2(:,:,jloop),d_var2_r)
+        d_var2_r = d_var2_r + W1
+        CALL space_2_fourier(d_var2_r,d_var_2)
+    ENDIF
+    !
+ENDDO
 !
 !
 !
 IF (PRESENT(err)) THEN
-   !
-   ! estimate of lower order
-   erm(:,:,1:2) = ((0.0_rp, 0.0_rp))
+    !
+    ! estimate of lower order
+    erm(:,:,1:2) = ((0.0_rp, 0.0_rp))
 
-   DO i2=1,n2
-      ! x and y varying modes
-      DO i1=1,n1o2p1
-         tmp1 = ((0.0_rp, 0.0_rp))
-         tmp2 = ((0.0_rp, 0.0_rp))
-         DO jloop = 1, RK_param%s
-            CALL calc_exps(0.0_rp, t_o + h * RK_param%c(jloop), i1, i2)
-            da_eta_dt  = k_var_2(i1,i2,jloop) * goomega_n2(i1,i2)
-            da_phis_dt = k_var_1(i1,i2,jloop)
-            tmp2 = tmp2 + (    exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) * (RK_param%b(jloop)-RK_param%e(jloop))
-            tmp1 = tmp1 + (i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt) * (RK_param%b(jloop)-RK_param%e(jloop))
-         END DO
-         erm(i1,i2,1) = h * tmp2
-         erm(i1,i2,2) = h * tmp1
-      END DO
-   END DO
-   !
-   erm(:,:,1) = ABS(erm(:,:,1)) / scale_1
-   erm(:,:,2) = ABS(erm(:,:,2)) / scale_2
-   !
-   err = MAXVAL(ABS(erm(1:n1o2p1,1:n2,1:2)))
-END IF
+    DO i2=1,n2
+        ! x and y varying modes
+        DO i1=1,n1o2p1
+            tmp1 = ((0.0_rp, 0.0_rp))
+            tmp2 = ((0.0_rp, 0.0_rp))
+            DO jloop = 1, RK_param%s
+                CALL calc_exps(0.0_rp, t_o + h * RK_param%c(jloop), i1, i2)
+                da_eta_dt  = k_var_2(i1,i2,jloop) * goomega_n2(i1,i2)
+                da_phis_dt = k_var_1(i1,i2,jloop)
+                tmp2 = tmp2 + (    exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) * (RK_param%b(jloop)-RK_param%e(jloop))
+                tmp1 = tmp1 + (i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt) * (RK_param%b(jloop)-RK_param%e(jloop))
+            ENDDO
+            erm(i1,i2,1) = h * tmp2
+            erm(i1,i2,2) = h * tmp1
+        ENDDO
+    ENDDO
+    !
+    erm(:,:,1) = ABS(erm(:,:,1)) / scale_1
+    erm(:,:,2) = ABS(erm(:,:,2)) / scale_2
+    !
+    err = MAXVAL(ABS(erm(1:n1o2p1,1:n2,1:2)))
+ENDIF
 !
 ! free surface modes (elevation and potential)
 var_1m = ((0.0_rp, 0.0_rp))
@@ -248,32 +248,32 @@ var_2m = ((0.0_rp, 0.0_rp))
 dt     = h
 
 DO i2=1,n2
-   ! x and y varying modes
-   DO i1=1,n1o2p1
-      tmp1 = ((0.0_rp, 0.0_rp))
-      tmp2 = ((0.0_rp, 0.0_rp))
-      DO jloop = 1, RK_param%s
-         CALL calc_exps(t_o + h * RK_param%c(jloop), t_o, i1, i2)
-         da_eta_dt  = k_var_2(i1,i2,jloop) * goomega_n2(i1,i2)
-         da_phis_dt = k_var_1(i1,i2,jloop)
-         tmp2 = tmp2 + (    exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) * RK_param%b(jloop)
-         tmp1 = tmp1 + (i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt) * RK_param%b(jloop)
-      END DO
-      CALL calc_exps(t_o, t_o + dt, i1, i2)
-      da_eta_dt  = var_2(i1,i2) * goomega_n2(i1,i2) + h * tmp2
-      da_phis_dt = var_1(i1,i2)                     + h * tmp1
-      var_2m(i1,i2) = (   exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) / goomega_n2(i1,i2)
-      var_1m(i1,i2) = i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt
-   END DO
-END DO
+    ! x and y varying modes
+    DO i1=1,n1o2p1
+        tmp1 = ((0.0_rp, 0.0_rp))
+        tmp2 = ((0.0_rp, 0.0_rp))
+        DO jloop = 1, RK_param%s
+            CALL calc_exps(t_o + h * RK_param%c(jloop), t_o, i1, i2)
+            da_eta_dt  = k_var_2(i1,i2,jloop) * goomega_n2(i1,i2)
+            da_phis_dt = k_var_1(i1,i2,jloop)
+            tmp2 = tmp2 + (    exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) * RK_param%b(jloop)
+            tmp1 = tmp1 + (i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt) * RK_param%b(jloop)
+        ENDDO
+        CALL calc_exps(t_o, t_o + dt, i1, i2)
+        da_eta_dt  = var_2(i1,i2) * goomega_n2(i1,i2) + h * tmp2
+        da_phis_dt = var_1(i1,i2)                     + h * tmp1
+        var_2m(i1,i2) = (   exp_p_exp * da_eta_dt - i * exp_m_exp * da_phis_dt) / goomega_n2(i1,i2)
+        var_1m(i1,i2) = i * exp_m_exp * da_eta_dt +     exp_p_exp * da_phis_dt
+    ENDDO
+ENDDO
 !
 var_2(:,:)   = var_2m(:,:)
 var_1(:,:)   = var_1m(:,:)
 !
-!	CPU times outlet
+!  CPU times outlet
 IF (iCPUtime.EQ.1) THEN
-   CALL CPU_TIME(tf)
-	WRITE(*,910)'quitting subroutine runge4, total CPU time: ',tf-ti,'s'
+    CALL CPU_TIME(tf)
+    WRITE(*,910)'quitting SUBROUTINE runge4, total CPU time: ',tf-ti,'s'
 ENDIF
 910  FORMAT(a,1ES11.4,a)
 !

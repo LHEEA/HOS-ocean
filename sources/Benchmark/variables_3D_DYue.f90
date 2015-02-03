@@ -34,8 +34,8 @@ INTEGER, PARAMETER  :: n_lambda_y = 1
 INTEGER :: n1
 INTEGER :: n2
 ! Array size
-INTEGER, PARAMETER :: m1 = 256!128!512 ! max n1 in Dommermuth and Yue tests
-INTEGER, PARAMETER :: m2 = 256!128!512 ! max n1 in Dommermuth and Yue tests
+INTEGER, PARAMETER :: m1 = 128!256!128!512 ! max n1 in Dommermuth and Yue tests
+INTEGER, PARAMETER :: m2 = 128!256!128!512 ! max n1 in Dommermuth and Yue tests
 ! HOS nonlinearity order
 INTEGER :: M ! WARNING only among 1,2,3,4,5,7,8,9,11,14,15,17,19,23,29
 ! Dealiasing parameters
@@ -83,13 +83,13 @@ REAL(RP), DIMENSION(md2o2p1) :: ky, ky2, ky3
 REAL(RP), DIMENSION(m1)    :: x
 REAL(RP), DIMENSION(m2)    :: y
 !
-COMPLEX(CP), DIMENSION(m1o2p1,m2)      	:: a_eta, a_phis, temp_C_n, a_phiz, a_phiz_RF
-COMPLEX(CP), DIMENSION(md1o2p1,md2)    	:: temp_C_Nd, temp2_C_Nd
-REAL(RP), DIMENSION(m1,m2)           	:: phiz, W1
-REAL(RP), DIMENSION(m1,m2)           	:: temp_R_n
-REAL(RP), DIMENSION(md1,md2)         	:: temp_R_Nd, temp2_R_Nd, temp3_R_Nd
-REAL(RP), DIMENSION(md1,md2)         	:: etax, phisx, etay, phisy, gradeta2
-REAL(RP), DIMENSION(md1,md2)         	:: geta2phiz, phiz2, geta2phiz2
+COMPLEX(CP), DIMENSION(m1o2p1,m2)       :: a_eta, a_phis, temp_C_n, a_phiz, a_phiz_RF
+COMPLEX(CP), DIMENSION(md1o2p1,md2)     :: temp_C_Nd, temp2_C_Nd
+REAL(RP), DIMENSION(m1,m2)              :: phiz, W1
+REAL(RP), DIMENSION(m1,m2)              :: temp_R_n
+REAL(RP), DIMENSION(md1,md2)            :: temp_R_Nd, temp2_R_Nd, temp3_R_Nd
+REAL(RP), DIMENSION(md1,md2)            :: etax, phisx, etay, phisy, gradeta2
+REAL(RP), DIMENSION(md1,md2)            :: geta2phiz, phiz2, geta2phiz2
 REAL(RP), DIMENSION(md1o2p1,md2o2p1)    :: omega, goomega, omega_p, omega_m, k, c
 REAL(RP), DIMENSION(:,:,:), ALLOCATABLE :: etapm_ext
 REAL(RP), DIMENSION(:,:,:), ALLOCATABLE :: gradeta_square_ext
@@ -177,7 +177,7 @@ extend_C(1:n1o2p1,Nd2-n2m1o2m1:Nd2) = a(1:n1o2p1,n2o2p1+1:n2)
 !   ! FIXME : check this is equivalent : should be ok...
 !   ! FIXME : does not work for n2 odd... but n2 even!
 !   extend_C(1:n1o2p1,Nd2-n2m1o2m1-1) = extend_C(1:n1o2p1,n2o2p1)
-!END IF
+!ENDIF
 ! FIXME : test may 2013... sep 2014: not useful
 !IF (iseven(n1) .AND. p1 /= 1) THEN
 !    extend_C(n1o2p1,1:Nd2)       = ((0.0_rp, 0.0_rp))
@@ -189,8 +189,8 @@ IF (iseven(n2) .AND. p2 /= 1) THEN
     extend_C(1:n1o2p1,n2o2p1)       = extend_C(1:n1o2p1,n2o2p1)*0.5_rp
     extend_C(1:n1o2p1,Nd2-n2o2p1+2) = extend_C(1:n1o2p1,n2o2p1)
     IF (iseven(n1) .AND. p1 /= 1) THEN
-    	extend_C(n1o2p1,n2o2p1) = extend_C(n1o2p1,n2o2p1)*2.0_rp
-    	extend_C(n1o2p1,Nd2-n2o2p1+2) = extend_C(n1o2p1,n2o2p1)
+        extend_C(n1o2p1,n2o2p1) = extend_C(n1o2p1,n2o2p1)*2.0_rp
+        extend_C(n1o2p1,Nd2-n2o2p1+2) = extend_C(n1o2p1,n2o2p1)
     ENDIF
 ENDIF
 !
@@ -210,7 +210,7 @@ reduce_C(1:n1o2p1,1:n2o2p1)    = a_big(1:n1o2p1,1:n2o2p1)
 reduce_C(1:n1o2p1,n2o2p1+1:n2) = a_big(1:n1o2p1,Nd2-n2m1o2m1:Nd2)
 !IF (iseven(n2) .AND. p2 /= 1) THEN
 !   reduce_C(1:n1o2p1,n2o2p1) = reduce_C(1:n1o2p1,n2o2p1) * 2.0_rp
-!END IF
+!ENDIF
 ! FIXME : check if the 2 following are necessary...
 !IF (iseven(n1)) reduce_C(n1o2p1,1:n2) = 0.0_cp
 !IF (iseven(n2)) reduce_C(1:n1o2p1,n2o2p1) = 0.0_cp

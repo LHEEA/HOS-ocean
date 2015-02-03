@@ -30,32 +30,32 @@ USE, INTRINSIC :: iso_c_binding
 !
 IMPLICIT NONE
 !
-include 'fftw3.f03'
+INCLUDE 'fftw3.f03'
  !
  ! FFTW module procedure for original and dealiased domains
  !
- INTERFACE SPACE_2_FOURIER
+INTERFACE SPACE_2_FOURIER
     MODULE PROCEDURE FFTW_R2C
- END INTERFACE SPACE_2_FOURIER
+END INTERFACE SPACE_2_FOURIER
  !
- INTERFACE FOURIER_2_SPACE
+INTERFACE FOURIER_2_SPACE
     MODULE PROCEDURE FFTW_C2R
- END INTERFACE FOURIER_2_SPACE
+END INTERFACE FOURIER_2_SPACE
  !
- INTERFACE SPACE_2_FOURIER_big
+INTERFACE SPACE_2_FOURIER_big
     MODULE PROCEDURE FFTW_R2C_big
- END INTERFACE SPACE_2_FOURIER_big
+END INTERFACE SPACE_2_FOURIER_big
  !
- INTERFACE FOURIER_2_SPACE_big
+INTERFACE FOURIER_2_SPACE_big
     MODULE PROCEDURE FFTW_C2R_big
- END INTERFACE FOURIER_2_SPACE_big
+END INTERFACE FOURIER_2_SPACE_big
 !
-type(C_PTR)                              :: plan_R2C, plan_C2R
+TYPE(C_PTR)                              :: plan_R2C, plan_C2R
 REAL(RP), ALLOCATABLE, DIMENSION(:,:)    :: s_2_f, f_2_s
 REAL(RP), ALLOCATABLE, DIMENSION(:,:)    :: in
 COMPLEX(CP), ALLOCATABLE, DIMENSION(:,:) :: out
 !
-type(C_PTR)                              :: plan_R2C_big, plan_C2R_big
+TYPE(C_PTR)                              :: plan_R2C_big, plan_C2R_big
 REAL(RP), ALLOCATABLE, DIMENSION(:,:)    :: s_2_f_big, f_2_s_big
 REAL(RP), ALLOCATABLE, DIMENSION(:,:)    :: in_big
 COMPLEX(CP), ALLOCATABLE, DIMENSION(:,:) :: out_big
@@ -82,11 +82,11 @@ INTEGER :: lib, flag
 !
 ! Input argument
 IF (PRESENT(library)) THEN
-   lib = library
+    lib = library
 ELSE
-   ! default library is FFTW3
-   lib = 3
-END IF
+    ! default library is FFTW3
+    lib = 3
+ENDIF
 !
 ! Memory allocation
 ALLOCATE(in(n1,n2), out(n1o2p1,n2), s_2_f(n1o2p1,n2), f_2_s(n1o2p1,n2))
@@ -94,32 +94,32 @@ ALLOCATE(in_big(Nd1,Nd2), out_big(Nd1o2p1,Nd2), s_2_f_big(Nd1o2p1,Nd2), f_2_s_bi
 !
 ! Initializing the FFT library
 SELECT CASE (lib)
-   ! FIXME: remove this need (see RF_solution...)
-   ! FIXME: everything is done with FFTW now
-   CASE (1)
-    print*,'Not taken in charge any more'
+    ! FIXME: remove this need (see RF_solution...)
+    ! FIXME: everything is done with FFTW now
+    CASE (1)
+    PRINT*,'Not taken in charge any more'
     STOP
-   CASE (3)
-      ! FFTW-3.3 library
-      ! FFTW_ESTIMATE is deterministic (useful for debug/testing) but not optimal
-      flag = FFTW_ESTIMATE !FFTW_PATIENT ! FFTW_MEASURE ! FFTW_EXHAUSTIVE
-      IF (n2 == 1) THEN
+    CASE (3)
+        ! FFTW-3.3 library
+        ! FFTW_ESTIMATE is deterministic (useful for debug/testing) but not optimal
+        flag = FFTW_ESTIMATE !FFTW_PATIENT ! FFTW_MEASURE ! FFTW_EXHAUSTIVE
+        IF (n2 == 1) THEN
         ! 1D FFTs
         CALL dfftw_plan_dft_r2c_1d(plan_R2C, n1,        in,        out,          flag)
         CALL dfftw_plan_dft_c2r_1d(plan_C2R, n1,        out,       in,           flag)
         !
         CALL dfftw_plan_dft_r2c_1d(plan_R2C_big, Nd1,   in_big,     out_big,     flag)
         CALL dfftw_plan_dft_c2r_1d(plan_C2R_big, Nd1,   out_big,     in_big,     flag)
-      ELSE
+        ELSE
         ! 2D FFTs
         CALL dfftw_plan_dft_r2c_2d(plan_R2C, n1, n2,  in,     out,     flag)
         CALL dfftw_plan_dft_c2r_2d(plan_C2R, n1, n2,  out,     in,     flag)
         !
         CALL dfftw_plan_dft_r2c_2d(plan_R2C_big, Nd1, Nd2,  in_big,     out_big,     flag)
         CALL dfftw_plan_dft_c2r_2d(plan_C2R_big, Nd1, Nd2,  out_big,     in_big,     flag)
-      END IF
-   CASE DEFAULT
-      STOP 'Unknown DFT library in Fourier_ini'
+        ENDIF
+    CASE DEFAULT
+        STOP 'Unknown DFT library in Fourier_ini'
 END SELECT
 !
 ! Evaluating conversion coefficients
@@ -189,29 +189,29 @@ INTEGER :: lib
 !
 ! Input argument
 IF (PRESENT(library)) THEN
-   lib = library
+    lib = library
 ELSE
-   ! default library is FFTW3
-   lib = 3
-END IF
+    ! default library is FFTW3
+    lib = 3
+ENDIF
 !
 ! End the FFT library
 SELECT CASE (lib)
-   ! FIXME: remove this need (see RF_solution...)
-   CASE (1)
+    ! FIXME: remove this need (see RF_solution...)
+    CASE (1)
         ! Nothing to do
-   CASE (3)
-      ! FFTW-3.3 library
-      !
-      CALL dfftw_destroy_plan(plan_R2C)
-      CALL dfftw_destroy_plan(plan_C2R)
-      CALL dfftw_destroy_plan(plan_R2C_big)
-      CALL dfftw_destroy_plan(plan_C2R_big)
-      !
-      CALL fftw_cleanup
-      !
-   CASE DEFAULT
-      STOP 'Unknown DFT library in Fourier_ini'
+    CASE (3)
+        ! FFTW-3.3 library
+        !
+        CALL dfftw_destroy_plan(plan_R2C)
+        CALL dfftw_destroy_plan(plan_C2R)
+        CALL dfftw_destroy_plan(plan_R2C_big)
+        CALL dfftw_destroy_plan(plan_C2R_big)
+        !
+        CALL fftw_cleanup
+        !
+    CASE DEFAULT
+        STOP 'Unknown DFT library in Fourier_ini'
 END SELECT
 !
 ! Memory allocation
@@ -232,7 +232,7 @@ COMPLEX(CP), DIMENSION(m1o2p1,m2), INTENT(OUT) :: y
 !
 in   = x(1:n1,1:n2)
 !
-call dfftw_execute_dft_r2c(plan_R2C,in,out)
+CALL dfftw_execute_dft_r2c(plan_R2C,in,out)
 !
 y(1:n1o2p1,1:n2) = out * s_2_f
 !
@@ -248,7 +248,7 @@ COMPLEX(CP), DIMENSION(m1o2p1,m2), INTENT(IN) :: y
 !
 out   = y(1:n1o2p1,1:n2) * f_2_s
 !
-call dfftw_execute_dft_c2r(plan_C2R,out,in)
+CALL dfftw_execute_dft_c2r(plan_C2R,out,in)
 !
 x(1:n1,1:n2) = in
 !
@@ -266,7 +266,7 @@ COMPLEX(CP), DIMENSION(md1o2p1,md2), INTENT(OUT) :: y
 !
 in_big   = x(1:Nd1,1:Nd2)
 !
-call dfftw_execute_dft_r2c(plan_R2C_big,in_big,out_big)
+CALL dfftw_execute_dft_r2c(plan_R2C_big,in_big,out_big)
 !
 y(1:Nd1o2p1,1:Nd2) = out_big * s_2_f_big
 !
@@ -282,7 +282,7 @@ COMPLEX(CP), DIMENSION(md1o2p1,md2), INTENT(IN) :: y
 !
 out_big   = y(1:Nd1o2p1,1:Nd2) * f_2_s_big
 !
-call dfftw_execute_dft_c2r(plan_C2R_big,out_big,in_big)
+CALL dfftw_execute_dft_c2r(plan_C2R_big,out_big,in_big)
 !
 x(1:Nd1,1:Nd2) = in_big
 !
