@@ -76,7 +76,10 @@ TARGET_LINK_LIBRARIES(HOS_ocean lapack blas ${FFTW_LIB})
 ADD_EXECUTABLE(Post_processing ${srcPost_processing})
 TARGET_LINK_LIBRARIES(Post_processing ${FFTW_LIB})
 
-INSTALL(TARGETS HOS_ocean Post_processing
+ADD_EXECUTABLE(check_W_DYue ${srcCheck_W_DYue})
+TARGET_LINK_LIBRARIES(check_W_DYue lapack blas ${FFTW_LIB})
+
+INSTALL(TARGETS HOS_ocean Post_processing check_W_DYue
         RUNTIME DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}
         LIBRARY DESTINATION ${LIBRARY_OUTPUT_DIRECTORY})
 SET(ADDITIONAL_LIB)

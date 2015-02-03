@@ -30,3 +30,17 @@ SET(srcPost_processing
     ${SRC_DIRECTORY}/utilities/type.f90
     ${SRC_DIRECTORY}/utilities/fourier_r2c_FFTW3.f90
     )
+
+SET(srcCheck_W_DYue
+    ${SRC_DIRECTORY}/HOS/resol_HOS.f90
+    ${SRC_DIRECTORY}/HOS/runge_kutta.f90
+    ${SRC_DIRECTORY}/HOS/energy_calc.f90
+    ${SRC_DIRECTORY}/HOS/velocities.f90
+    ${SRC_DIRECTORY}/utilities/type.f90
+    ${SRC_DIRECTORY}/utilities/ramp.f90
+    ${SRC_DIRECTORY}/utilities/filters.f90
+    ${SRC_DIRECTORY}/utilities/RF_solution.f90
+    ${SRC_DIRECTORY}/utilities/fourier_r2c_FFTW3.f90
+    ${SRC_DIRECTORY}/Benchmark/variables_3D_DYue.f90
+    ${SRC_DIRECTORY}/Benchmark/check_W_DYue.f90
+)
