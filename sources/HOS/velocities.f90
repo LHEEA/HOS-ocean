@@ -826,7 +826,8 @@ DO ii=1,n1
         !
         ! Evaluate free surface boundary conditions
         ! FIXME: change variable names
-        CDSL(ii,ii2) = - g_star*eta_SL(ii,ii2) - 0.5_rp*(vitx_SL(ii,ii2)**2+vity_SL(ii,ii2)**2+vitz_SL(ii,ii2)**2) - dphit_SL(ii,ii2)
+        CDSL(ii,ii2) = - g_star*eta_SL(ii,ii2) &
+        - 0.5_rp*(vitx_SL(ii,ii2)**2+vity_SL(ii,ii2)**2+vitz_SL(ii,ii2)**2) - dphit_SL(ii,ii2)
         CCSL(ii,ii2) =  deta_l(ii,ii2) - vitz_SL(ii,ii2) + vitx_SL(ii,ii2)*etax_l(ii,ii2) + vity_SL(ii,ii2)*etay_l(ii,ii2)
     ENDDO
 ENDDO

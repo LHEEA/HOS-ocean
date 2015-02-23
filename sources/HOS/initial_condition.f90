@@ -647,14 +647,14 @@ IF(i_int == 1) THEN
                 IF(thet_ww(ind_t_ww(i1,i2)) .gt. theta .and. ind_t_ww(i1,i2).ne. 1) ind_t_ww(i1,i2)=ind_t_ww(i1,i2)-1
                 !
                     IF(ind_t_ww(i1,i2) /= ithet)THEN
-                        d1 = SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2))**2*cos(thet_ww(ind_t_ww(i1,i2))))**2+ &
-                              (omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2))**2*sin(thet_ww(ind_t_ww(i1,i2))))**2)
-                        d2 = SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*cos(thet_ww(ind_t_ww(i1,i2))))**2+ &
-                              (omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*sin(thet_ww(ind_t_ww(i1,i2))))**2)
-                        d3 = SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2))**2*cos(thet_ww(ind_t_ww(i1,i2)+1)))**2+ &
-                              (omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2))**2*sin(thet_ww(ind_t_ww(i1,i2)+1)))**2)
-                        d4 = SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*cos(thet_ww(ind_t_ww(i1,i2)+1)))**2+ &
-                              (omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*sin(thet_ww(ind_t_ww(i1,i2)+1)))**2)
+                        d1=SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2))**2*cos(thet_ww(ind_t_ww(i1,i2))))**2 &
+                              +(omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2))**2*sin(thet_ww(ind_t_ww(i1,i2))))**2)
+                        d2=SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*cos(thet_ww(ind_t_ww(i1,i2))))**2 &
+                              +(omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*sin(thet_ww(ind_t_ww(i1,i2))))**2)
+                        d3=SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2))**2*cos(thet_ww(ind_t_ww(i1,i2)+1)))**2 &
+                              +(omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2))**2*sin(thet_ww(ind_t_ww(i1,i2)+1)))**2)
+                        d4=SQRT((omega_n2(i1,i2)**2*cos(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*cos(thet_ww(ind_t_ww(i1,i2)+1)))**2 &
+                              +(omega_n2(i1,i2)**2*sin(theta)-freq_ww(ind_o_ww(i1,i2)+1)**2*sin(thet_ww(ind_t_ww(i1,i2)+1)))**2)
                         !
                         coef_ww2cart(i1,i2,1)=d2*d3*d4/(d2*d3*d4+d1*d3*d4+d1*d2*d4+d1*d2*d3)
                         coef_ww2cart(i1,i2,2)=d1*d3*d4/(d2*d3*d4+d1*d3*d4+d1*d2*d4+d1*d2*d3)
@@ -981,7 +981,9 @@ DO j1=1,n2
                 IF(j1 .le. n2o2p1 .and. 2*j1-1 .le. n2o2p1)THEN
                     a_eta_s(2*i1-1,2*j1-1)= + 0.5_rp * a_eta(i1,j1) ** 2 * k_abs(i1,j1)
                 ENDIF
-                IF(j1 .gt. n2o2p1 .and. 2*(n2-j1+1) .lt. n2o2p1) a_eta_s(2*i1-1,2*j1-n2-1)= 0.5_rp * a_eta(i1,j1) ** 2 * k_abs(i1,j1)
+                IF(j1 .gt. n2o2p1 .and. 2*(n2-j1+1) .lt. n2o2p1)THEN
+                    a_eta_s(2*i1-1,2*j1-n2-1)= 0.5_rp * a_eta(i1,j1) ** 2 * k_abs(i1,j1)
+                ENDIF
             ENDIF
             !
             DO j2=1,n2o2p1
@@ -990,28 +992,28 @@ DO j1=1,n2
                         !
                         A_pos = - ((omega_n2(i1,j1)*omega_n2(i2,j2)*(omega_n2(i1,j1)+omega_n2(i2,j2))* &
                             (1.0_rp-cos(theta_abs(i1,j1)-theta_abs(i2,j2)))) &
-                            / ((omega_n2(i1,j1)+omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)) )
+                            / ((omega_n2(i1,j1)+omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
                         A_neg = + ((omega_n2(i1,j1)*omega_n2(i2,j2)*(omega_n2(i2,j2)-omega_n2(i1,j1)) &
                             *(1.0_rp+cos(theta_abs(i1,j1)-theta_abs(i2,j2)))) &
-                            / ((omega_n2(i1,j1)-omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)) )
+                            / ((omega_n2(i1,j1)-omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)))
                         !
                         B_pos = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
                             - 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 - cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &
-                            * ( ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 + g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))&
-                            /   ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
+                            * (((omega_n2(i1,j1)+omega_n2(i2,j2))**2+g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))&
+                            /  ((omega_n2(i1,j1)+omega_n2(i2,j2))**2-g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
                         !
                         B_neg = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
                             + 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 + cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &
-                            * ( ((omega_n2(i1,j1) - omega_n2(i2,j2))**2 + g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2))&
-                            /   ((omega_n2(i1,j1) - omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)))
+                            * (((omega_n2(i1,j1)-omega_n2(i2,j2))**2+g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2))&
+                            /  ((omega_n2(i1,j1)-omega_n2(i2,j2))**2-g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)))
                         IF(i1+i2 .le. n1o2p1)THEN
                             IF(j1+j2 .le. n2o2p1)THEN
                                 a_eta_pos(i1+i2-1,j1+j2-1) = a_eta_pos (i1+i2-1,j1+j2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
                                 a_phi_pos(i1+i2-1,j1+j2-1) = a_phi_pos (i1+i2-1,j1+j2-1) - i* A_pos * a_eta(i1,j1) * a_eta(i2,j2)
                             ENDIF
                             IF(j1.gt.n2o2p1 .and. j1+j2 .gt. n2+1)THEN
-                                a_eta_pos(i1+i2-1,j1+j2-n2-1) = a_eta_pos (i1+i2-1,j1+j2-n2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
-                                a_phi_pos(i1+i2-1,j1+j2-n2-1) = a_phi_pos (i1+i2-1,j1+j2-n2-1) - i* A_pos * a_eta(i1,j1) * a_eta(i2,j2)
+                                a_eta_pos(i1+i2-1,j1+j2-n2-1) = a_eta_pos(i1+i2-1,j1+j2-n2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
+                                a_phi_pos(i1+i2-1,j1+j2-n2-1) = a_phi_pos(i1+i2-1,j1+j2-n2-1)-i*A_pos * a_eta(i1,j1) * a_eta(i2,j2)
                             ENDIF
                             IF(j1.gt.n2o2p1 .and. j1+j2 .le. n2+1)THEN
                                 a_eta_pos(i1+i2-1,j1+j2-1) = a_eta_pos (i1+i2-1,j1+j2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
@@ -1047,32 +1049,32 @@ DO j1=1,n2
                         !
                         A_pos = - ((omega_n2(i1,j1)*omega_n2(i2,j2)*(omega_n2(i1,j1)+omega_n2(i2,j2)) &
                             *(1.0_rp-cos(theta_abs(i1,j1)-theta_abs(i2,j2)))) &
-                            / ((omega_n2(i1,j1)+omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)) )
+                            / ((omega_n2(i1,j1)+omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
                         A_neg = + ((omega_n2(i1,j1)*omega_n2(i2,j2)*(omega_n2(i2,j2)-omega_n2(i1,j1)) &
                             *(1.0_rp+cos(theta_abs(i1,j1)-theta_abs(i2,j2)))) &
-                            / ((omega_n2(i1,j1)-omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)) )
+                            / ((omega_n2(i1,j1)-omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)))
                         !
                         B_pos = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
                             - 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 - cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &
-                            * ( ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 + g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))&
-                            /   ((omega_n2(i1,j1) + omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
+                            * (((omega_n2(i1,j1)+omega_n2(i2,j2))**2+g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2))&
+                            /  ((omega_n2(i1,j1)+omega_n2(i2,j2))**2-g_star * SQRT((kx(i1)+kx(i2))**2 +(ky_n2(j1)+ky_n2(j2))**2)))
                         !
                         B_neg = 0.5_rp/ g_star * (omega_n2(i1,j1)**2 + omega_n2(i2,j2)**2) &
                             + 0.5_rp / g_star * omega_n2(i1,j1) * omega_n2(i2,j2) * (1 + cos(theta_abs(i1,j1)-theta_abs(i2,j2))) &
-                            * ( ((omega_n2(i1,j1) - omega_n2(i2,j2))**2 + g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2))&
-                            /   ((omega_n2(i1,j1) - omega_n2(i2,j2))**2 - g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)))
+                            * (((omega_n2(i1,j1)-omega_n2(i2,j2))**2+g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2))&
+                            /  ((omega_n2(i1,j1)-omega_n2(i2,j2))**2-g_star * SQRT((kx(i1)-kx(i2))**2 +(ky_n2(j1)-ky_n2(j2))**2)))
                         IF(i1+i2 .le. n1o2p1)THEN
                             IF(j1.le.n2o2p1 .and. j1.le.n2-j2+1 )THEN
                                 a_eta_pos(i1+i2-1,j2+j1-1) = a_eta_pos (i1+i2-1,j2+j1-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
                                 a_phi_pos(i1+i2-1,j2+j1-1) = a_phi_pos (i1+i2-1,j2+j1-1) - i*A_pos * a_eta(i1,j1) * a_eta(i2,j2)
                             ENDIF
                             IF(j1.le.n2o2p1 .and. j1.gt. n2-j2+1)THEN
-                                a_eta_pos(i1+i2-1,j1-n2+j2-1) = a_eta_pos (i1+i2-1,j1-n2+j2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
-                                a_phi_pos(i1+i2-1,j1-n2+j2-1) = a_phi_pos (i1+i2-1,j1-n2+j2-1) - i*A_pos * a_eta(i1,j1) * a_eta(i2,j2)
+                                a_eta_pos(i1+i2-1,j1-n2+j2-1) = a_eta_pos(i1+i2-1,j1-n2+j2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
+                                a_phi_pos(i1+i2-1,j1-n2+j2-1) = a_phi_pos(i1+i2-1,j1-n2+j2-1)-i*A_pos * a_eta(i1,j1) * a_eta(i2,j2)
                             ENDIF
                             IF(j1.gt.n2o2p1 .and. j1+j2-n2-1.gt.n2o2p1)THEN
-                                a_eta_pos(i1+i2-1,j1+j2-n2-1) = a_eta_pos (i1+i2-1,j1+j2-n2-1) + B_pos * a_eta(i1,j1) * a_eta(i2,j2)
-                                a_phi_pos(i1+i2-1,j1+j2-n2-1) = a_phi_pos (i1+i2-1,j1+j2-n2-1) - i*A_pos * a_eta(i1,j1) * a_eta(i2,j2)
+                                a_eta_pos(i1+i2-1,j1+j2-n2-1) = a_eta_pos(i1+i2-1,j1+j2-n2-1)+B_pos * a_eta(i1,j1) * a_eta(i2,j2)
+                                a_phi_pos(i1+i2-1,j1+j2-n2-1) = a_phi_pos(i1+i2-1,j1+j2-n2-1)-i*A_pos * a_eta(i1,j1) * a_eta(i2,j2)
                             ENDIF
                         ENDIF
                         IF(i2-i1 .ge. 0)THEN

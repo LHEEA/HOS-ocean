@@ -1091,7 +1091,8 @@ IF (test_y.EQ.1) THEN
                         phis(i1,:) = phis(1,:)
                     ENDDO
                     !
-                    DEALLOCATE(RF_obj%x,RF_obj%eta,RF_obj%phis,RF_obj%W,RF_obj%eta_dealiased,RF_obj%phis_dealiased,RF_obj%W_dealiased)
+                    DEALLOCATE(RF_obj%x,RF_obj%eta,RF_obj%phis,RF_obj%W)
+                    DEALLOCATE(RF_obj%eta_dealiased,RF_obj%phis_dealiased,RF_obj%W_dealiased)
                     !
                     spatial_ref = 1.0_rp
                     !
@@ -1914,7 +1915,8 @@ IF (test_xy.EQ.1) THEN
                         !
                         DO i1=1,n1
                             DO i2=1,n2
-                                CALL build_RF_local(RF_obj, x(i1)*cos(angle)+y(i2)*sin(angle), eta(i1,i2), phis(i1,i2), phizRF_2D(i1,i2))
+                                CALL build_RF_local(RF_obj,x(i1)*cos(angle)+y(i2)*sin(angle),&
+                                    eta(i1,i2),phis(i1,i2),phizRF_2D(i1,i2))
                             ENDDO
                         ENDDO
                     ENDIF
@@ -2003,7 +2005,8 @@ IF (test_xy.EQ.1) THEN
                     !
                     CALL fourier_end(3)
                     !
-                    DEALLOCATE(RF_obj%x,RF_obj%eta,RF_obj%phis,RF_obj%W,RF_obj%eta_dealiased,RF_obj%phis_dealiased,RF_obj%W_dealiased)
+                    DEALLOCATE(RF_obj%x,RF_obj%eta,RF_obj%phis,RF_obj%W)
+                    DEALLOCATE(RF_obj%eta_dealiased,RF_obj%phis_dealiased,RF_obj%W_dealiased)
                     !
                     spatial_ref = 1.0_rp
                     !
@@ -2126,16 +2129,18 @@ IF (test_xy.EQ.1) THEN
                             WRITE(777,'(A,I3,A,I4,A,I4)')'ZONE T = "',M,'", I=',n1o2p1,', J=',n2
                             DO i2 = n2o2p1+1, n2
                                 DO i1 = 1, n1o2p1
-                                    WRITE(777,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') kx(i1), - ky(n2-i2+2), &
+                                    WRITE(777,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') &
+                                        kx(i1), -ky(n2-i2+2), &
                                         ABS(a_eta(i1,i2)), ABS(a_phis(i1,i2)), ABS(a_phiz(i1,i2)), ABS(a_phiz_RF(i1,i2)), &
                                         ABS(a_phiz(i1,i2)-a_phiz_RF(i1,i2))
                                 ENDDO
                             ENDDO
                             DO i2 = 1, n2o2p1
                                 DO i1 = 1, n1o2p1
-                                    WRITE(777,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') kx(i1), ky(i2), &
+                                    WRITE(777,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') &
+                                        kx(i1), ky(i2), &
                                         ABS(a_eta(i1,i2)), ABS(a_phis(i1,i2)), ABS(a_phiz(i1,i2)), ABS(a_phiz_RF(i1,i2)), &
-                                            ABS(a_phiz(i1,i2)-a_phiz_RF(i1,i2))
+                                        ABS(a_phiz(i1,i2)-a_phiz_RF(i1,i2))
                                 ENDDO
                             ENDDO
                         ENDIF

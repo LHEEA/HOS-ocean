@@ -568,7 +568,7 @@ DO WHILE (time_cur <= T_stop_star)
         CALL CPU_TIME(t_f_indiv)
         IF (time_cur <= 10 * dt_out) THEN
             IF ((t_f_indiv-t_i_indiv).gt.2.0d-2) THEN
-                WRITE(*,'(A,F6.2,3(X,ES11.4))') 'CPU time for individual time step ',t_f_indiv-t_i_indiv, h_rk, error, time_cur*T_out
+                WRITE(*,'(A,F6.2,3(X,ES11.4))') 'CPU time for individual time step ',t_f_indiv-t_i_indiv,h_rk,error,time_cur*T_out
             ENDIF
         ENDIF
     ENDDO
