@@ -43,7 +43,7 @@ COMPLEX(CP), DIMENSION(m1o2p1,m2) :: a_phis_rk, a_eta_rk, da_eta
 REAL(RP)                          :: delx, dely, pioxlen, pioylen, k2, thkh
 INTEGER                           :: Mo2
 INTEGER                           :: i1, i2, j, iCPUtime, jj
-REAL(RP)                          :: energy(4)
+REAL(RP)                          :: energy(3)
 !
 REAL(RP) :: t_i, t_f, time_cur, t_tot, time_next, t_i_indiv, t_f_indiv
 REAL(RP) :: dt_out, dt_rk4, dt, h_rk, h_loc, dt_lin
@@ -284,7 +284,8 @@ ENDDO
 ! some variables useful for initialization
 ! FIXME : make it cleaner
 DO i2=1,n2o2p1
-    DO i1=1,n1o2p1
+    theta_abs(1,i2) = 0.0_rp
+    DO i1=2,n1o2p1
         k_abs(i1,i2)=SQRT(kx(i1)*kx(i1)+(ky_n2(i2)*ky_n2(i2)))
         theta_abs(i1,i2)=ATAN2(ky_n2(i2),kx(i1))
         IF (theta_abs(i1,i2) .LT. 0.0_rp) THEN
@@ -293,7 +294,8 @@ DO i2=1,n2o2p1
     ENDDO
 ENDDO
 DO i2=2,n2o2p1
-    DO i1=1,n1o2p1
+    theta_abs(1,n2-i2+1) = 0.0_rp
+    DO i1=2,n1o2p1
         k_abs(i1,n2-i2+2)=SQRT(kx(i1)*kx(i1)+(ky_n2(i2)*ky_n2(i2)))
         theta_abs(i1,n2-i2+2)=ATAN2(-ky_n2(i2),kx(i1))
         IF (theta_abs(i1,n2-i2+2) .LT. 0.0_rp) THEN
@@ -503,8 +505,8 @@ DO WHILE (time_cur <= T_stop_star)
     !
     ! Rough estimation of peak period
     idx = MAXLOC(abs(a_eta))
-    Tp = TWOPI/(k(idx(1),idx(2))*TANH(k(idx(1),idx(2))*depth_star))
-    PRINT*,'Hs_out=',4.0_rp*SQRT(energy(4))* L_out,', T_peak=',Tp * T_out
+    Tp = TWOPI/omega_n2(idx(1),idx(2))
+    PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3))* L_out,', T_peak=',Tp * T_out
     PRINT*,'***************************'
     CALL output_time_step(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, &
                          time=time_cur, N_stop=FLOOR(T_stop_star / dt_out), &

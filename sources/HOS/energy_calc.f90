@@ -48,7 +48,7 @@ IMPLICIT NONE
 ! needs     : non-dimensional gravity, g_star
 !
 COMPLEX(CP), DIMENSION(m1o2p1,m2), INTENT(IN) :: a_eta, a_phis, da_eta
-REAL(RP), DIMENSION(4)                        :: calc_energy
+REAL(RP), DIMENSION(3)                        :: calc_energy
 !
 calc_energy(:)=0.0_rp
 ! Potential energy
@@ -81,9 +81,9 @@ temp_R_Nd(1:Nd1,1:Nd2) = temp_R_Nd(1:Nd1,1:Nd2) * temp2_R_Nd(1:Nd1,1:Nd2)
 !   integral
 CALL space_2_fourier_big(temp_R_Nd, temp_C_Nd)
 !
-calc_energy(3) = REAL(temp_C_Nd(1,1),RP)
-calc_energy(4) = calc_energy(1) + calc_energy(2) + calc_energy(3)
-calc_energy(1:4) = 0.5_rp * calc_energy(1:4)
+calc_energy(2) = REAL(temp_C_Nd(1,1),RP)
+calc_energy(3) = calc_energy(1) + calc_energy(2)
+calc_energy(1:3) = 0.5_rp * calc_energy(1:3)
 !
 RETURN
 !

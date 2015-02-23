@@ -1,11 +1,7 @@
 MODULE output_post_process
 !
-! This module contains the input related routines
-!  Subroutines :  read_input
-!                 read_datum
-!                 read_blank_line
-!                 build_format
-!                 error_message
+! This module contains the output related routines for initialization of output files and
+! writing at each time-step
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !

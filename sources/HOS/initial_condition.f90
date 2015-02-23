@@ -378,15 +378,15 @@ SUBROUTINE initiate_irreg(RK_param)
 !-------------------------------------------
 !
 IMPLICIT NONE
-
+!
 REAL(RP) :: sigma, theta, E, Cj, pioxlen, pioylen
 REAL(RP) :: test, rnd, angle, angle1, angle2
-REAL(RP), DIMENSION(m1o2p1,n2) :: phi_JONSWAP
-INTEGER :: iseed,i1,i2,i_initiate_NL
-REAL(RP), DIMENSION(4)          :: energy
-TYPE(RK_parameters), INTENT(IN)         :: RK_param
+INTEGER  :: iseed,i1,i2,i_initiate_NL
+REAL(RP), DIMENSION(3)            :: energy
+TYPE(RK_parameters), INTENT(IN)   :: RK_param
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: da_eta,a_eta_temp,a_phi_temp
-REAL(RP),DIMENSION(m1o2p1,m2) :: DD_WW
+REAL(RP), DIMENSION(m1o2p1,n2) :: phi_JONSWAP
+REAL(RP),DIMENSION(m1o2p1,m2)  :: DD_WW
 REAL(RP),DIMENSION(ikp) :: ones_k
 INTEGER ::  i_dir_JSWP,jj
 REAL(RP) :: beta_min,beta_max,frr,fp_w,s_ww,Norm_DD
@@ -426,12 +426,12 @@ IF (i_dir_JSWP == 1) THEN
 ELSE
     DO i1=1,n1o2p1
         DO i2=1,n2
-            DD_WW(i1,i2) =1.0_rp/beta*(cos(TWOPI*theta_abs(i1,i2)/(4*beta)))**2.0_rp
+            ! With this definition of angular description, theta must be in [-pi ; pi]
+            DD_WW(i1,i2) = 1.0_rp/beta*(cos(TWOPI*ATAN2(ky_n2(i2),kx(i1))/(4*beta)))**2.0_rp
         ENDDO
     ENDDO
 ENDIF
 ! ----- End dir function
-
 iseed = 4*n1o2p1*n2_all
 !
 Cj = 3.279_rp*E_cible
@@ -567,7 +567,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         CALL RK_adapt_2var_3D_in_mo_lin(0, RK_param, 0.0_rp, 0.0_rp, a_phi_temp, a_eta_temp, da_eta)
         energy = calc_energy(a_eta, a_phis, da_eta)
         WRITE(*,*)'***************'
-        test = energy(4)
+        test = energy(3)
      ELSE IF(i_initiate_NL == 2)THEN
         ! FIXME : depend on wind input/dissip ?
         !CALL initiate_NL_o2
@@ -580,7 +580,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         ELSE
         CALL RK_adapt_2var_3D_in_mo_lin(0, RK_param, 0.0_rp, 0.0_rp, a_phi_temp, a_eta_temp, da_eta)
         energy = calc_energy(a_eta, a_phis, da_eta)
-        test = energy(4)
+        test = energy(3)
         ENDIF
         WRITE(*,*) 'E_current=', test, 'E cible =', E_cible
         E = E * E_cible /test

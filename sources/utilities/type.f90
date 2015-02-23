@@ -21,7 +21,7 @@ MODULE type
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-! Definition of symboles for real types (RP) and complex ones (CP)
+! Definition of symbols for real types (RP) and complex ones (CP)
 !
 ! Real numbers are simple or double precision
 INTEGER, PARAMETER :: SP = SELECTED_REAL_KIND(6,   37)     ! REAL32

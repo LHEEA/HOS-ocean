@@ -64,7 +64,7 @@ IF (i_vol == 1) THEN
     OPEN(3,file='Results/vol_energy.dat',status='unknown')
     CALL write_input(3)
     WRITE(3,'(A)')'TITLE=" 3D volume and energy "'
-    WRITE(3,'(A)') 'VARIABLES="t", "volume", "potential", "flexural", "kinetic", "total", "dE/E_o","E_spec_dens"'
+    WRITE(3,'(A)') 'VARIABLES="t", "volume", "potential", "kinetic", "total", "dE/E_o","E_spec_dens"'
 ENDIF
 !
 IF (i_2D == 1) THEN
@@ -136,7 +136,7 @@ IF (i_prob == 1) THEN
     OPEN(99,file='Results/probes.dat',status='unknown')
     CALL write_input(9)
     WRITE(99,'(A)') 'TITLE="Probes records versus time"'        !
-    WRITE(99,'(61A)') 'VARIABLES = "time" ', ('"p'//TRIM(int2str(i1))//'" ',i1=1,nprobes)
+    WRITE(99,'(101A)') 'VARIABLES = "time" ', ('"p'//TRIM(int2str(i1))//'" ',i1=1,nprobes)
 ENDIF
 !
 IF (i_sw == 1) THEN
@@ -176,7 +176,7 @@ IMPLICIT NONE
 INTEGER, INTENT(IN)               :: i_3d, i_a, i_vol, i_2D, i_max, N_stop, i_prob
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: a_eta, a_phis, da_eta
 REAL(RP), DIMENSION(m1,m2)        :: eta, phis
-REAL(RP) :: time, volume, energy(4), E_0(4), E_tot
+REAL(RP) :: time, volume, energy(3), E_0(3), E_tot
 ! Local variables
 INTEGER                        :: ii, i1, i2, it
 REAL(RP)                       :: a_1, eta_mult, min_val, max_val
@@ -286,9 +286,10 @@ IF (i_a == 1) THEN
         ELSE
             WRITE(2,103)'ZONE T = "',time*T_out,'", I=',n1o2p1,', J=',n2
         ENDIF
+        ! Negatives ky first
         DO i2 = n2o2p1+1, n2
             DO i1 = 1, n1o2p1
-                WRITE(2,202) kx(i1)/L_out, - ky_n2(n2-i2+2)/L_out, abs_eta(i1,i2), abs_phis(i1,i2), log_eta(i1,i2), log_phis(i1,i2)
+                WRITE(2,202) kx(i1)/L_out, ky_n2(i2)/L_out, abs_eta(i1,i2), abs_phis(i1,i2), log_eta(i1,i2), log_phis(i1,i2)
             ENDDO
         ENDDO
         DO i2 = 1, n2o2p1
@@ -321,10 +322,10 @@ ENDIF
 IF (i_vol == 1) THEN
     volume = volume * xlen_star
     IF (n2 /= 1) volume = volume * ylen_star
-    IF (ABS(E_o(4)) > tiny) THEN
-        WRITE(3,303) time*T_out, volume*L_out, (energy(i1),i1=1,4), ABS(energy(4)-E_0(4))/E_0(4),E_tot
+    IF (ABS(E_0(3)) > tiny) THEN
+        WRITE(3,303) time*T_out, volume*L_out, (energy(i1),i1=1,3), ABS(energy(3)-E_0(3))/E_0(3),E_tot
     ELSE
-        WRITE(3,303) time*T_out, volume*L_out, (energy(i1),i1=1,4), 0.0_rp,E_tot
+        WRITE(3,303) time*T_out, volume*L_out, (energy(i1),i1=1,3), 0.0_rp,E_tot
     ENDIF
    303 FORMAT(7 (ES12.5,X),ES12.5)
 ENDIF
@@ -374,7 +375,11 @@ IF (i_prob == 1) THEN ! probes output
         ENDDO
     ENDDO
     ! For the output of probes, use Hs_real and Tp_real...
-    WRITE(99,'(6(ES13.5,X))') time * T_out, (eta_probe(ii)* L_out, ii=1,nprobes)
+    WRITE(99,'(101(ES13.5,X))') time * T_out, (eta_probe(ii)* L_out, ii=1,nprobes)
+    IF (nprobes.GT.100) THEN
+        PRINT*, 'Change writing format in probes.dat file'
+        STOP
+    ENDIF
 ENDIF
 !
 IF (i_sw == 1) THEN ! time=0 has to be saved...

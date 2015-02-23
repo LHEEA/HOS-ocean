@@ -69,7 +69,7 @@ INTEGER                    :: i1, i2, j, ideep, Nd1o2, err_x, err_y, err_xy
 ! Adaptive Time Step Runge Kutta scheme
 TYPE(RK_parameters)        :: RK_param
 !
-REAL(RP)                   :: dt_out, dt_rk4, dt_lin, dt, dt_correc, volume, energy(4)
+REAL(RP)                   :: dt_out, dt_rk4, dt_lin, dt, dt_correc, volume, energy(3)
 REAL(RP)                   :: time_cur, time_next, h_rk, h_loc
 REAL(RP)                   :: error_old, error2
 INTEGER                    :: idx_max(2)
@@ -385,7 +385,7 @@ DO i_steep = 1,5
                         volume = REAL(a_eta(1,1),RP)
                         energy = calc_energy(a_eta, a_phis, da_eta)
                         !
-                        PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
+                        PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(3)
                         !
                         CALL fourier_2_space(a_eta, eta)
                         CALL fourier_2_space(a_phis,phis)
@@ -493,7 +493,7 @@ DO i_steep = 1,5
                         volume = REAL(a_eta(1,1),RP)
                         energy = calc_energy(a_eta, a_phis, da_eta)
                         !
-                        PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
+                        PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(3)
                         !
                         CALL fourier_2_space(a_eta, eta)
                         CALL fourier_2_space(a_phis,phis)
@@ -1211,7 +1211,7 @@ IF (test_y.EQ.1) THEN
                                 volume = REAL(a_eta(1,1),RP)
                                 energy = calc_energy(a_eta, a_phis, da_eta)
                                 !
-                                PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
+                                PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(3)
                                 !
                                 CALL fourier_2_space(a_eta, eta)
                                 CALL fourier_2_space(a_phis,phis)
@@ -1318,7 +1318,7 @@ IF (test_y.EQ.1) THEN
                                volume = REAL(a_eta(1,1),RP)
                                energy = calc_energy(a_eta, a_phis, da_eta)
                                !
-                               PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
+                               PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(3)
                                !
                               CALL fourier_2_space(a_eta, eta)
                               CALL fourier_2_space(a_phis,phis)
@@ -2182,7 +2182,7 @@ IF (test_xy.EQ.1) THEN
                             volume = REAL(a_eta(1,1),RP)
                             energy = calc_energy(a_eta, a_phis, da_eta)
                             !
-                            PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
+                            PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(3)
                             !
                             CALL fourier_2_space(a_eta, eta)
                             CALL fourier_2_space(a_phis,phis)
@@ -2291,7 +2291,7 @@ IF (test_xy.EQ.1) THEN
                             volume = REAL(a_eta(1,1),RP)
                             energy = calc_energy(a_eta, a_phis, da_eta)
                             !
-                            PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(4)
+                            PRINT*,'time cur =',time_cur,' T_stop =', T_stop_star, 'vol =', volume, 'energy = ',energy(3)
                             !
                             CALL fourier_2_space(a_eta, eta)
                             CALL fourier_2_space(a_phis,phis)
@@ -2307,13 +2307,13 @@ IF (test_xy.EQ.1) THEN
                             WRITE(77,'(A,ES9.2,A,I4,A,I4)')'ZONE T = "',time_cur,'", I=',n1o2p1,', J=',n2
                             DO i2 = n2o2p1+1, n2
                                 DO i1 = 1, n1o2p1
-                                    WRITE(77,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') kx(i1), - ky(n2-i2+2), &
+                                    WRITE(77,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') kx(i1), ky_n2(i2), &
                                         ABS(a_eta(i1,i2)), ABS(a_phis(i1,i2))
                                 ENDDO
                             ENDDO
                             DO i2 = 1, n2o2p1
                                 DO i1 = 1, n1o2p1
-                                    WRITE(77,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') kx(i1), ky(i2), &
+                                    WRITE(77,'(ES10.3,X,ES10.3,X,ES10.3,X,ES10.3)') kx(i1), ky_n2(i2), &
                                         ABS(a_eta(i1,i2)), ABS(a_phis(i1,i2))
                                 ENDDO
                             ENDDO

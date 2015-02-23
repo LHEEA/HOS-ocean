@@ -126,7 +126,7 @@ INTEGER  :: i_out_dim
 REAL(RP) :: g_star, xlen_star, ylen_star, T_stop_star, f_out_star, depth_star
 !
 ! Volume and energy
-REAL(RP) :: volume, E_o(4)
+REAL(RP) :: volume, E_o(3)
 !
 ! Output numbers
 INTEGER :: i_3d, i_a_3d, i_2d, i_prob
