@@ -50,7 +50,7 @@ IMPLICIT NONE
 COMPLEX(CP), DIMENSION(m1o2p1,m2), INTENT(IN) :: a_eta, a_phis, da_eta
 REAL(RP), DIMENSION(4)                        :: calc_energy
 !
- calc_energy(:)=0.0_rp
+calc_energy(:)=0.0_rp
 ! Potential energy
 !
 !  int eta * eta dx (gravity related)

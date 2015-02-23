@@ -29,7 +29,7 @@ USE maths, ONLY : dichoto
 IMPLICIT NONE
 !
 INTERFACE alpha_adim
-   MODULE PROCEDURE alpha_adim_r, alpha_adim_v
+    MODULE PROCEDURE alpha_adim_r, alpha_adim_v
 END INTERFACE
 !
 CONTAINS
@@ -45,12 +45,12 @@ REAL(RP)       :: asympt
 !
 asympt = (N-1.0_rp)*PI
 IF (xtanx(asympt-PI/4.0_rp) <= - (TWOPI*f)**2 * h / g) THEN
-   alpha_r = dichoto( xtanx, - (TWOPI*f)**2 * h / g, asympt-PI/4.0_rp, asympt, prec )
-   alpha_r = alpha_r / h
+    alpha_r = dichoto( xtanx, - (TWOPI*f)**2 * h / g, asympt-PI/4.0_rp, asympt, prec )
+    alpha_r = alpha_r / h
 ELSE IF (xtanx(asympt-PI/4.0_rp) > - (TWOPI*f)**2 * h / g) THEN
-   alpha_r = dichoto( xtanx, - (TWOPI*f)**2 * h / g, asympt-PI/2.0_rp+prec, asympt-PI/4.0_rp, prec )
-   alpha_r = alpha_r / h
-END IF
+    alpha_r = dichoto( xtanx, - (TWOPI*f)**2 * h / g, asympt-PI/2.0_rp+prec, asympt-PI/4.0_rp, prec )
+    alpha_r = alpha_r / h
+ENDIF
 !
 END FUNCTION alpha_r
 !
@@ -73,11 +73,11 @@ tmp       = prec
 alpha_min = Npi - PI/2.0_rp + tmp
 f0        = - (TWOPI*f)**2
 DO WHILE(xtanx(alpha_min) > f0)
-   tmp       = tmp / 2.0_rp
-      WRITE(*,*) N,tmp, f0, xtanx(alpha_min)
-      READ(*,*)
-   alpha_min = alpha_min - tmp
-END DO
+    tmp       = tmp / 2.0_rp
+        WRITE(*,*) N,tmp, f0, xtanx(alpha_min)
+        READ(*,*)
+    alpha_min = alpha_min - tmp
+ENDDO
 alpha_adim_r = dichoto( xtanx, f0, alpha_min, alpha_max, prec )
 !
 END FUNCTION alpha_adim_r
@@ -92,25 +92,25 @@ REAL(RP)                     :: f, prec
 INTEGER, DIMENSION(:)        :: N
 REAL(RP), DIMENSION(SIZE(N)) :: alpha_adim_v
 INTEGER                      :: ibou
-REAL(RP)     				 :: alpha_min, alpha_max, tmp, f0, Npi
+REAL(RP)                     :: alpha_min, alpha_max, tmp, f0, Npi
 !
 ! evaluation of alpha_N
 !
 f0 = - (TWOPI*f)**2
 DO ibou = 1, SIZE(N)
-   !
-   Npi       = N(ibou) * PI
-   alpha_max = Npi
-   tmp       = prec
-   alpha_min = Npi - PI/2.0_rp + tmp
-   DO WHILE(xtanx(alpha_min) > f0)
-      tmp       = tmp / 2.0_rp
-      WRITE(*,*) N(ibou),tmp, f0, xtanx(alpha_min)
-      alpha_min = alpha_min - tmp
-   END DO
-   alpha_adim_v(ibou) = dichoto( xtanx, f0, alpha_min, alpha_max, prec )
-   !
-END DO
+    !
+    Npi       = N(ibou) * PI
+    alpha_max = Npi
+    tmp       = prec
+    alpha_min = Npi - PI/2.0_rp + tmp
+    DO WHILE(xtanx(alpha_min) > f0)
+        tmp       = tmp / 2.0_rp
+        WRITE(*,*) N(ibou),tmp, f0, xtanx(alpha_min)
+        alpha_min = alpha_min - tmp
+    ENDDO
+    alpha_adim_v(ibou) = dichoto( xtanx, f0, alpha_min, alpha_max, prec )
+    !
+ENDDO
 !
 END FUNCTION alpha_adim_v
 !
@@ -124,11 +124,11 @@ REAL(RP)       :: wave_number_r
 ! evaluation of k
 !
 IF ( (TWOPI*f)**2 / g * h < log(HUGE(1.0_rp))-1.0_rp ) THEN
-   wave_number_r = dichoto(xthx,(TWOPI*f)**2 * h / g,0.0_rp,10000000.0_rp,prec)
-   wave_number_r = wave_number_r / h
+    wave_number_r = dichoto(xthx,(TWOPI*f)**2 * h / g,0.0_rp,10000000.0_rp,prec)
+    wave_number_r = wave_number_r / h
 ELSE
-   wave_number_r = (TWOPI*f)**2 / g
-END IF
+    wave_number_r = (TWOPI*f)**2 / g
+ENDIF
 !
 END FUNCTION wave_number_r
 !
@@ -142,11 +142,11 @@ REAL(RP)       :: wave_number_adim_r
 ! evaluation of k
 !
 IF ( (TWOPI*f)**2 < log(HUGE(1.0_rp))-1.0_rp ) THEN
-   wave_number_adim_r = dichoto(xthx,(TWOPI*f)**2,0.0_rp,1.0e6_rp,prec)
+    wave_number_adim_r = dichoto(xthx,(TWOPI*f)**2,0.0_rp,1.0e6_rp,prec)
 ELSE
-   WRITE(*,*) 'big frequency'
-   wave_number_adim_r = (TWOPI*f)**2
-END IF
+    WRITE(*,*) 'big frequency'
+    wave_number_adim_r = (TWOPI*f)**2
+ENDIF
 !
 END FUNCTION wave_number_adim_r
 !
@@ -158,13 +158,13 @@ IMPLICIT NONE
 REAL(RP), DIMENSION(:)       :: f
 REAL(RP)                     :: h,g,prec
 REAL(RP), DIMENSION(SIZE(f)) :: wave_number_v
-INTEGER                		 :: ibou
+INTEGER                      :: ibou
 !
 ! evaluation of k
 !
 DO ibou = 1, SIZE(f)
-   wave_number_v(ibou) = wave_number_r(f(ibou), h, g, prec)
-END DO
+    wave_number_v(ibou) = wave_number_r(f(ibou), h, g, prec)
+ENDDO
 !
 END FUNCTION wave_number_v
 !
@@ -217,10 +217,10 @@ REAL(RP)   :: k, prec
 prec = EPSILON(f)
 k    = wave_number_r(f, h, g, prec)
 IF ( 2.0_rp*k*h < log(HUGE(1.0_rp))-1.0_rp ) THEN
-   group_velocity = phase_velocity(f,h,g) / 2.0_rp * (1.0_rp + (2.0_rp*k*h) / SINH(2.0_rp*k*h))
+    group_velocity = phase_velocity(f,h,g) / 2.0_rp * (1.0_rp + (2.0_rp*k*h) / SINH(2.0_rp*k*h))
 ELSE
-   group_velocity = phase_velocity(f,h,g) / 2.0_rp
-END IF
+    group_velocity = phase_velocity(f,h,g) / 2.0_rp
+ENDIF
 !
 END FUNCTION group_velocity
 !
@@ -236,12 +236,12 @@ prec = EPSILON(f)
 k    = wave_number_r(f, h, g, prec)
 v_g  = group_velocity(f,h,g)
 IF ( 2.0_rp*k*h < log(HUGE(1.0_rp))-1.0_rp ) THEN
-   omega_seconde = v_g/k*(1.0_rp-2.0_rp*k*h*TANH(k*h))-v_g**2/(TWOPI*f)+phase_velocity(f,h,g) / (2.0_rp*k) * (2.0_rp*k*h / &
-   TANH(2.0_rp*k*h)-1.0_rp)
+    omega_seconde = v_g/k*(1.0_rp-2.0_rp*k*h*TANH(k*h))-v_g**2/(TWOPI*f)+phase_velocity(f,h,g) / (2.0_rp*k) * (2.0_rp*k*h / &
+    TANH(2.0_rp*k*h)-1.0_rp)
 ELSE
-   WRITE(*,*) 'not finished'
-   omega_seconde = - v_g**2/(TWOPI*f)
-END IF
+    WRITE(*,*) 'not finished'
+    omega_seconde = - v_g**2/(TWOPI*f)
+ENDIF
 !
 END FUNCTION omega_seconde
 !

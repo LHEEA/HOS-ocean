@@ -31,25 +31,25 @@ USE variables_3D
 IMPLICIT NONE
 !
 TYPE RF_data
-   ! see the Rienecker and Fenton solver (eg wave_rf_hinf_N12.f90)
-   CHARACTER(LEN=100)                	:: file_name
-   INTEGER                           	:: N_eta, N_phi
-   REAL(RP)                          	:: ka, lambda, k, T, C, CC, CPH, H, omega
-   REAL(RP)                          	:: depth, Q, R
-   LOGICAL                           	:: inf_depth
-   REAL(RP), ALLOCATABLE, DIMENSION(:)  :: A, B
-   !
-   INTEGER                           	:: N_space          ! number of points
-   REAL(RP), ALLOCATABLE, DIMENSION(:)  :: x, eta, phis, W  ! values
-   ! building in space on N>=N_space, then moving to Fourier, keeping the N_space first
-   ! modes and back to space on N_space
-   REAL(RP), ALLOCATABLE, DIMENSION(:)  :: eta_dealiased, phis_dealiased, W_dealiased
+    ! see the Rienecker and Fenton solver (eg wave_rf_hinf_N12.f90)
+    CHARACTER(LEN=100)                  :: file_name
+    INTEGER                             :: N_eta, N_phi
+    REAL(RP)                            :: ka, lambda, k, T, C, CC, CPH, H, omega
+    REAL(RP)                            :: depth, Q, R
+    LOGICAL                             :: inf_depth
+    REAL(RP), ALLOCATABLE, DIMENSION(:) :: A, B
+    !
+    INTEGER                             :: N_space          ! number of points
+    REAL(RP), ALLOCATABLE, DIMENSION(:) :: x, eta, phis, W  ! values
+    ! building in space on N>=N_space, then moving to Fourier, keeping the N_space first
+    ! modes and back to space on N_space
+    REAL(RP), ALLOCATABLE, DIMENSION(:)  :: eta_dealiased, phis_dealiased, W_dealiased
 !    ! building in space on N_space from the N_space first modes of the RF data
 !    REAL(RP), POINTER, DIMENSION(:)   :: eta_dealiased2, phis_dealiased2, W_dealiased2
-   !
-   INTEGER                           	:: N_space_press
-   REAL(RP), ALLOCATABLE, DIMENSION(:)  :: pressure
-   REAL(RP), ALLOCATABLE, DIMENSION(:,:):: coord_press
+    !
+    INTEGER                             :: N_space_press
+    REAL(RP), ALLOCATABLE, DIMENSION(:)  :: pressure
+    REAL(RP), ALLOCATABLE, DIMENSION(:,:):: coord_press
 END TYPE RF_data
 !
 !
@@ -89,12 +89,12 @@ ALLOCATE(RF_obj%A(RF_obj%N_eta+1), RF_obj%B(RF_obj%N_phi+1))
 !
 ! Coefficients for the potential phi
 DO i_loop = 1,RF_obj%N_phi+1
-   READ(967,*) i_tmp, RF_obj%B(i_loop)
-END DO
+    READ(967,*) i_tmp, RF_obj%B(i_loop)
+ENDDO
 ! Coefficients for the free surface elevation eta
 DO i_loop = 1,RF_obj%N_eta+1
-   READ(967,*) i_tmp, RF_obj%A(i_loop)
-END DO
+    READ(967,*) i_tmp, RF_obj%A(i_loop)
+ENDDO
 !
 CLOSE(967)
 !
@@ -104,7 +104,7 @@ END SUBROUTINE read_RF_data
 !
 SUBROUTINE build_RF_reference(RF_obj, N_space, N_lambda)
 !
-use, intrinsic :: iso_c_binding
+USE, INTRINSIC :: iso_c_binding
 !
 IMPLICIT NONE
 !
@@ -120,7 +120,7 @@ REAL(RP), DIMENSION(:), ALLOCATABLE :: TF, TF_w
 ! for FFTW transforms
 REAL(RP), DIMENSION(:), ALLOCATABLE    :: in_RF, in_RF2, s_2_f_RF, f_2_s_RF2
 COMPLEX(CP), DIMENSION(:), ALLOCATABLE :: out_RF, out_RF2
-type(C_PTR) :: plan_R2C_RF, plan_C2R_RF2
+TYPE(C_PTR) :: plan_R2C_RF, plan_C2R_RF2
 !
 ! Requested number of points in space
 RF_obj%N_space = N_space
@@ -129,16 +129,16 @@ ALLOCATE(RF_obj%x(RF_obj%N_space))
 ALLOCATE(RF_obj%phis(RF_obj%N_space), RF_obj%eta(RF_obj%N_space), RF_obj%W(RF_obj%N_space))
 !
 IF (PRESENT(N_lambda)) THEN
-   ! Building the solution on several wavelengths
-   delx = N_lambda * RF_obj%lambda / RF_obj%N_space
+    ! Building the solution on several wavelengths
+    delx = N_lambda * RF_obj%lambda / RF_obj%N_space
 ELSE
-   ! Building the solution on one wavelength
-   delx = RF_obj%lambda / RF_obj%N_space
-END IF
+    ! Building the solution on one wavelength
+    delx = RF_obj%lambda / RF_obj%N_space
+ENDIF
 ! Position vector
 DO i_loop = 1, RF_obj%N_space
-   RF_obj%x(i_loop) = REAL(i_loop - 1, RP) * delx
-END DO
+    RF_obj%x(i_loop) = REAL(i_loop - 1, RP) * delx
+ENDDO
 !
 ! Direct solution on N_space points from the modes of phi and eta
 ! (aliased if N_space < N_phi or N_eta)
@@ -149,49 +149,49 @@ ALLOCATE(phis_w(N_work), eta_w(N_work), W_w(N_work))
 x_w = RF_obj%x
 !
 DO i_loop = 1, N_work
-   ! temp
-   kx = RF_obj%k * x_w(i_loop)
-   ! Free surface elevation
-   eta_w(i_loop) = RF_obj%A(1) * 0.5_rp
-   DO j_loop = 1, RF_obj%N_eta
-      eta_w(i_loop) = eta_w(i_loop) + RF_obj%A(j_loop+1) * COS(j_loop*kx)
-   END DO
-   ! temp
-   keta = RF_obj%k * eta_w(i_loop)
-   ! Free surface potential
-   phis_w(i_loop) = (RF_obj%C + RF_obj%B(1)) * x_w(i_loop)
-   IF (RF_obj%inf_depth) THEN
-      DO j_loop = 1, RF_obj%N_phi
-         phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
-      END DO
-   ELSE
-      DO j_loop = 1, RF_obj%N_phi
-        IF (j_loop*RF_obj%k < 500.0_rp) THEN
-           phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) &
-           	* COSH(j_loop*(keta+RF_obj%k))/COSH(j_loop*RF_obj%k)
-        ELSE
-           phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
-        END IF
-      END DO
-   END IF
-   ! Vertical velocity on the free surface
-   W_w(i_loop) = 0.0_rp
-   IF (RF_obj%inf_depth) THEN
-      DO j_loop = 1, RF_obj%N_phi
-         W_w(i_loop) = W_w(i_loop) + REAL(j_loop, RP) * RF_obj%k * RF_obj%B(j_loop+1) &
-         	* SIN(REAL(j_loop, RP)*kx) * EXP(REAL(j_loop, RP)*keta)
-      END DO
-   ELSE
-      DO j_loop = 1, RF_obj%N_phi
-         jk = REAL(j_loop, RP) * RF_obj%k
-         IF (jk < 500.0_rp) THEN
-            W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * SINH(REAL(j_loop, RP)*keta+jk)/COSH(jk)
-         ELSE
-            W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(REAL(j_loop, RP)*keta)
-         END IF
-      END DO
-   END IF
-END DO
+    ! temp
+    kx = RF_obj%k * x_w(i_loop)
+    ! Free surface elevation
+    eta_w(i_loop) = RF_obj%A(1) * 0.5_rp
+    DO j_loop = 1, RF_obj%N_eta
+        eta_w(i_loop) = eta_w(i_loop) + RF_obj%A(j_loop+1) * COS(j_loop*kx)
+    ENDDO
+    ! temp
+    keta = RF_obj%k * eta_w(i_loop)
+    ! Free surface potential
+    phis_w(i_loop) = (RF_obj%C + RF_obj%B(1)) * x_w(i_loop)
+    IF (RF_obj%inf_depth) THEN
+        DO j_loop = 1, RF_obj%N_phi
+                phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
+        ENDDO
+    ELSE
+        DO j_loop = 1, RF_obj%N_phi
+            IF (j_loop*RF_obj%k < 500.0_rp) THEN
+               phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) &
+                * COSH(j_loop*(keta+RF_obj%k))/COSH(j_loop*RF_obj%k)
+            ELSE
+               phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
+            ENDIF
+        ENDDO
+    ENDIF
+    ! Vertical velocity on the free surface
+    W_w(i_loop) = 0.0_rp
+    IF (RF_obj%inf_depth) THEN
+        DO j_loop = 1, RF_obj%N_phi
+                W_w(i_loop) = W_w(i_loop) + REAL(j_loop, RP) * RF_obj%k * RF_obj%B(j_loop+1) &
+                                      * SIN(REAL(j_loop, RP) * kx) * EXP(REAL(j_loop, RP)*keta)
+        ENDDO
+    ELSE
+        DO j_loop = 1, RF_obj%N_phi
+            jk = REAL(j_loop, RP) * RF_obj%k
+            IF (jk < 500.0_rp) THEN
+                W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * SINH(REAL(j_loop, RP)*keta+jk)/COSH(jk)
+            ELSE
+                W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(REAL(j_loop, RP)*keta)
+            ENDIF
+        ENDDO
+    ENDIF
+ENDDO
 !
 RF_obj%eta  = eta_w
 RF_obj%phis = phis_w
@@ -201,12 +201,12 @@ RF_obj%W    = W_w
 ! building in space on N>=N_space, then moving to Fourier, keeping the N_space first
 ! modes and back to space on N_space
 IF (RF_obj%N_eta > RF_obj%N_space/2) THEN
-   N_work = 2 * 2**nextpow2(RF_obj%N_eta)
-   !
-   DEALLOCATE(x_w, phis_w, eta_w, W_w)
-   !
-   ALLOCATE(x_w(N_work))
-   ALLOCATE(phis_w(N_work), eta_w(N_work), W_w(N_work))
+    N_work = 2 * 2**nextpow2(RF_obj%N_eta)
+    !
+    DEALLOCATE(x_w, phis_w, eta_w, W_w)
+    !
+    ALLOCATE(x_w(N_work))
+    ALLOCATE(phis_w(N_work), eta_w(N_work), W_w(N_work))
     !
     ! Create plan and other stuff for FFTW tranforms
     !
@@ -223,69 +223,69 @@ IF (RF_obj%N_eta > RF_obj%N_space/2) THEN
     f_2_s_RF2(1)             = 1.0_rp
     f_2_s_RF2(2:N_space/2+1) = 0.5_rp
     IF(iseven(N_space)) f_2_s_RF2(N_space/2+1)   = 1.0_rp
-   !
-   IF (PRESENT(N_lambda)) THEN
-      delx = N_lambda * RF_obj%lambda / N_work
-   ELSE
-      delx = RF_obj%lambda / N_work
-   END IF
-   DO i_loop = 1, N_work
-      x_w(i_loop) = REAL(i_loop - 1, RP) * delx
-   END DO
-   !
-   DO i_loop = 1, N_work
-      ! temp
-      kx = RF_obj%k * x_w(i_loop)
-      ! Free surface elevation
-      eta_w(i_loop) = RF_obj%A(1) * 0.5_rp
-      DO j_loop = 1, RF_obj%N_eta
-         eta_w(i_loop) = eta_w(i_loop) + RF_obj%A(j_loop+1) * COS(j_loop*kx)
-      END DO
-      ! temp
-      keta = RF_obj%k * eta_w(i_loop)
-      ! Free surface potential
-      phis_w(i_loop) = (RF_obj%C + RF_obj%B(1)) * x_w(i_loop)
-      IF (RF_obj%inf_depth) THEN
-         DO j_loop = 1, RF_obj%N_phi
-            phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
-         END DO
-      ELSE
-         DO j_loop = 1, RF_obj%N_phi
-            IF (j_loop*RF_obj%k < 500.0_rp) THEN
-               phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) &
-               	* COSH(j_loop*(keta+RF_obj%k))/COSH(j_loop*RF_obj%k)
-            ELSE
-               phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
-            END IF
-         END DO
-      END IF
-      ! Vertical velocity on the free surface
-      W_w(i_loop) = 0.0_rp
-      IF (RF_obj%inf_depth) THEN
-         DO j_loop = 1, RF_obj%N_phi
-            W_w(i_loop) = W_w(i_loop) + REAL(j_loop, RP) * RF_obj%k * RF_obj%B(j_loop+1) &
-            	* SIN(REAL(j_loop, RP)*kx) * EXP(REAL(j_loop, RP)*keta)
-         END DO
-      ELSE
-         DO j_loop = 1, RF_obj%N_phi
-            jk = REAL(j_loop, RP) * RF_obj%k
-            IF (jk < 500.0_rp) THEN
-               W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * SINH(REAL(j_loop, RP)*keta+jk)/COSH(jk)
-            ELSE
-               W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(REAL(j_loop, RP)*keta)
-            END IF
-         END DO
-      END IF
-   END DO
-   !
-   ALLOCATE(TF_w(N_work), TF(RF_obj%N_space))
+    !
+    IF (PRESENT(N_lambda)) THEN
+        delx = N_lambda * RF_obj%lambda / N_work
+    ELSE
+        delx = RF_obj%lambda / N_work
+    ENDIF
+    DO i_loop = 1, N_work
+        x_w(i_loop) = REAL(i_loop - 1, RP) * delx
+    ENDDO
+    !
+    DO i_loop = 1, N_work
+        ! temp
+        kx = RF_obj%k * x_w(i_loop)
+        ! Free surface elevation
+        eta_w(i_loop) = RF_obj%A(1) * 0.5_rp
+        DO j_loop = 1, RF_obj%N_eta
+                eta_w(i_loop) = eta_w(i_loop) + RF_obj%A(j_loop+1) * COS(j_loop*kx)
+        ENDDO
+        ! temp
+        keta = RF_obj%k * eta_w(i_loop)
+        ! Free surface potential
+        phis_w(i_loop) = (RF_obj%C + RF_obj%B(1)) * x_w(i_loop)
+        IF (RF_obj%inf_depth) THEN
+            DO j_loop = 1, RF_obj%N_phi
+                phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
+            ENDDO
+        ELSE
+            DO j_loop = 1, RF_obj%N_phi
+                IF (j_loop*RF_obj%k < 500.0_rp) THEN
+                    phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) &
+                    * COSH(j_loop*(keta+RF_obj%k))/COSH(j_loop*RF_obj%k)
+                ELSE
+                    phis_w(i_loop) = phis_w(i_loop) + RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*keta)
+                ENDIF
+            ENDDO
+        ENDIF
+        ! Vertical velocity on the free surface
+        W_w(i_loop) = 0.0_rp
+        IF (RF_obj%inf_depth) THEN
+            DO j_loop = 1, RF_obj%N_phi
+                W_w(i_loop) = W_w(i_loop) + REAL(j_loop, RP) * RF_obj%k * RF_obj%B(j_loop+1) &
+                * SIN(REAL(j_loop, RP)*kx) * EXP(REAL(j_loop, RP)*keta)
+            ENDDO
+        ELSE
+            DO j_loop = 1, RF_obj%N_phi
+                jk = REAL(j_loop, RP) * RF_obj%k
+                IF (jk < 500.0_rp) THEN
+                    W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * SINH(REAL(j_loop, RP)*keta+jk)/COSH(jk)
+                ELSE
+                    W_w(i_loop) = W_w(i_loop) + jk * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(REAL(j_loop, RP)*keta)
+                ENDIF
+            ENDDO
+        ENDIF
+    ENDDO
+    !
+    ALLOCATE(TF_w(N_work), TF(RF_obj%N_space))
     !
     in_RF   = eta_w(1:N_work)
-    call dfftw_execute_dft_r2c(plan_R2C_RF,in_RF,out_RF)
+    CALL dfftw_execute_dft_r2c(plan_R2C_RF,in_RF,out_RF)
     !
     out_RF2(1:N_space/2+1) = out_RF(1:N_space/2+1) * s_2_f_RF(1:N_space/2+1)
     IF (iseven(N_space)) THEN ! last mode of eta will be a cosine without corresponding sine for phis and W
-    	out_RF2(N_space/2+1)   = ((0.0_rp, 0.0_rp))
+        out_RF2(N_space/2+1)   = ((0.0_rp, 0.0_rp))
     ENDIF
     !
     ! Back Transform
@@ -294,17 +294,17 @@ IF (RF_obj%N_eta > RF_obj%N_space/2) THEN
     ALLOCATE(eta_w(RF_obj%N_space))
     !
     out_RF2 = out_RF2 * f_2_s_RF2
-    call dfftw_execute_dft_c2r(plan_C2R_RF2,out_RF2,in_RF2)
+    CALL dfftw_execute_dft_c2r(plan_C2R_RF2,out_RF2,in_RF2)
     eta_w = in_RF2
     !
     !
     !
     in_RF   = phis_w(1:N_work)
-    call dfftw_execute_dft_r2c(plan_R2C_RF,in_RF,out_RF)
+    CALL dfftw_execute_dft_r2c(plan_R2C_RF,in_RF,out_RF)
     !
     out_RF2(1:N_space/2+1) = out_RF(1:N_space/2+1) * s_2_f_RF(1:N_space/2+1)
     IF (iseven(N_space)) THEN ! last mode of eta will be a cosine without corresponding sine for phis and W
-    	out_RF2(N_space/2+1)   = ((0.0_rp, 0.0_rp))
+        out_RF2(N_space/2+1)   = ((0.0_rp, 0.0_rp))
     ENDIF
     !
     ! Back Transform
@@ -313,17 +313,17 @@ IF (RF_obj%N_eta > RF_obj%N_space/2) THEN
     ALLOCATE(phis_w(RF_obj%N_space))
     !
     out_RF2 = out_RF2 * f_2_s_RF2
-    call dfftw_execute_dft_c2r(plan_C2R_RF2,out_RF2,in_RF2)
+    CALL dfftw_execute_dft_c2r(plan_C2R_RF2,out_RF2,in_RF2)
     phis_w = in_RF2
     !
     !
     !
     in_RF   = W_w(1:N_work)
-    call dfftw_execute_dft_r2c(plan_R2C_RF,in_RF,out_RF)
+    CALL dfftw_execute_dft_r2c(plan_R2C_RF,in_RF,out_RF)
     !
     out_RF2(1:N_space/2+1) = out_RF(1:N_space/2+1) * s_2_f_RF(1:N_space/2+1)
     IF (iseven(N_space)) THEN ! last mode of eta will be a cosine without corresponding sine for phis and W
-    	out_RF2(N_space/2+1)   = ((0.0_rp, 0.0_rp))
+        out_RF2(N_space/2+1)   = ((0.0_rp, 0.0_rp))
     ENDIF
     !
     ! Back Transform
@@ -332,7 +332,7 @@ IF (RF_obj%N_eta > RF_obj%N_space/2) THEN
     ALLOCATE(W_w(RF_obj%N_space))
     !
     out_RF2 = out_RF2 * f_2_s_RF2
-    call dfftw_execute_dft_c2r(plan_C2R_RF2,out_RF2,in_RF2)
+    CALL dfftw_execute_dft_c2r(plan_C2R_RF2,out_RF2,in_RF2)
     W_w = in_RF2
     !
     ! Deallocate temporary variables for FFTW tranforms + destroy plans
@@ -341,7 +341,7 @@ IF (RF_obj%N_eta > RF_obj%N_space/2) THEN
     CALL dfftw_destroy_plan(plan_C2R_RF2)
     DEALLOCATE(in_RF, out_RF, in_RF2, out_RF2, s_2_f_RF, f_2_s_RF2, TF_w, TF)
     CALL dfftw_cleanup
-END IF
+ENDIF
 ! GD : modif feb. 2013 put this outside the IF
 ALLOCATE(RF_obj%phis_dealiased(RF_obj%N_space), RF_obj%eta_dealiased(RF_obj%N_space), &
 RF_obj%W_dealiased(RF_obj%N_space))
@@ -379,53 +379,53 @@ N_work = RF_obj%N_space_press
 ALLOCATE(phit_w(N_work), phix_w(N_work), phiz_w(N_work))
 !
 DO i_loop = 1, N_work
-   ! temp
-   kx = RF_obj%k * RF_obj%coord_press(i_loop, 1) - RF_obj%omega * time
-   kz = RF_obj%k * RF_obj%coord_press(i_loop, 2)
-   ! Free surface elevation
-   eta_w = RF_obj%A(1) * 0.5_rp
-   DO j_loop = 1, RF_obj%N_eta
-      eta_w = eta_w + RF_obj%A(j_loop+1) * COS(j_loop*kx)
-   END DO
-   IF ( ((RF_obj%coord_press(i_loop, 2)>=0.0_rp) .AND. (RF_obj%coord_press(i_loop, 2) <= &
+    ! temp
+    kx = RF_obj%k * RF_obj%coord_press(i_loop, 1) - RF_obj%omega * time
+    kz = RF_obj%k * RF_obj%coord_press(i_loop, 2)
+    ! Free surface elevation
+    eta_w = RF_obj%A(1) * 0.5_rp
+    DO j_loop = 1, RF_obj%N_eta
+        eta_w = eta_w + RF_obj%A(j_loop+1) * COS(j_loop*kx)
+    ENDDO
+    IF ( ((RF_obj%coord_press(i_loop, 2)>=0.0_rp) .AND. (RF_obj%coord_press(i_loop, 2) <= &
          (1.0_rp + height_threshold) * eta_w)) .OR. &
          ((RF_obj%coord_press(i_loop, 2)<0.0_rp) .AND. (RF_obj%coord_press(i_loop, 2) <= &
          (1.0_rp - height_threshold) * eta_w)) ) THEN
-      ! Derivatives of the potential
-      phit_w(i_loop) = 0.0_rp
-      phix_w(i_loop) = RF_obj%C + RF_obj%B(1)
-      phiz_w(i_loop) = 0.0_rp
-      IF (RF_obj%inf_depth) THEN
-         DO j_loop = 1, RF_obj%N_phi
-            phit_w(i_loop) = phit_w(i_loop) - j_loop * RF_obj%omega * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
-            phix_w(i_loop) = phix_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
-            phiz_w(i_loop) = phiz_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*kz)
-         END DO
-      ELSE
-         DO j_loop = 1, RF_obj%N_phi
-           IF (j_loop*RF_obj%k < 500.0_rp) THEN
-              phit_w(i_loop) = phit_w(i_loop) - j_loop * RF_obj%omega * RF_obj%B(j_loop+1) * COS(j_loop*kx) &
-              	* COSH(j_loop*(kz+RF_obj%k))/COSH(j_loop*RF_obj%k)
-              phix_w(i_loop) = phix_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * COS(j_loop*kx) &
-              	* COSH(j_loop*(kz+RF_obj%k))/COSH(j_loop*RF_obj%k)
-              phiz_w(i_loop) = phiz_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * SIN(j_loop*kx) &
-              	* SINH(j_loop*(kz+RF_obj%k))/COSH(j_loop*RF_obj%k)
-           ELSE
-               phit_w(i_loop) = phit_w(i_loop) - j_loop * RF_obj%omega * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
-               phix_w(i_loop) = phix_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
-               phiz_w(i_loop) = phiz_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*kz)
-           END IF
-         END DO
-      END IF
-      RF_obj%pressure(i_loop)  = - 1.0_rp * RF_obj%coord_press(i_loop, 2) - phit_w(i_loop) &
-      	- 0.5_rp * (phix_w(i_loop) * phix_w(i_loop) + phiz_w(i_loop) * phiz_w(i_loop))
-   ELSE
-      phit_w(i_loop) = 0.0_rp
-      phix_w(i_loop) = 0.0_rp
-      phiz_w(i_loop) = 0.0_rp
-      RF_obj%pressure(i_loop)  = 0.0_rp
-   END IF
-END DO
+        ! Derivatives of the potential
+        phit_w(i_loop) = 0.0_rp
+        phix_w(i_loop) = RF_obj%C + RF_obj%B(1)
+        phiz_w(i_loop) = 0.0_rp
+        IF (RF_obj%inf_depth) THEN
+            DO j_loop = 1, RF_obj%N_phi
+                phit_w(i_loop) = phit_w(i_loop) - j_loop * RF_obj%omega * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
+                phix_w(i_loop) = phix_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
+                phiz_w(i_loop) = phiz_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*kz)
+            ENDDO
+        ELSE
+            DO j_loop = 1, RF_obj%N_phi
+                IF (j_loop*RF_obj%k < 500.0_rp) THEN
+                    phit_w(i_loop) = phit_w(i_loop) - j_loop * RF_obj%omega * RF_obj%B(j_loop+1) * COS(j_loop*kx) &
+                        * COSH(j_loop*(kz+RF_obj%k))/COSH(j_loop*RF_obj%k)
+                    phix_w(i_loop) = phix_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * COS(j_loop*kx) &
+                        * COSH(j_loop*(kz+RF_obj%k))/COSH(j_loop*RF_obj%k)
+                    phiz_w(i_loop) = phiz_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * SIN(j_loop*kx) &
+                        * SINH(j_loop*(kz+RF_obj%k))/COSH(j_loop*RF_obj%k)
+                ELSE
+                    phit_w(i_loop) = phit_w(i_loop) - j_loop * RF_obj%omega * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
+                    phix_w(i_loop) = phix_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * COS(j_loop*kx) * EXP(j_loop*kz)
+                    phiz_w(i_loop) = phiz_w(i_loop) + j_loop * RF_obj%k     * RF_obj%B(j_loop+1) * SIN(j_loop*kx) * EXP(j_loop*kz)
+                ENDIF
+            ENDDO
+        ENDIF
+        RF_obj%pressure(i_loop)  = - 1.0_rp * RF_obj%coord_press(i_loop, 2) - phit_w(i_loop) &
+                                   - 0.5_rp * (phix_w(i_loop) * phix_w(i_loop) + phiz_w(i_loop) * phiz_w(i_loop))
+    ELSE
+        phit_w(i_loop) = 0.0_rp
+        phix_w(i_loop) = 0.0_rp
+        phiz_w(i_loop) = 0.0_rp
+        RF_obj%pressure(i_loop)  = 0.0_rp
+    ENDIF
+ENDDO
 !
 END SUBROUTINE build_RF_pressure
 !
@@ -450,16 +450,16 @@ WRITE(*,'(A,I3)')      'Modes for eta:  ', RF_obj%N_eta
 WRITE(*,'(A,L1)')      'Infinite depth: ', RF_obj%inf_depth
 !
 IF (ALLOCATED(RF_obj%A)) THEN
-   WRITE(*,'(A,ES25.16)') 'Amplitude 0 for eta: ', RF_obj%A(1)
-   WRITE(*,'(A,ES25.16)') 'Amplitude 1 for eta: ', RF_obj%A(2)
-   WRITE(*,'(A,ES25.16)') 'Amplitude 2 for eta: ', RF_obj%A(3)
-END IF
+    WRITE(*,'(A,ES25.16)') 'Amplitude 0 for eta: ', RF_obj%A(1)
+    WRITE(*,'(A,ES25.16)') 'Amplitude 1 for eta: ', RF_obj%A(2)
+    WRITE(*,'(A,ES25.16)') 'Amplitude 2 for eta: ', RF_obj%A(3)
+ENDIF
 !
 IF (ALLOCATED(RF_obj%B)) THEN
-   WRITE(*,'(A,ES25.16)') 'Amplitude 0 for phi: ', RF_obj%B(1)
-   WRITE(*,'(A,ES25.16)') 'Amplitude 1 for phi: ', RF_obj%B(2)
-   WRITE(*,'(A,ES25.16)') 'Amplitude 2 for phi: ', RF_obj%B(3)
-END IF
+    WRITE(*,'(A,ES25.16)') 'Amplitude 0 for phi: ', RF_obj%B(1)
+    WRITE(*,'(A,ES25.16)') 'Amplitude 1 for phi: ', RF_obj%B(2)
+    WRITE(*,'(A,ES25.16)') 'Amplitude 2 for phi: ', RF_obj%B(3)
+ENDIF
 !
 WRITE(*,'(A,I3)')      'Points for eta, phis and W: ', RF_obj%N_space
 !
@@ -474,9 +474,9 @@ INTEGER :: N, nextpow2, P, twopP
 P=0
 twopP = 1
 DO WHILE (twopP < N)
-   P=P+1
-   twopP = twopP * 2
-END DO
+    P=P+1
+    twopP = twopP * 2
+ENDDO
 nextpow2 = P
 !
 END FUNCTION nextpow2

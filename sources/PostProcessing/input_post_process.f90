@@ -121,9 +121,9 @@ CALL build_read_format('R')
 READ(unit,format_read,ERR=101,END=101) description, input
 WRITE(*,'(A," : ",ES25.16)') description(1:N_descr), input
 IF (ABS(input) > tiny .AND. ABS(input) * 1.0E+16_rp < 1.0E+5_rp) THEN
-   WRITE(*,'(A,A)') 'Numeric point is probably missing in current input ',description
-   STOP
-END IF
+    WRITE(*,'(A,A)') 'Numeric point is probably missing in current input ',description
+    STOP
+ENDIF
 RETURN
 101 CALL error_message(description)
 !
@@ -173,12 +173,12 @@ format_read(0) = '(A'
 format_read(1) = int2str(N_tot)
 format_read(2) = ','
 SELECT CASE (code)
-   CASE('I')          ! Integer
-      format_read(3) = 'I5'
-   CASE('F','R')      ! Real number
-      format_read(3) = 'ES25.16'
-   CASE('S','C','A')  ! Character string
-      format_read(3) = 'A'
+    CASE('I')          ! Integer
+        format_read(3) = 'I5'
+    CASE('F','R')      ! Real number
+        format_read(3) = 'ES25.16'
+    CASE('S','C','A')  ! Character string
+        format_read(3) = 'A'
 END SELECT
 format_read(4) = ')'
 ! WRITE(*,*) format_read

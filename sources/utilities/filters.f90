@@ -52,16 +52,16 @@ filt_rad = 0
 CALL space_2_fourier(f, temp_C_n)
 !
 IF(filt_rad == 0)THEN
-	temp_C_n(ns1+1:n1o2p1,1:n2)           = ((0.0_rp, 0.0_rp))
-	temp_C_n(1:n1o2p1,ns2+1:n2-(ns2+1)+2) = ((0.0_rp, 0.0_rp))
+    temp_C_n(ns1+1:n1o2p1,1:n2)           = ((0.0_rp, 0.0_rp))
+    temp_C_n(1:n1o2p1,ns2+1:n2-(ns2+1)+2) = ((0.0_rp, 0.0_rp))
 ELSEIF(filt_rad == 1)THEN
     k_filt = max(kx(n1o2p1),ky_n2(n2o2p1))
     DO i2 = 1,n2o2p1
         DO i1 = 1,n1o2p1
-    	    IF(k_abs(i1,i2) .gt. k_filt)THEN
+            IF(k_abs(i1,i2) .gt. k_filt)THEN
                 temp_C_n(i1,i2)           = ((0.0_rp, 0.0_rp))
                 temp_C_n(i1,n2-(i2+1)+2)  = ((0.0_rp, 0.0_rp))
-            ENDIF
+                ENDIF
         ENDDO
     ENDDO
 ENDIF
@@ -92,16 +92,16 @@ CALL space_2_fourier_big(f, temp_C_Nd)
 temp_C_n = reduce_C(temp_C_Nd)
 !
 IF(filt_rad == 0)THEN
-	temp_C_n(ns1+1:n1o2p1,1:n2)           = ((0.0_rp, 0.0_rp))
-	temp_C_n(1:n1o2p1,ns2+1:n2-(ns2+1)+2) = ((0.0_rp, 0.0_rp))
+    temp_C_n(ns1+1:n1o2p1,1:n2)           = ((0.0_rp, 0.0_rp))
+    temp_C_n(1:n1o2p1,ns2+1:n2-(ns2+1)+2) = ((0.0_rp, 0.0_rp))
 ELSEIF(filt_rad == 1)THEN
     k_filt = max(kx(n1o2p1),ky_n2(n2o2p1))
     DO i2 = 1,n2o2p1
         DO i1 = 1,n1o2p1
-            IF(k_abs(i1,i2) .gt. k_filt)THEN
+                IF(k_abs(i1,i2) .gt. k_filt)THEN
                 temp_C_n(i1,i2)           = ((0.0_rp, 0.0_rp))
                 temp_C_n(i1,n2-(i2+1)+2)  = ((0.0_rp, 0.0_rp))
-            ENDIF
+                ENDIF
         ENDDO
     ENDDO
 ENDIF
@@ -122,25 +122,25 @@ INTEGER, INTENT(OUT) :: ns1, ns2
 !
 ! Any filter ?
 IF (i_filt(1) == 1) THEN
-   ns1 = MAX(1,MIN(n1c_filt, n1o2p1)) ! Filtering
+    ns1 = MAX(1,MIN(n1c_filt, n1o2p1)) ! Filtering
 ELSE
-   ns1 = MAX(1,MIN(n1c, n1o2p1))
-END IF
+    ns1 = MAX(1,MIN(n1c, n1o2p1))
+ENDIF
 !
 IF (i_filt(2) == 1) THEN
-   ns2 = MAX(1,MIN(n2c_filt, n2o2p1)) ! Filtering
+    ns2 = MAX(1,MIN(n2c_filt, n2o2p1)) ! Filtering
 ELSE
-   ns2 = MAX(1,MIN(n2c, n2o2p1))
-END IF
+    ns2 = MAX(1,MIN(n2c, n2o2p1))
+ENDIF
 !
 ! GD change Feb 2013 : uncommented
 ! FIXME: check the influence, both are needed? n2 not sure...
 ! FIXME: influence to test on regular waves+irregular waves
 ! Removed 09/2014
 IF ((i_case == 9).OR.(i_case == 3).OR.(i_case == 31).OR.(i_case == 32)) THEN
-   !IF (iseven(n1)) ns1 = MIN(ns1, n1o2p1-1)
-   !IF (iseven(n2)) ns2 = MIN(ns2, n2o2p1-1)
-END IF
+    !IF (iseven(n1)) ns1 = MIN(ns1, n1o2p1-1)
+    !IF (iseven(n2)) ns2 = MIN(ns2, n2o2p1-1)
+ENDIF
 !
 END SUBROUTINE choose_filter
 !
@@ -155,26 +155,26 @@ REAL(RP), DIMENSION(1:md1,1:md2), INTENT(INOUT) :: var_ext
 !
 ! Prevent from doing 4 FFTs instead of 2 in 3D configurations
 IF (((i_dealias(1) == 1).AND.(MOD(order-1,order_max(1)) == 0)).OR.((i_dealias(2) == 1).AND.(MOD(order-1,order_max(2)) == 0))) THEN
-	CALL space_2_fourier_big(var_ext, temp_C_Nd)
+    CALL space_2_fourier_big(var_ext, temp_C_Nd)
 ENDIF
 !
 IF (i_dealias(1) == 1) THEN
-   IF (MOD(order-1,order_max(1)) == 0) THEN ! partial dealiasing along x-direction
-      !CALL space_2_fourier_big(var_ext, temp_C_Nd)
-      temp_C_Nd(N_dea(1)+1:Nd1o2p1,1:Nd2) = ((0.0_rp, 0.0_rp))
-      !CALL fourier_2_space_big(temp_C_Nd, var_ext)
-   END IF
-END IF
+    IF (MOD(order-1,order_max(1)) == 0) THEN ! partial dealiasing along x-direction
+        !CALL space_2_fourier_big(var_ext, temp_C_Nd)
+        temp_C_Nd(N_dea(1)+1:Nd1o2p1,1:Nd2) = ((0.0_rp, 0.0_rp))
+        !CALL fourier_2_space_big(temp_C_Nd, var_ext)
+    ENDIF
+ENDIF
 IF (i_dealias(2) == 1) THEN
-   IF (MOD(order-1,order_max(2)) == 0) THEN ! partial dealiasing along y-direction
-      !CALL space_2_fourier_big(var_ext, temp_C_Nd)
-      temp_C_Nd(1:Nd1o2p1,N_dea(2)+1:Nd2-(N_dea(2)+1)+2) = ((0.0_rp, 0.0_rp))
-      !CALL fourier_2_space_big(temp_C_Nd, var_ext)
-   END IF
-END IF
+    IF (MOD(order-1,order_max(2)) == 0) THEN ! partial dealiasing along y-direction
+        !CALL space_2_fourier_big(var_ext, temp_C_Nd)
+        temp_C_Nd(1:Nd1o2p1,N_dea(2)+1:Nd2-(N_dea(2)+1)+2) = ((0.0_rp, 0.0_rp))
+        !CALL fourier_2_space_big(temp_C_Nd, var_ext)
+    ENDIF
+ENDIF
 !
 IF (((i_dealias(1) == 1).AND.(MOD(order-1,order_max(1)) == 0)).OR.((i_dealias(2) == 1).AND.(MOD(order-1,order_max(2)) == 0))) THEN
-	CALL fourier_2_space_big(temp_C_Nd, var_ext)
+    CALL fourier_2_space_big(temp_C_Nd, var_ext)
 ENDIF
 !
 END SUBROUTINE dealias

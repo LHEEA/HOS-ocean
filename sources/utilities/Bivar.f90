@@ -2,7 +2,7 @@ MODULE Bivar
 !
 CONTAINS
 !
-subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
+SUBROUTINE idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
 !
 !*******************************************************************************
 !
@@ -249,10 +249,10 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
     iwk(1) = ndp
   else
     if ( ndp /= iwk(1) ) then
-      write ( *, '(a)' ) ' '
-      write ( *, '(a)' ) 'IDBVIP - Fatal error!'
-      write ( *, '(a)' ) '  MD = 2 or 3 but NDP was changed since last call.'
-      stop
+        write ( *, '(a)' ) ' '
+        write ( *, '(a)' ) 'IDBVIP - Fatal error!'
+        write ( *, '(a)' ) '  MD = 2 or 3 but NDP was changed since last call.'
+        stop
     end if
   end if
 
@@ -260,10 +260,10 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
     iwk(3) = nip
   else
     if ( nip < iwk(3) ) then
-      write ( *, '(a)' ) ' '
-      write ( *, '(a)' ) 'IDBVIP - Fatal error!'
-      write ( *, '(a)' ) '  MD = 3 but NIP was changed since last call.'
-      stop
+        write ( *, '(a)' ) ' '
+        write ( *, '(a)' ) 'IDBVIP - Fatal error!'
+        write ( *, '(a)' ) '  MD = 3 but NIP was changed since last call.'
+        stop
     end if
   end if
 !
@@ -281,14 +281,14 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
 !
   if ( md == 1 ) then
 
-    call idtang ( ndp, xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), &
-      iwk(jwiwl), iwk(jwiwp), wk )
+    CALL idtang ( ndp, xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), &
+        iwk(jwiwl), iwk(jwiwp), wk )
 
     iwk(5) = nt
     iwk(6) = nl
 
     if ( nt == 0 ) then
-      return
+        return
     end if
 
   else
@@ -307,9 +307,9 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
 
     do iip = 1, nip
 
-      jwit = jwit+1
+        jwit = jwit+1
 
-      call idlctn ( ndp, xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), &
+        CALL idlctn ( ndp, xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), &
         xi(iip), yi(iip), iwk(jwit), iwk(jwiwk), wk )
 
     end do
@@ -318,7 +318,7 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
 !
 !  Estimate the partial derivatives at all data points.
 !
-  call idpdrv ( ndp, xd, yd, zd, nt, iwk(jwipt), wk, wk(jwwpd) )
+  CALL idpdrv ( ndp, xd, yd, zd, nt, iwk(jwipt), wk, wk(jwwpd) )
 !
 !  Interpolate the ZI values.
 !
@@ -329,14 +329,14 @@ subroutine idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
 
     jwit = jwit + 1
 
-    call idptip ( ndp, xd, yd, zd, nt, iwk(jwipt), nl, iwk(jwipl), wk, &
-      iwk(jwit), xi(iip), yi(iip), zi(iip) )
+    CALL idptip ( ndp, xd, yd, zd, nt, iwk(jwipt), nl, iwk(jwipl), wk, &
+        iwk(jwit), xi(iip), yi(iip), zi(iip) )
 
   end do
 
   return
-end subroutine idbvip
-subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
+END SUBROUTINE idbvip
+SUBROUTINE idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 !
 !*******************************************************************************
 !
@@ -486,23 +486,23 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
     do ixi = 1, nxi
 
-      if ( xi(ixi) < xmn .or. xi(ixi) > xmx ) then
+        if ( xi(ixi) < xmn .or. xi(ixi) > xmx ) then
         if ( insd == 0 ) then
           cycle
         end if
         iximx = ixi-1
         go to 23
-      end if
+        end if
 
-      if ( insd /= 1 ) then
+        if ( insd /= 1 ) then
         insd = 1
         iximn = ixi
-      end if
+        end if
 
     end do
 
     if ( insd == 0 ) then
-      go to 38
+        go to 38
     end if
 
     iximx = nxi
@@ -511,13 +511,13 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
     do iyi = 1, nyi
 
-      yii = yi(iyi)
+        yii = yi(iyi)
 
-      if ( yii < ymn .or. yii > ymx ) then
+        if ( yii < ymn .or. yii > ymx ) then
         go to 37
-      end if
+        end if
 
-      do ixi = iximn, iximx
+        do ixi = iximn, iximx
 
         xii = xi(ixi)
         l = 0
@@ -548,7 +548,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
         do jigp1i = jigp1,nxinyi
           if ( izi == igp(jigp1i) ) then
-            go to 36
+                go to 36
           end if
         end do
 
@@ -558,7 +558,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
 36      continue
 
-      end do
+        end do
 
 37    continue
 
@@ -594,37 +594,37 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
     ymx = yimx
 
     if ( y2 >= y1 ) then
-      xmn = min ( x1, x2 )
+        xmn = min ( x1, x2 )
     end if
 
     if ( y2 <= y1 ) then
-      xmx = max ( x1, x2 )
+        xmx = max ( x1, x2 )
     end if
 
     if ( x2 <= x1 ) then
-      ymn = min ( y1, y2 )
+        ymn = min ( y1, y2 )
     end if
 
     if ( x2 >= x1 ) then
-      ymx = max ( y1, y2 )
+        ymx = max ( y1, y2 )
     end if
 
     insd = 0
 
     do ixi = 1, nxi
 
-      if ( xi(ixi) < xmn .or. xi(ixi) > xmx ) then
+        if ( xi(ixi) < xmn .or. xi(ixi) > xmx ) then
         if ( insd == 0 ) then
           go to 42
         end if
         iximx = ixi-1
         go to 43
-      end if
+        end if
 
-      if ( insd /= 1 ) then
+        if ( insd /= 1 ) then
         insd = 1
         iximn = ixi
-      end if
+        end if
 
 42    continue
 
@@ -638,10 +638,10 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
     do iyi = 1, nyi
 
-      yii = yi(iyi)
-      if(yii<ymn.or.yii>ymx)        go to 57
+        yii = yi(iyi)
+        if(yii<ymn.or.yii>ymx)        go to 57
 
-      do ixi = iximn,iximx
+        do ixi = iximn,iximx
 
         xii = xi(ixi)
         l = 0
@@ -672,7 +672,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
 56      continue
 
-      end do
+        end do
 
 57    continue
 
@@ -708,16 +708,16 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
     do ixi = 1, nxi
 
-      if ( xi(ixi) < xmn .or. xi(ixi) > xmx ) then
+        if ( xi(ixi) < xmn .or. xi(ixi) > xmx ) then
         if(insd==0)   go to 62
         iximx = ixi-1
         go to 63
-      end if
+        end if
 
-      if ( insd /= 1 ) then
+        if ( insd /= 1 ) then
         insd = 1
         iximn = ixi
-      end if
+        end if
 
 62    continue
 
@@ -731,10 +731,10 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
     do iyi = 1, nyi
 
-      yii = yi(iyi)
-      if(yii<ymn.or.yii>ymx)        go to 77
+        yii = yi(iyi)
+        if(yii<ymn.or.yii>ymx)        go to 77
 
-      do ixi = iximn, iximx
+        do ixi = iximn, iximx
 
         xii = xi(ixi)
         l = 0
@@ -761,7 +761,7 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
 
 76      continue
 
-      end do
+        end do
 
 77    continue
 
@@ -777,8 +777,8 @@ subroutine idgrid ( xd, yd, nt, ipt, nl, ipl, nxi, nyi, xi, yi, ngp, igp )
   end do
 
   return
-end subroutine idgrid
-subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
+END SUBROUTINE idgrid
+SUBROUTINE idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
 !
 !*******************************************************************************
 !
@@ -943,15 +943,15 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
     ymx = max ( yd(i1), yd(i2), yd(i3) )
 
     if ( ymn <= ys1 ) then
-      if(xmn<=xs1)                   idsc(1) = 1
-      if(xmx>=xs1.and.xmn<=xs2)    idsc(2) = 1
-      if(xmx>=xs2)                   idsc(3) = 1
+        if(xmn<=xs1)                   idsc(1) = 1
+        if(xmx>=xs1.and.xmn<=xs2)    idsc(2) = 1
+        if(xmx>=xs2)                   idsc(3) = 1
     end if
 
     if ( ymx >= ys1 .and. ymn <= ys2 ) then
-      if(xmn<=xs1)                   idsc(4) = 1
-      if(xmx>=xs1.and.xmn<=xs2)    idsc(5) = 1
-      if(xmx>=xs2)                   idsc(6) = 1
+        if(xmn<=xs1)                   idsc(4) = 1
+        if(xmx>=xs1.and.xmn<=xs2)    idsc(5) = 1
+        if(xmx>=xs2)                   idsc(6) = 1
     end if
 
     if(ymx<ys2)                   go to 25
@@ -962,12 +962,12 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
 25  continue
 
     do isc = 1, 9
-      if ( idsc(isc) /= 0 ) then
+        if ( idsc(isc) /= 0 ) then
         jiwk = 9*ntsc(isc)+isc
         iwk(jiwk) = it0
         ntsc(isc) = ntsc(isc)+1
         idsc(isc) = 0
-      end if
+        end if
     end do
 !
 !  Store in the wk array the minimum and maximum of the X and
@@ -1101,11 +1101,11 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
 
     if ( vpdt(x2,y2,x3,y3,x0,y0) >= 0.0E+00 ) then
 
-      if ( vpdt(x3,y3,x1,y1,x0,y0) >= 0.0E+00 ) then
+        if ( vpdt(x3,y3,x1,y1,x0,y0) >= 0.0E+00 ) then
         iti = it0
         itipv = it0
         return
-      end if
+        end if
 
     end if
 
@@ -1157,8 +1157,8 @@ subroutine idlctn ( ndp, xd, yd, nt, ipt, nl, ipl, xii, yii, iti, iwk, wk )
   itipv = it0
 
   return
-end subroutine idlctn
-subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
+END SUBROUTINE idlctn
+SUBROUTINE idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
 !
 !*******************************************************************************
 !
@@ -1255,12 +1255,12 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
     jpt0 = 3*(it-1)
 
     do iv = 1, 3
-      jpt = jpt0+iv
-      idp = ipt(jpt)
-      ipti(iv) = idp
-      xv(iv) = xd(idp)
-      yv(iv) = yd(idp)
-      zv(iv) = zd(idp)
+        jpt = jpt0+iv
+        idp = ipt(jpt)
+        ipti(iv) = idp
+        xv(iv) = xd(idp)
+        yv(iv) = yd(idp)
+        zv(iv) = zd(idp)
     end do
 
     dx1 = xv(2)-xv(1)
@@ -1276,24 +1276,24 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
 
     if ( abs(vpz) > vpzmn ) then
 
-      d12 = sqrt((xv(2)-xv(1))**2+(yv(2)-yv(1))**2)
-      d23 = sqrt((xv(3)-xv(2))**2+(yv(3)-yv(2))**2)
-      d31 = sqrt((xv(1)-xv(3))**2+(yv(1)-yv(3))**2)
-      w1(1) = 1.0E+00 / (d31*d12)
-      w1(2) = 1.0E+00 / (d12*d23)
-      w1(3) = 1.0E+00 / (d23*d31)
-      w2(1) = vpz*w1(1)
-      w2(2) = vpz*w1(2)
-      w2(3) = vpz*w1(3)
+        d12 = sqrt((xv(2)-xv(1))**2+(yv(2)-yv(1))**2)
+        d23 = sqrt((xv(3)-xv(2))**2+(yv(3)-yv(2))**2)
+        d31 = sqrt((xv(1)-xv(3))**2+(yv(1)-yv(3))**2)
+        w1(1) = 1.0E+00 / (d31*d12)
+        w1(2) = 1.0E+00 / (d12*d23)
+        w1(3) = 1.0E+00 / (d23*d31)
+        w2(1) = vpz*w1(1)
+        w2(2) = vpz*w1(2)
+        w2(3) = vpz*w1(3)
 
-      do iv = 1, 3
+        do iv = 1, 3
         idp = ipti(iv)
         jpd0 = 5*(idp-1)
         wi = (w1(iv)**2)*w2(iv)
         pd(jpd0+1) = pd(jpd0+1)+vpx*wi
         pd(jpd0+2) = pd(jpd0+2)+vpy*wi
         wk(idp) = wk(idp)+vpz*wi
-      end do
+        end do
 
     end if
 
@@ -1312,14 +1312,14 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
     jpt0 = 3*(it-1)
 
     do iv = 1, 3
-      jpt = jpt0+iv
-      idp = ipt(jpt)
-      ipti(iv) = idp
-      xv(iv) = xd(idp)
-      yv(iv) = yd(idp)
-      jpd0 = 5*(idp-1)
-      zxv(iv) = pd(jpd0+1)
-      zyv(iv) = pd(jpd0+2)
+        jpt = jpt0+iv
+        idp = ipt(jpt)
+        ipti(iv) = idp
+        xv(iv) = xd(idp)
+        yv(iv) = yd(idp)
+        jpd0 = 5*(idp-1)
+        zxv(iv) = pd(jpd0+1)
+        zyv(iv) = pd(jpd0+2)
     end do
 
     dx1 = xv(2)-xv(1)
@@ -1339,24 +1339,24 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
 
     if ( abs(vpz) > vpzmn ) then
 
-      d12 = sqrt((xv(2)-xv(1))**2+(yv(2)-yv(1))**2)
-      d23 = sqrt((xv(3)-xv(2))**2+(yv(3)-yv(2))**2)
-      d31 = sqrt((xv(1)-xv(3))**2+(yv(1)-yv(3))**2)
-      w1(1) = 1.0E+00 /(d31*d12)
-      w1(2) = 1.0E+00 /(d12*d23)
-      w1(3) = 1.0E+00 /(d23*d31)
-      w2(1) = vpz*w1(1)
-      w2(2) = vpz*w1(2)
-      w2(3) = vpz*w1(3)
+        d12 = sqrt((xv(2)-xv(1))**2+(yv(2)-yv(1))**2)
+        d23 = sqrt((xv(3)-xv(2))**2+(yv(3)-yv(2))**2)
+        d31 = sqrt((xv(1)-xv(3))**2+(yv(1)-yv(3))**2)
+        w1(1) = 1.0E+00 /(d31*d12)
+        w1(2) = 1.0E+00 /(d12*d23)
+        w1(3) = 1.0E+00 /(d23*d31)
+        w2(1) = vpz*w1(1)
+        w2(2) = vpz*w1(2)
+        w2(3) = vpz*w1(3)
 
-      do iv = 1, 3
+        do iv = 1, 3
         idp = ipti(iv)
         jpd0 = 5*(idp-1)
         wi = (w1(iv)**2)*w2(iv)
         pd(jpd0+3) = pd(jpd0+3)+vpxx*wi
         pd(jpd0+4) = pd(jpd0+4)+(vpxy+vpyx)*wi
         pd(jpd0+5) = pd(jpd0+5)+vpyy*wi
-      end do
+        end do
 
     end if
 
@@ -1370,8 +1370,8 @@ subroutine idpdrv ( ndp, xd, yd, zd, nt, ipt, pd, wk )
   end do
 
   return
-end subroutine idpdrv
-subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
+END SUBROUTINE idpdrv
+SUBROUTINE idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
 !
 !*******************************************************************************
 !
@@ -1553,9 +1553,9 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
     jpdd = 5*(idp-1)
 
     do kpd = 1, 5
-      jpd = jpd+1
-      jpdd = jpdd+1
-      pd(jpd) = pdd(jpdd)
+        jpd = jpd+1
+        jpdd = jpdd+1
+        pd(jpd) = pdd(jpdd)
     end do
 
   end do
@@ -1697,9 +1697,9 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
     jpdd = 5*(idp-1)
 
     do kpd = 1, 5
-      jpd = jpd+1
-      jpdd = jpdd+1
-      pd(jpd) = pdd(jpdd)
+        jpd = jpd+1
+        jpdd = jpdd+1
+        pd(jpd) = pdd(jpdd)
     end do
 
   end do
@@ -1807,8 +1807,8 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
     jpdd = 5*(idp-1)
 
     do kpd = 1, 5
-      jpdd = jpdd+1
-      pd(kpd) = pdd(jpdd)
+        jpdd = jpdd+1
+        pd(kpd) = pdd(jpdd)
     end do
 !
 !  Calculate the coefficients of the polynomial.
@@ -1835,8 +1835,8 @@ subroutine idptip ( ndp,xd, yd, zd, nt, ipt, nl, ipl, pdd, iti, xii, yii, zii )
   zii = p0+u*(p1+u*p20)
 
   return
-end subroutine idptip
-subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
+END SUBROUTINE idptip
+SUBROUTINE idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 !
 !*******************************************************************************
 !
@@ -1860,21 +1860,21 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 !    Input, integer MD, mode of computation (must be 1, 2, or 3,
 !    else an error return will occur).
 !
-!    1, if this is the first call to this routine, or if the value of
+!    1, if this is the first CALL to this routine, or if the value of
 !    NDP has been changed from the previous call, or if the contents of
 !    the XD or YD arrays have been changed from the previous call.
 !
 !    2, if the values of NDP and the XD, YD arrays are unchanged from
 !    the previous call, but new values for XI, YI are being used.  If
-!    MD = 2 and NDP has been changed since the previous call to IDSFFT,
+!    MD = 2 and NDP has been changed since the previous CALL to IDSFFT,
 !    an error return occurs.
 !
 !    3, if the values of NDP, NXI, NYI, XD, YD, XI, YI are unchanged
 !    from the previous call, i.e. if the only change on input to idsfft
 !    is in the ZD array.  If MD = 3 and NDP, nxi or nyi has been changed
-!    since the previous call to idsfft, an error return occurs.
+!    since the previous CALL to idsfft, an error return occurs.
 !
-!    Between the call with MD = 2 or MD = 3 and the preceding call, the
+!    Between the CALL with MD = 2 or MD = 3 and the preceding call, the
 !    iwk and wk work arrays should not be disturbed.
 !
 !    Input, integer NDP, the number of data points.  NDP must be at least 4.
@@ -1981,7 +1981,7 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
   if ( md < 1 .or. md > 3 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
-    write(*,*)'  Input parameter MD out of range.'
+    WRITE(*,*)'  Input parameter MD out of range.'
     stop
   end if
 
@@ -2013,10 +2013,10 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
   else
 
     if ( ndp /= iwk(1) ) then
-      write ( *, '(a)' ) ' '
-      write ( *, '(a)' ) 'IDSFFT - Fatal error!'
-      write ( *, '(a)' ) '  MD = 2 or 3 but ndp was changed since last call.'
-      stop
+        write ( *, '(a)' ) ' '
+        write ( *, '(a)' ) 'IDSFFT - Fatal error!'
+        write ( *, '(a)' ) '  MD = 2 or 3 but ndp was changed since last call.'
+        stop
     end if
 
   end if
@@ -2029,17 +2029,17 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
   else
 
     if ( nxi /= iwk(3) ) then
-      write ( *, '(a)' ) ' '
-      write ( *, '(a)' ) 'IDSFFT - Fatal error!'
-      write ( *, '(a)' ) 'MD = 3 but nxi was changed since last call.'
-      stop
+        write ( *, '(a)' ) ' '
+        write ( *, '(a)' ) 'IDSFFT - Fatal error!'
+        write ( *, '(a)' ) 'MD = 3 but nxi was changed since last call.'
+        stop
     end if
 
     if ( nyi /= iwk(4) ) then
-      write ( *, '(a)' ) ' '
-      write ( *, '(a)' ) 'IDSFFT - Fatal error!'
-      write ( *, '(a)' ) '  MD = 3 but nyi was changed since last call.'
-      stop
+        write ( *, '(a)' ) ' '
+        write ( *, '(a)' ) 'IDSFFT - Fatal error!'
+        write ( *, '(a)' ) '  MD = 3 but nyi was changed since last call.'
+        stop
     end if
 
   end if
@@ -2058,14 +2058,14 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 !
   if ( md == 1 ) then
 
-    call idtang ( ndp, xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), &
-      iwk(jwiwl), iwk(jwiwp), wk )
+    CALL idtang ( ndp, xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), &
+        iwk(jwiwl), iwk(jwiwp), wk )
 
     iwk(5) = nt
     iwk(6) = nl
 
     if ( nt == 0 ) then
-      return
+        return
     end if
 
   else
@@ -2080,14 +2080,14 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 !
   if ( md <= 2 ) then
 
-    call idgrid ( xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), nxi, &
-      nyi, xi, yi, iwk(jwngp0+1), iwk(jwigp0+1) )
+    CALL idgrid ( xd, yd, nt, iwk(jwipt), nl, iwk(jwipl), nxi, &
+        nyi, xi, yi, iwk(jwngp0+1), iwk(jwigp0+1) )
 
   end if
 !
 !  Estimate partial derivatives at all data points.
 !
-  call idpdrv ( ndp, xd, yd, zd, nt, iwk(jwipt), wk, wk(jwwpd) )
+  CALL idpdrv ( ndp, xd, yd, zd, nt, iwk(jwipt), wk, wk(jwwpd) )
 !
 !  Interpolate the ZI values.
 !
@@ -2101,12 +2101,12 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
     iti = jngp
 
     if ( jngp > nt ) then
-      il1 = (jngp-nt+1)/2
-      il2 = (jngp-nt+2)/2
-      if(il2>nl) then
+        il1 = (jngp-nt+1)/2
+        il2 = (jngp-nt+2)/2
+        if(il2>nl) then
         il2 = 1
-      end if
-      iti = il1*(nt+nl)+il2
+        end if
+        iti = il1*(nt+nl)+il2
     end if
 
     jwngp = jwngp0+jngp
@@ -2114,20 +2114,20 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 
     if ( ngp0 /= 0 ) then
 
-      jig0mn = jig0mx+1
-      jig0mx = jig0mx+ngp0
+        jig0mn = jig0mx+1
+        jig0mx = jig0mx+ngp0
 
-      do jigp = jig0mn, jig0mx
+        do jigp = jig0mn, jig0mx
 
         jwigp = jwigp0+jigp
         izi = iwk(jwigp)
         iyi = (izi-1)/nxi+1
         ixi = izi-nxi*(iyi-1)
 
-        call idptip ( ndp, xd, yd, zd, nt, iwk(jwipt), nl, iwk(jwipl), &
+        CALL idptip ( ndp, xd, yd, zd, nt, iwk(jwipt), nl, iwk(jwipl), &
           wk, iti, xi(ixi), yi(iyi), zi(ixi,iyi) )
 
-      end do
+        end do
 
     end if
 
@@ -2136,28 +2136,28 @@ subroutine idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
 
     if ( ngp1 /= 0 ) then
 
-      jig1mx = jig1mn-1
-      jig1mn = jig1mn-ngp1
+        jig1mx = jig1mn-1
+        jig1mn = jig1mn-ngp1
 
-      do jigp = jig1mn, jig1mx
+        do jigp = jig1mn, jig1mx
 
         jwigp = jwigp0+jigp
         izi = iwk(jwigp)
         iyi = (izi-1)/nxi+1
         ixi = izi-nxi*(iyi-1)
 
-        call idptip ( ndp, xd, yd, zd, nt, iwk(jwipt), nl, iwk(jwipl), &
+        CALL idptip ( ndp, xd, yd, zd, nt, iwk(jwipt), nl, iwk(jwipl), &
           wk, iti, xi(ixi), yi(iyi), zi(ixi,iyi) )
 
-      end do
+        end do
 
     end if
 
   end do
 
   return
-end subroutine idsfft
-subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
+END SUBROUTINE idsfft
+SUBROUTINE idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 !
 !*******************************************************************************
 !
@@ -2325,23 +2325,23 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 
     do ip2 = ip1p1, ndp
 
-      dsqi = dsqf(x1,y1,xd(ip2),yd(ip2))
+        dsqi = dsqf(x1,y1,xd(ip2),yd(ip2))
 
-      if ( ABS(dsqi) <= epsilon(1.0) ) then
+        if ( ABS(dsqi) <= epsilon(1.0) ) then
         write ( *, '(a)' ) ' '
         write ( *, '(a)' ) 'IDTANG - Fatal error!'
         write ( *, '(a)' ) '  Two of the input data points are identical.'
-		write ( *, * ) 'at i =',ip1,ip2
-		write(*,*) 'dsqi=', dsqi,'x1=',x1,xd(ip2)
+        write ( *, * ) 'at i =',ip1,ip2
+        WRITE(*,*) 'dsqi=', dsqi,'x1=',x1,xd(ip2)
 
         stop
-      end if
+        end if
 
-      if(dsqi<dsqmn) then
+        if(dsqi<dsqmn) then
         dsqmn = dsqi
         ipmn1 = ip1
         ipmn2 = ip2
-      end if
+        end if
 
     end do
 
@@ -2360,9 +2360,9 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 
   do ip1 = 1, ndp
     if ( ip1 /= ipmn1 .and. ip1 /= ipmn2 ) then
-      jp1 = jp1+1
-      iwp(jp1) = ip1
-      wk(jp1) = dsqf(xdmp,ydmp,xd(ip1),yd(ip1))
+        jp1 = jp1+1
+        iwp(jp1) = ip1
+        wk(jp1) = dsqf(xdmp,ydmp,xd(ip1),yd(ip1))
     end if
   end do
 
@@ -2372,10 +2372,10 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
     jpmn = jp1
 
     do jp2 = jp1, ndp
-      if(wk(jp2)<dsqmn) then
+        if(wk(jp2)<dsqmn) then
         dsqmn = wk(jp2)
         jpmn = jp2
-      end if
+        end if
     end do
 
     its = iwp(jp1)
@@ -2412,8 +2412,8 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
     jpmx = jp
 
     do jpc = 4, jpmx
-      jp = jpmx+4-jpc
-      iwp(jp) = iwp(jp-1)
+        jp = jpmx+4-jpc
+        iwp(jp) = iwp(jp-1)
     end do
 
     iwp(3) = ip
@@ -2465,39 +2465,39 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 !
     do il = 1, nl0
 
-      ip2 = ipl(3*il-2)
-      ip3 = ipl(3*il-1)
-      x2 = xd(ip2)
-      y2 = yd(ip2)
-      x3 = xd(ip3)
-      y3 = yd(ip3)
-      sp = spdt(x1,y1,x2,y2,x3,y3)
-      vp = vpdt(x1,y1,x2,y2,x3,y3)
+        ip2 = ipl(3*il-2)
+        ip3 = ipl(3*il-1)
+        x2 = xd(ip2)
+        y2 = yd(ip2)
+        x3 = xd(ip3)
+        y3 = yd(ip3)
+        sp = spdt(x1,y1,x2,y2,x3,y3)
+        vp = vpdt(x1,y1,x2,y2,x3,y3)
 
-      if ( il == 1 ) then
+        if ( il == 1 ) then
         ixvs = 0
         if(vp<=(abs(sp)*(-epsln)))   ixvs = 1
         iliv = 1
         ilvs = 1
         go to 53
-      end if
+        end if
 
-      ixvspv = ixvs
+        ixvspv = ixvs
 
-      if ( vp <= (abs(sp)*(-epsln)) ) then
+        if ( vp <= (abs(sp)*(-epsln)) ) then
         ixvs = 1
         if(ixvspv==1)      go to 53
         ilvs = il
         if(iliv/=1)        go to 54
         go to 53
-      end if
+        end if
 
-      ixvs = 0
+        ixvs = 0
 
-      if ( ixvspv /= 0 ) then
+        if ( ixvspv /= 0 ) then
         iliv = il
         if(ilvs/=1)        go to 54
-      end if
+        end if
 
 53     continue
 
@@ -2516,20 +2516,20 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 
     if ( iliv /= 1 ) then
 
-      nlsh = iliv-1
-      nlsht3 = nlsh*3
+        nlsh = iliv-1
+        nlsht3 = nlsh*3
 
-      do jl1 = 1,nlsht3
+        do jl1 = 1,nlsht3
         jl2 = jl1+nlt3
         ipl(jl2) = ipl(jl1)
-      end do
+        end do
 
-      do jl1 = 1,nlt3
+        do jl1 = 1,nlt3
         jl2 = jl1+nlsht3
         ipl(jl1) = ipl(jl2)
-      end do
+        end do
 
-      ilvs = ilvs-nlsh
+        ilvs = ilvs-nlsh
 
     end if
 !
@@ -2541,50 +2541,50 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 
     do il = ilvs, nl0
 
-      ilt3 = il*3
-      ipl1 = ipl(ilt3-2)
-      ipl2 = ipl(ilt3-1)
-      it   = ipl(ilt3)
+        ilt3 = il*3
+        ipl1 = ipl(ilt3-2)
+        ipl2 = ipl(ilt3-1)
+        it   = ipl(ilt3)
 !
 !  Add a triangle to the IPT array.
 !
-      nt0 = nt0+1
-      ntt3 = ntt3+3
-      ipt(ntt3-2) = ipl2
-      ipt(ntt3-1) = ipl1
-      ipt(ntt3)   = ip1
+        nt0 = nt0+1
+        ntt3 = ntt3+3
+        ipt(ntt3-2) = ipl2
+        ipt(ntt3-1) = ipl1
+        ipt(ntt3)   = ip1
 !
 !  Update border line segments in the IPL array.
 !
-      if ( il == ilvs ) then
+        if ( il == ilvs ) then
         ipl(ilt3-1) = ip1
         ipl(ilt3)   = nt0
-      end if
+        end if
 
-      if ( il == nl0 ) then
+        if ( il == nl0 ) then
         nln = ilvs+1
         nlnt3 = nln*3
         ipl(nlnt3-2) = ip1
         ipl(nlnt3-1) = ipl(1)
         ipl(nlnt3)   = nt0
-      end if
+        end if
 !
 !  Determine the vertex that does not lie on the border
 !  line segments.
 !
-      itt3 = it*3
-      ipti = ipt(itt3-2)
+        itt3 = it*3
+        ipti = ipt(itt3-2)
 
-      if ( ipti == ipl1 .or. ipti == ipl2 ) then
+        if ( ipti == ipl1 .or. ipti == ipl2 ) then
         ipti = ipt(itt3-1)
         if ( ipti == ipl1 .or. ipti == ipl2 ) then
           ipti = ipt(itt3)
         end if
-      end if
+        end if
 !
 !  Check if the exchange is necessary.
 !
-      if ( idxchg(xd,yd,ip1,ipti,ipl1,ipl2) /= 0 ) then
+        if ( idxchg(xd,yd,ip1,ipti,ipl1,ipl2) /= 0 ) then
 !
 !  Modify the IPT array.
 !
@@ -2603,7 +2603,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
         iwl(jwl-1) = ipti
         iwl(jwl)   = ipl2
 
-      end if
+        end if
 
     end do
 
@@ -2612,7 +2612,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
     nlf = jwl/2
 
     if ( nlf == 0 ) then
-      go to 79
+        go to 79
     end if
 !
 !  Improve triangulation.
@@ -2621,7 +2621,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 
     do irep = 1, nrep
 
-      do ilf = 1,nlf
+        do ilf = 1,nlf
 
         ipl1 = iwl(2*ilf-1)
         ipl2 = iwl(2*ilf)
@@ -2715,24 +2715,24 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
 
 76       continue
 
-      end do
+        end do
 
-      nlfc = nlf
-      nlf = jwl/2
+        nlfc = nlf
+        nlf = jwl/2
 !
 !  Reset the IWL array for the next round.
 !
-      if ( nlf == nlfc ) go to 79
+        if ( nlf == nlfc ) go to 79
 
-      jwl1mn = 2*nlfc+1
-      nlft2 = nlf*2
+        jwl1mn = 2*nlfc+1
+        nlft2 = nlf*2
 
-      do jwl1 = jwl1mn,nlft2
+        do jwl1 = jwl1mn,nlft2
         jwl = jwl1+1-jwl1mn
         iwl(jwl) = iwl(jwl1)
-      end do
+        end do
 
-      nlf = jwl/2
+        nlf = jwl/2
 
     end do
 
@@ -2750,8 +2750,8 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
     ip3 = ipt(itt3)
 
     if(vpdt(xd(ip1),yd(ip1),xd(ip2),yd(ip2),xd(ip3),yd(ip3)) < 0.0E+00 ) then
-      ipt(itt3-2) = ip2
-      ipt(itt3-1) = ip1
+        ipt(itt3-2) = ip2
+        ipt(itt3-1) = ip1
     end if
 
   end do
@@ -2760,7 +2760,7 @@ subroutine idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
   nl = nl0
 
   return
-end subroutine idtang
+END SUBROUTINE idtang
 function idxchg ( x, y, i1, i2, i3, i4 )
 !
 !*******************************************************************************
@@ -2853,7 +2853,7 @@ function idxchg ( x, y, i1, i2, i3, i4 )
     s4sq = u4*u4 / (c3sq*max(a4sq,a2sq))
 
     if ( min ( s3sq, s4sq ) - min ( s1sq, s2sq ) > epsln ) then
-      idx = 1
+        idx = 1
     end if
 
   end if
@@ -2862,7 +2862,7 @@ function idxchg ( x, y, i1, i2, i3, i4 )
 
   return
 end function idxchg
-subroutine timestamp ( )
+SUBROUTINE timestamp ( )
 !
 !*******************************************************************************
 !
@@ -2904,7 +2904,7 @@ subroutine timestamp ( )
   integer y
   character ( len = 5 ) zone
 !
-  call date_and_time ( date, time, zone, values )
+  CALL date_and_time ( date, time, zone, values )
 
   y = values(1)
   m = values(2)
@@ -2918,20 +2918,20 @@ subroutine timestamp ( )
     ampm = 'AM'
   else if ( h == 12 ) then
     if ( n == 0 .and. s == 0 ) then
-      ampm = 'Noon'
+        ampm = 'Noon'
     else
-      ampm = 'PM'
+        ampm = 'PM'
     end if
   else
     h = h - 12
     if ( h < 12 ) then
-      ampm = 'PM'
+        ampm = 'PM'
     else if ( h == 12 ) then
-      if ( n == 0 .and. s == 0 ) then
+        if ( n == 0 .and. s == 0 ) then
         ampm = 'Midnight'
-      else
+        else
         ampm = 'AM'
-      end if
+        end if
     end if
   end if
 
@@ -2939,5 +2939,5 @@ subroutine timestamp ( )
     trim ( month(m) ), d, y, h, ':', n, ':', s, '.', mm, trim ( ampm )
 
   return
-end subroutine timestamp
+END SUBROUTINE timestamp
 END MODULE bivar

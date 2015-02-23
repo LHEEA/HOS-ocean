@@ -28,19 +28,19 @@ USE type
 IMPLICIT NONE
 !
 INTERFACE norme
-   MODULE PROCEDURE norme_r,norme_d,norme_vr,norme_vd
+    MODULE PROCEDURE norme_r,norme_d,norme_vr,norme_vd
 END INTERFACE
 INTERFACE ecart_type
-   MODULE PROCEDURE ecart_type_r,ecart_type_d
+    MODULE PROCEDURE ecart_type_r,ecart_type_d
 END INTERFACE
 INTERFACE variance
-   MODULE PROCEDURE variance_r,variance_d
+    MODULE PROCEDURE variance_r,variance_d
 END INTERFACE
 INTERFACE dichoto
-   MODULE PROCEDURE dichoto_r,dichoto_d
+    MODULE PROCEDURE dichoto_r,dichoto_d
 END INTERFACE
 INTERFACE phase
-   MODULE PROCEDURE phase_r,phase_d !,phase_rv,phase_dv
+    MODULE PROCEDURE phase_r,phase_d !,phase_rv,phase_dv
 END INTERFACE
 !
 !
@@ -113,13 +113,13 @@ INTEGER                           :: n_x
 !
 n_x     = SIZE( x )
 IF ( n_x == 1 ) THEN
-   variance_r = 1.0_sp
+    variance_r = 1.0_sp
 ELSE
-   x_moy   = SUM( x ) / n_x
-   x_moy_v = x_moy
-   x_moy_v = x - x_moy_v
-   variance_r = DOT_PRODUCT( x - x_moy_v,x - x_moy_v ) / ( n_x - 1 )
-END IF
+    x_moy   = SUM( x ) / n_x
+    x_moy_v = x_moy
+    x_moy_v = x - x_moy_v
+    variance_r = DOT_PRODUCT( x - x_moy_v,x - x_moy_v ) / ( n_x - 1 )
+ENDIF
 !
 END FUNCTION variance_r
 !
@@ -137,13 +137,13 @@ INTEGER                           :: n_x
 !
 n_x     = SIZE( x )
 IF ( n_x == 1 ) THEN
-   variance_d = 1.0_dp
+    variance_d = 1.0_dp
 ELSE
-   x_moy   = SUM( x ) / n_x
-   x_moy_v = x_moy
-   x_moy_v = x - x_moy_v
-   variance_d = DOT_PRODUCT( x_moy_v,x_moy_v ) / ( n_x - 1 )
-END IF
+    x_moy   = SUM( x ) / n_x
+    x_moy_v = x_moy
+    x_moy_v = x - x_moy_v
+    variance_d = DOT_PRODUCT( x_moy_v,x_moy_v ) / ( n_x - 1 )
+ENDIF
 !
 END FUNCTION variance_d
 !
@@ -191,30 +191,30 @@ REAL(SP) :: dichoto_r,f0,a,b,prec,func
 REAL(SP) :: x1,x2,x3
 !
 IF ( ((func(a)-f0)*(func(b)-f0)) >= 0.0_sp ) THEN
-   IF ( ABS(func(a)-f0) <= REAL(tiny) ) THEN
-      dichoto_r = a
-   RETURN
-   ELSE IF (ABS(func(b)-f0) <= REAL(tiny)) THEN
-      dichoto_r = b
-   RETURN
-   END IF
-   WRITE(*,*) 'a and b are not correctly chosen in dichoto'
-END IF
+    IF ( ABS(func(a)-f0) <= REAL(tiny) ) THEN
+        dichoto_r = a
+    RETURN
+    ELSE IF (ABS(func(b)-f0) <= REAL(tiny)) THEN
+        dichoto_r = b
+    RETURN
+    ENDIF
+    WRITE(*,*) 'a and b are not correctly chosen in dichoto'
+ENDIF
 !
 x1 = a
 x2 = b
 !
 DO WHILE (ABS(x1-x2) > prec*ABS(x2))
-   x3=(x1+x2)/2.0_sp
-   IF (ABS(func(x3)-f0) <= REAL(tiny)) THEN
-      dichoto_r = x3
-      RETURN
-   ELSE IF ((func(a)-f0)*(func(x3)-f0) < 0.0) THEN
-      x2 = x3
-   ELSE
-      x1 = x3
-   END IF
-END DO
+    x3=(x1+x2)/2.0_sp
+    IF (ABS(func(x3)-f0) <= REAL(tiny)) THEN
+        dichoto_r = x3
+        RETURN
+    ELSE IF ((func(a)-f0)*(func(x3)-f0) < 0.0) THEN
+        x2 = x3
+    ELSE
+        x1 = x3
+    ENDIF
+ENDDO
 dichoto_r = x3
 !
 END FUNCTION dichoto_r
@@ -237,30 +237,30 @@ REAL(DP) :: dichoto_d,f0,a,b,prec,func
 REAL(DP) :: x1,x2,x3
 !
 IF ( ((func(a)-f0)*(func(b)-f0)) >= 0.0_dp ) THEN
-   IF ( ABS(func(a)-f0) <= tiny ) THEN
-      dichoto_d = a
-   RETURN
-   ELSE IF (ABS(func(b)-f0) <= tiny) THEN
-      dichoto_d = b
-   RETURN
-   END IF
-   WRITE(*,*) 'a and b are not correctly chosen in dichoto'
-END IF
+    IF ( ABS(func(a)-f0) <= tiny ) THEN
+        dichoto_d = a
+    RETURN
+    ELSE IF (ABS(func(b)-f0) <= tiny) THEN
+        dichoto_d = b
+    RETURN
+    ENDIF
+    WRITE(*,*) 'a and b are not correctly chosen in dichoto'
+ENDIF
 !
 x1 = a
 x2 = b
 !
 DO WHILE (ABS(x1-x2) > prec*ABS(x2))
-   x3=(x1+x2)/2.0_dp
-   IF (ABS(func(x3)-f0) <= tiny) THEN
-      dichoto_d = x3
-      RETURN
-   ELSE IF ((func(a)-f0)*(func(x3)-f0) < 0.0_dp) THEN
-      x2 = x3
-   ELSE
-      x1 = x3
-   END IF
-END DO
+    x3=(x1+x2)/2.0_dp
+    IF (ABS(func(x3)-f0) <= tiny) THEN
+        dichoto_d = x3
+        RETURN
+    ELSE IF ((func(a)-f0)*(func(x3)-f0) < 0.0_dp) THEN
+        x2 = x3
+    ELSE
+        x1 = x3
+    ENDIF
+ENDDO
 !
 dichoto_d = x3
 !
@@ -281,24 +281,24 @@ COMPLEX(SPC)             :: ztemp
 REAL(SP)                 :: phase_r, ptemp
 !
 IF ( ABS(z) <= REAL(tiny) ) THEN
-   phase_r = 0.0_sp
-   RETURN
+    phase_r = 0.0_sp
+    RETURN
 ELSE
-   ztemp = z / ABS(z)
-   ptemp = ASIN( AIMAG( ztemp ) )
-   IF ( REAL(ztemp) >= 0.0_sp ) THEN
-      IF ( AIMAG(ztemp) >= 0.0_sp ) THEN
-         phase_r = ptemp
-         RETURN
-      ELSE
-         phase_r = REAL(TWOPI) + ptemp
-         RETURN
-      END IF
-   ELSE
-      phase_r = REAL(PI) - ptemp
-      RETURN
-   END IF
-END IF
+    ztemp = z / ABS(z)
+    ptemp = ASIN( AIMAG( ztemp ) )
+    IF ( REAL(ztemp) >= 0.0_sp ) THEN
+        IF ( AIMAG(ztemp) >= 0.0_sp ) THEN
+                phase_r = ptemp
+                RETURN
+        ELSE
+                phase_r = REAL(TWOPI) + ptemp
+                RETURN
+        ENDIF
+    ELSE
+        phase_r = REAL(PI) - ptemp
+        RETURN
+    ENDIF
+ENDIF
 END FUNCTION phase_r
 !
 !
@@ -316,24 +316,24 @@ COMPLEX(DPC)             :: ztemp
 REAL(DP)     :: phase_d, ptemp
 !
 IF ( ABS(z) <= tiny ) THEN
-   phase_d = 0.0_dp
-   RETURN
+    phase_d = 0.0_dp
+    RETURN
 ELSE
-   ztemp = z / ABS(z)
-   ptemp = ASIN( AIMAG( ztemp ) )
-   IF ( REAL(ztemp) >= 0.0_dp ) THEN
-      IF ( AIMAG(ztemp) >= 0.0_dp ) THEN
-         phase_d = ptemp
-         RETURN
-      ELSE
-         phase_d = TWOPI + ptemp
-         RETURN
-      END IF
-   ELSE
-      phase_d = PI - ptemp
-      RETURN
-   END IF
-END IF
+    ztemp = z / ABS(z)
+    ptemp = ASIN( AIMAG( ztemp ) )
+    IF ( REAL(ztemp) >= 0.0_dp ) THEN
+        IF ( AIMAG(ztemp) >= 0.0_dp ) THEN
+            phase_d = ptemp
+            RETURN
+        ELSE
+            phase_d = TWOPI + ptemp
+            RETURN
+        ENDIF
+    ELSE
+        phase_d = PI - ptemp
+        RETURN
+    ENDIF
+ENDIF
 END FUNCTION phase_d
 !
 !
@@ -353,8 +353,8 @@ REAL(SP), DIMENSION(SIZE(z)) :: phase_rv
 INTEGER                      :: ibou
 !
 DO ibou = 1, SIZE(z)
-   phase_rv(ibou) = phase_r(z(ibou))
-END DO
+    phase_rv(ibou) = phase_r(z(ibou))
+ENDDO
 !
 END FUNCTION phase_rv
 !
@@ -375,8 +375,8 @@ REAL(DP), DIMENSION(SIZE(z)) :: phase_dv
 INTEGER                      :: ibou
 !
 DO ibou = 1, SIZE(z)
-      phase_dv(ibou) = phase_d(z(ibou))
-END DO
+    phase_dv(ibou) = phase_d(z(ibou))
+ENDDO
 !
 END FUNCTION phase_dv
 !
