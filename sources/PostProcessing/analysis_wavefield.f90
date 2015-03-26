@@ -353,7 +353,7 @@ twothird = NINT(2.0_rp/3.0_rp*n_waves)
 !
 CALL sort_shell(H_sorted)
 !
-H_1_3rd = SUM(H_sorted(twothird:n_waves))/(n_waves-twothird)
+H_1_3rd = SUM(H_sorted(twothird:n_waves))/(n_waves-twothird+1)
 !
 END SUBROUTINE H_onethird
 !

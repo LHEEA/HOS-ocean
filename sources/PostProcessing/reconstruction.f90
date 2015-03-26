@@ -156,7 +156,7 @@ CALL fourier_2_space(modesFS, eta_tmp)
 ! Outputs
 DO i2=jmin,jmax
     DO i1=imin,imax
-        IF((zlocal).GT.eta_tmp(i1-imin+1,i2-jmin+1)) THEN
+        IF((zlocal).GT.eta_tmp(i1,i2)) THEN
             vitx(i1-imin+1,i2-jmin+1) = 0.0_rp
             vity(i1-imin+1,i2-jmin+1) = 0.0_rp
             vitz(i1-imin+1,i2-jmin+1) = 0.0_rp
