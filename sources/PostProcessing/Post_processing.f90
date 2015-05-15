@@ -212,7 +212,7 @@ IF (i_card /= 0) THEN
     ! + time window (t_min, t_max)
     CALL check_sizes(n2,x_min,x_max,y_min,y_max,z_min,T_start,T_stop,xlen_star,ylen_star,depth_star,T_stop_star,L,T)
     !
-    ALLOCATE(x(n1),y(n2),kx(n1o2p1),ky_n2(n2),ikx(n1o2p1,n2),iky(n1o2p1,n2),kth(n1o2p1,n2))
+    ALLOCATE(x(n1),y(n2),kx(n1o2p1),ky_n2(n2),ikx(n1o2p1,n2),iky(n1o2p1,n2),kth(n1o2p1,n2),eta(n1,n2))
     !
     ! Initialize mesh in physical and modal space (whole domain in HOS-ocean)
     CALL build_mesh_global(xlen_star,ylen_star,depth_star,n1,n2,x,y,kx,ky_n2,ikx,iky,kth)
@@ -243,6 +243,9 @@ IF (i_card /= 0) THEN
                 modesspecx,modesspecy,modesspecz,modesspect,modesFS,modesFSt)
         ENDIF
         !
+		! For outputs
+		CALL fourier_2_space(modesFS,eta)
+        !
         ! Make a loop over all the elements in z
         DO i3 = 1, i_zvect
             IF (i_card == 1) THEN
@@ -268,7 +271,7 @@ IF (i_card /= 0) THEN
             ENDIF
             ! Output of time-step
             CALL output_time_step_card(i_card,tecplot,time,dt_out_star,zlocal,z_min,z_max,T_start,g_star,L,T,i_test,&
-                imin,imax,jmin,jmax,i_zvect,vitx,vity,vitz,phit)
+                imin,imax,jmin,jmax,i_zvect,vitx,vity,vitz,phit,eta)
         ENDDO
         !
         ! next time-step
