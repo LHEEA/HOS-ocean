@@ -260,9 +260,9 @@ SELECT CASE (i_case)
         a_phis(1:n1o2p1,1:n2) = 0.0_rp
         ! First order
         IF (i2 < 0)  THEN
-            a_phis(ABS(i1)+1,n2-(ABS(i2)+1)+2) = - sig * i * ampli * EXP(i*sig*phase) / omega_n2(i1+1,i2+1)
+            a_phis(ABS(i1)+1,n2-(ABS(i2)+1)+2) = - sig * i * ampli * EXP(i*sig*phase) * goomega_n2(i1+1,i2+1)
         ELSE
-            a_phis(ABS(i1)+1,ABS(i2)+1)        = - sig * i * ampli * EXP(i*sig*phase) / omega_n2(i1+1,i2+1)
+            a_phis(ABS(i1)+1,ABS(i2)+1)        = - sig * i * ampli * EXP(i*sig*phase) * goomega_n2(i1+1,i2+1)
         ENDIF
         !
         CALL fourier_2_space(a_phis, phis)
@@ -271,7 +271,7 @@ SELECT CASE (i_case)
         !
         i_initiate_NL = 0
         IF(i_initiate_NL == 1)THEN
-        CALL initiate_NL
+            CALL initiate_NL
         ENDIF
         !
     CASE (21)
@@ -308,7 +308,7 @@ SELECT CASE (i_case)
         ENDIF
     CASE (3,31,32)
         ! Initialisation already done... Nothing to do
-CASE DEFAULT
+    CASE DEFAULT
         phis(1:n1,1:n2) = 0.0_rp
 END SELECT
 !

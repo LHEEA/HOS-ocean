@@ -419,8 +419,7 @@ ENDIF
 CALL fourier_2_space(a_eta,  eta)
 CALL fourier_2_space(a_phis, phis)
 ! Storing t=0 as reference
-IF(i_case.NE.3 .and. i_case.NE.31 .and. i_case.NE.32.AND. &
-    i_case.NE.81.AND.i_case.NE.82.AND.i_case.NE.83.AND.i_case.NE.84.AND.i_case.NE.809) THEN
+IF (i_case.EQ.1 .OR. i_case.EQ.9) THEN ! dimensional initialization
     eta_ref(1:n1,1:n2)  = eta(1:n1,1:n2) / L
     phis_ref(1:n1,1:n2) = phis(1:n1,1:n2) / (L**2 / T)
 ELSE ! nondimensional initialization
