@@ -385,11 +385,12 @@ INTEGER  :: iseed,i1,i2,i_initiate_NL
 REAL(RP), DIMENSION(3)            :: energy
 TYPE(RK_parameters), INTENT(IN)   :: RK_param
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: da_eta,a_eta_temp,a_phi_temp
-REAL(RP), DIMENSION(m1o2p1,n2) :: phi_JONSWAP
+REAL(RP), DIMENSION(m1o2p1,m2) :: phi_JONSWAP
 REAL(RP),DIMENSION(m1o2p1,m2)  :: DD_WW
 REAL(RP),DIMENSION(ikp) :: ones_k
 INTEGER ::  i_dir_JSWP,jj
 REAL(RP) :: beta_min,beta_max,frr,fp_w,s_ww,Norm_DD
+REAL(RP) :: Cg
 !
 pioxlen = TWOPI/xlen_star
 pioylen = TWOPI/ylen_star
@@ -397,7 +398,12 @@ pioylen = TWOPI/ylen_star
 ! ----- Normalised Dir Function
 DD_WW = 0.0_rp
 i_dir_JSWP = 0
-IF (i_dir_JSWP == 1) THEN
+IF(ABS(beta) <= tiny) THEN ! uni-directional case
+    DD_WW(:,1) = 1.0_rp
+    DO i2 = 2,n2
+        DD_WW(:,i2) = 0.0_rp
+    ENDDO
+ELSEIF (i_dir_JSWP == 1) THEN
     beta_min = 4.06_rp
     beta_max = -2.34_rp
     !
@@ -460,7 +466,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         angle2 =  rnd*TWOPI
         angle = 0.0_rp
         !
-        IF(omega_n2(i1,1).LT.1.0_rp) THEN !FIXME: it is assumed that omega_p=1 (peak)
+        IF(omega_n2(i1,1).LT.TWOPI/Tp_real*T) THEN
             sigma = 0.07_rp
         ELSE
             sigma = 0.09_rp
@@ -470,22 +476,26 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         ! Directional spectrum : phi(omega,theta) = psi(omega) x G(theta)
         ! Here G(theta) = 1/beta x cos(2 pi / (4 beta))
         !
-        IF(ABS(theta).LE.beta) then
+        IF((ABS(theta).LE.beta).OR.(ABS(beta).LE.tiny)) THEN ! To allow the use of uni-directional case (beta=0) in 3D
             phi_JONSWAP(i1,1) = Cj*omega_n2(i1,1)**(-5.0_rp)*exp(-5.0_rp/(4.0_rp*(omega_n2(i1,1))**(4.0_rp)))*gamma** &
               (exp(-(omega_n2(i1,1)-1.0_rp)**2/(2.0_rp*sigma**2)))*DD_WW(i1,1)
         ELSE
             phi_JONSWAP(i1,1) = 0.0_rp
         ENDIF
+        !
+        ! Evaluate group velocity (non-dimensional)
+        Cg = group_velocity(omega_n2(i1,1)/TWOPI*T,depth,grav) / (L/T)
+        !
         !%%%%%%%%%%%%%%% Takes 1D / 2D into account
         IF(n2 == 1) THEN
-            a_eta(i1,1)  = (2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1))*phi_JONSWAP(i1,1)*pioxlen*pioylen)**(0.5_rp) &
+            a_eta(i1,1)  = (2.0_rp*Cg*phi_JONSWAP(i1,1)*pioxlen*pioylen)**(0.5_rp) &
                *exp(i*(angle1+angle2+angle))
-            a_phis(i1,1) = -1.0_rp*i/omega_n2(i1,1)*(2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1))*phi_JONSWAP(i1,1) &
+            a_phis(i1,1) = -g_star*i/omega_n2(i1,1)*(2.0_rp*Cg*phi_JONSWAP(i1,1) &
                *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
         ELSE
-            a_eta(i1,1)  = (2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1)**3.0_rp)*phi_JONSWAP(i1,1)*pioxlen*pioylen)**(0.5_rp) &
+            a_eta(i1,1)  = (2.0_rp*Cg/k_abs(i1,1)*phi_JONSWAP(i1,1)*pioxlen*pioylen)**(0.5_rp) &
                *exp(i*(angle1+angle2+angle))
-            a_phis(i1,1) = -1.0_rp*i/omega_n2(i1,1)*(2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,1)**3.0_rp)*phi_JONSWAP(i1,1) &
+            a_phis(i1,1) = -g_star*i/omega_n2(i1,1)*(2.0_rp*Cg/k_abs(i1,1)*phi_JONSWAP(i1,1) &
                *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
         ENDIF
     ENDDO
@@ -498,7 +508,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         angle2 =  rnd*TWOPI
         angle = 0.0_rp
         !
-        IF(omega_n2(1,i2).LT.1.0_rp) THEN !FIXME: it is assumed that omega_p=1 (peak)
+        IF(omega_n2(1,i2).LT.TWOPI/Tp_real*T) THEN
             sigma = 0.07_rp
         ELSE
             sigma = 0.09_rp
@@ -508,15 +518,19 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         ! Directional spectrum : phi(omega,theta) = psi(omega) x G(theta)
         ! Here G(theta) = 1/beta x cos(2 pi / (4 beta))
         !
-        IF(ABS(theta).LE.beta) THEN
+        IF((ABS(theta).LE.beta).OR.(ABS(beta).LE.tiny)) THEN ! To allow the use of uni-directional case (beta=0) in 3D
             phi_JONSWAP(1,i2) = Cj*omega_n2(1,i2)**(-5.0_rp)*exp(-5.0_rp/(4.0_rp*(omega_n2(1,i2))**(4.0_rp)))*gamma** &
               (exp(-(omega_n2(1,i2)-1.0_rp)**2/(2.0_rp*sigma**2)))*DD_WW(1,i2)
         ELSE
             phi_JONSWAP(1,i2) = 0.0_rp
         ENDIF
-        a_eta(1,i2)  = (2.0_rp*1.0_rp/(2.0_rp*omega_n2(1,i2)**3.0_rp)*phi_JONSWAP(1,i2)*pioxlen*pioylen)**(0.5_rp) &
+        !
+        ! Evaluate group velocity (non-dimensional)
+        Cg = group_velocity(omega_n2(1,i2)/TWOPI*T,depth,grav) / (L/T)
+        !
+        a_eta(1,i2)  = (2.0_rp*Cg/k_abs(1,i2)*phi_JONSWAP(1,i2)*pioxlen*pioylen)**(0.5_rp) &
            *exp(i*(angle1+angle2+angle))
-        a_phis(1,i2) = -1.0_rp*i/omega_n2(1,i2)*(2.0_rp*1.0_rp/(2.0_rp*omega_n2(1,i2)**3.0_rp)*phi_JONSWAP(1,i2) &
+        a_phis(1,i2) = -g_star*i/omega_n2(1,i2)*(2.0_rp*Cg/k_abs(1,i2)*phi_JONSWAP(1,i2) &
            *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
         DO i1 = 2, n1o2p1
             rnd = RAND(0)
@@ -526,7 +540,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
             angle2 =  rnd*TWOPI
             angle = 0.0_rp
             !
-            IF(omega_n2(i1,i2).LT.1.0_rp) THEN !FIXME: it is assumed that omega_p=1 (peak)
+            IF(omega_n2(i1,i2).LT.TWOPI/Tp_real*T) THEN
                 sigma = 0.07_rp
             ELSE
                 sigma = 0.09_rp
@@ -536,15 +550,19 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
             ! Directional spectrum : phi(omega,theta) = psi(omega) x G(theta)
             ! Here G(theta) = 1/beta x cos(2 pi / (4 beta))
             !
-            IF(ABS(theta).LE.beta) THEN
+            IF((ABS(theta).LE.beta).OR.(ABS(beta).LE.tiny)) THEN ! To allow the use of uni-directional case (beta=0) in 3D
                 phi_JONSWAP(i1,i2) = Cj*omega_n2(i1,i2)**(-5.0_rp)*exp(-5.0_rp/(4.0_rp*(omega_n2(i1,i2))**(4.0_rp)))*gamma** &
                     (exp(-(omega_n2(i1,i2)-1.0_rp)**2/(2.0_rp*sigma**2)))*DD_WW(i1,i2)
             ELSE
                 phi_JONSWAP(i1,i2) = 0.0_rp
             ENDIF
-            a_eta(i1,i2)  = (2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,i2)**3.0_rp)*phi_JONSWAP(i1,i2)*pioxlen*pioylen)**(0.5_rp) &
+            !
+            ! Evaluate group velocity (non-dimensional)
+            Cg = group_velocity(omega_n2(i1,i2)/TWOPI*T,depth,grav) / (L/T)
+            !
+            a_eta(i1,i2)  = (2.0_rp*Cg/k_abs(i1,i2)*phi_JONSWAP(i1,i2)*pioxlen*pioylen)**(0.5_rp) &
                 *exp(i*(angle1+angle2+angle))
-            a_phis(i1,i2) = -1.0_rp*i/omega_n2(i1,i2)*(2.0_rp*1.0_rp/(2.0_rp*omega_n2(i1,i2)**3.0_rp)*phi_JONSWAP(i1,i2) &
+            a_phis(i1,i2) = -g_star*i/omega_n2(i1,i2)*(2.0_rp*Cg/k_abs(i1,i2)*phi_JONSWAP(i1,i2) &
                 *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
         ENDDO
     ENDDO

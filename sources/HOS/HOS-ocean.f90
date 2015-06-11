@@ -65,7 +65,7 @@ CALL read_input('input_HOS.dat')
 CALL initiate_parameters()
 !
 ! Scales
-IF(i_case == 3 .or. i_case==31 .or. i_case == 32) THEN
+IF(i_case == 3 .or. i_case/10 == 3) THEN
     !
     IF(ABS(depth-1.0e15_rp) <= epsilon(1.0e15_rp)) THEN
         kp_real = (TWOPI/Tp_real)**2/grav
@@ -75,14 +75,6 @@ IF(i_case == 3 .or. i_case==31 .or. i_case == 32) THEN
     !
     L = 1.0_rp/kp_real
     T = Tp_real/TWOPI
-    ! Outputs
-    IF (i_out_dim == 1 .OR. i_out_dim == 3) THEN ! dimensional output
-        L_out = L
-        T_out = T
-    ELSE
-        L_out = 1.d0
-        T_out = 1.d0
-    ENDIF
 ELSE
     IF (ABS(depth-1.0e15_rp) <= epsilon(1.0e15_rp)) THEN
        ! Infinite depth
@@ -93,13 +85,14 @@ ELSE
        L = depth
        T = SQRT(depth / grav)
     ENDIF
-    IF (i_out_dim == 1 .OR. i_out_dim == 3) THEN ! dimensional output
-        L_out = L
-        T_out = T
-    ELSE
-        L_out = 1.0_rp
-        T_out = 1.0_rp
-    ENDIF
+ENDIF
+! Outputs
+IF (i_out_dim == 1 .OR. i_out_dim == 3) THEN ! dimensional output
+    L_out = L
+    T_out = T
+ELSE
+    L_out = 1.d0
+    T_out = 1.d0
 ENDIF
 !
 ! Going to non dimensional form (1/2)
@@ -112,7 +105,7 @@ depth_star    = depth / L
 Ta            = Ta / T
 !
 ! Specific scaling for irreg. cases
-IF(i_case.EQ.3 .or. i_case .EQ. 31 .or. i_case .EQ. 32) THEN
+IF(i_case == 3 .OR. i_case/10 == 3) THEN
     ! FIXME: clarify non-dimensionalization
     E_cible = E_cible / L **2
 ENDIF
@@ -285,19 +278,21 @@ ENDDO
 ! FIXME : make it cleaner
 DO i2=1,n2o2p1
     theta_abs(1,i2) = 0.0_rp
+    k_abs(1,i2)     = SQRT(ky_n2(i2)*ky_n2(i2))
     DO i1=2,n1o2p1
-        k_abs(i1,i2)=SQRT(kx(i1)*kx(i1)+(ky_n2(i2)*ky_n2(i2)))
-        theta_abs(i1,i2)=ATAN2(ky_n2(i2),kx(i1))
+        k_abs(i1,i2)     = SQRT(kx(i1)*kx(i1)+(ky_n2(i2)*ky_n2(i2)))
+        theta_abs(i1,i2) = ATAN2(ky_n2(i2),kx(i1))
         IF (theta_abs(i1,i2) .LT. 0.0_rp) THEN
-                theta_abs(i1,i2)=theta_abs(i1,i2) + 2.0_rp*PI
+            theta_abs(i1,i2)=theta_abs(i1,i2) + 2.0_rp*PI
         ENDIF
     ENDDO
 ENDDO
 DO i2=2,n2o2p1
-    theta_abs(1,n2-i2+1) = 0.0_rp
+    theta_abs(1,n2-i2+2) = 0.0_rp
+    k_abs(1,n2-i2+2)     = SQRT(ky_n2(i2)*ky_n2(i2))
     DO i1=2,n1o2p1
-        k_abs(i1,n2-i2+2)=SQRT(kx(i1)*kx(i1)+(ky_n2(i2)*ky_n2(i2)))
-        theta_abs(i1,n2-i2+2)=ATAN2(-ky_n2(i2),kx(i1))
+        k_abs(i1,n2-i2+2)     = SQRT(kx(i1)*kx(i1)+(ky_n2(i2)*ky_n2(i2)))
+        theta_abs(i1,n2-i2+2) = ATAN2(-ky_n2(i2),kx(i1))
         IF (theta_abs(i1,n2-i2+2) .LT. 0.0_rp) THEN
                 theta_abs(i1,n2-i2+2)=theta_abs(i1,n2-i2+2) + 2.0_rp*PI
         ENDIF
@@ -465,7 +460,7 @@ DO WHILE (time_cur <= T_stop_star)
     n_rk_tot = n_rk_tot + n_rk    ! total number of time steps
     CALL CPU_TIME(t_f)
     ! Dsplays the CPU time for one time steps
-    IF (time_cur <= 3000 * dt_out) THEN ! only for the first 100 steps
+    IF (time_cur <= 1000 * dt_out) THEN ! only for the first 1000 steps
         WRITE(*,'(A,F6.2,2(X,I4),3(X,F9.3))') 'CPU time for Output time step ',t_f-t_i, n_rk, n_error, time_cur*T_out, dt_rk4, dt
     ENDIF
     ! Guess of the simulation's duration
@@ -505,8 +500,10 @@ DO WHILE (time_cur <= T_stop_star)
     ! Rough estimation of peak period
     idx = MAXLOC(abs(a_eta))
     Tp = TWOPI/omega_n2(idx(1),idx(2))
-    PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3))* L_out,', T_peak=',Tp * T_out
-    PRINT*,'***************************'
+    IF (i_case == 3 .OR. i_case/10 == 3) THEN
+        PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3)) * L_out,', T_peak=',Tp * T_out
+    ENDIF
+    PRINT*,'*****************',FLOOR(time_cur/T_stop_star*100),' % *****************'
     CALL output_time_step(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, &
                          time=time_cur, N_stop=FLOOR(T_stop_star / dt_out), &
                          a_eta=a_eta, a_phis=a_phis, da_eta= da_eta, volume=volume, energy=energy, E_0=E_o, E_tot=E_tot, &

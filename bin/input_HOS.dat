@@ -23,4 +23,4 @@ Output: 1-dim. ; 0-nondim.   :: i_out_dim        :: 1
 3d modes                     :: i_a_3d           :: 1  
 2d free surface, center line :: i_2d             :: 0
 Wave probes in domain        :: i_prob           :: 0
-Swense output 1='yes',0='no' :: i_sw             :: 1
+Swense output 1='yes',0='no' :: i_sw             :: 0
