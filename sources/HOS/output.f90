@@ -86,7 +86,7 @@ IF (i_max == 1) THEN
     WRITE(8,'(A)') 'VARIABLES="t","max-eta","min-eta","max/sqrt(t)","min/sqrt(t)"'
 ENDIF
 !
-IF (MOD(i_case,10) == 8) THEN
+IF (i_case/10 == 8) THEN
     OPEN(9,file='Results/phase_shift.dat',status='unknown')
     CALL write_input(9)
     WRITE(9,'(A)')'TITLE=" phase shift (Fructus test) as a function of time"'       !
@@ -134,7 +134,7 @@ IF (i_prob == 1) THEN
 902 FORMAT(a,2(i2,a,1es10.3,a))
     !
     OPEN(99,file='Results/probes.dat',status='unknown')
-    CALL write_input(9)
+    CALL write_input(99)
     WRITE(99,'(A)') 'TITLE="Probes records versus time"'        !
     WRITE(99,'(101A)') 'VARIABLES = "time" ', ('"p'//TRIM(int2str(i1))//'" ',i1=1,nprobes)
 ENDIF
@@ -323,11 +323,13 @@ IF (i_vol == 1) THEN
     volume = volume * xlen_star
     IF (n2 /= 1) volume = volume * ylen_star
     IF (ABS(E_0(3)) > tiny) THEN
-        WRITE(3,303) time*T_out, volume*L_out, (energy(i1),i1=1,3), ABS(energy(3)-E_0(3))/E_0(3),E_tot
+        WRITE(3,303) time*T_out, volume*L_out, (energy(i1)*L_out**3/T_out**2,i1=1,3), &
+            ABS(energy(3)-E_0(3))/E_0(3),E_tot*L_out**3/T_out**2
     ELSE
-        WRITE(3,303) time*T_out, volume*L_out, (energy(i1),i1=1,3), 0.0_rp,E_tot
+        WRITE(3,303) time*T_out, volume*L_out, (energy(i1)*L_out**3/T_out**2,i1=1,3), &
+            0.0_rp,E_tot*L_out**3/T_out**2
     ENDIF
-   303 FORMAT(7 (ES12.5,X),ES12.5)
+   303 FORMAT(6(ES12.5,X),ES12.5)
 ENDIF
 !
 IF (i_max == 1) THEN
@@ -346,7 +348,7 @@ IF (i_max == 1) THEN
 ENDIF
 !
 ! FIXME: make this work for xlen diff from 1
-IF (MOD(i_case,10) == 8) THEN
+IF (i_case/10 == 8) THEN
     WRITE(9,'(ES12.5,X,ES12.5)') time * T_out, ATAN2(IMAG(a_eta(2,1)), REAL(a_eta(2,1),RP))*180.0_rp/PI
 ENDIF
 !

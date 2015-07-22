@@ -131,7 +131,7 @@ SELECT CASE (i_case)
         !
         ! Everything should be dimensional here
         !
-        E_cible = (0.25_rp*Hs_real)**2
+        E_cible = grav*(0.25_rp*Hs_real)**2
         !
         IF(ABS(depth-1.0e15_rp) <= epsilon(1.0e15_rp)) THEN
             kp_real = (TWOPI/Tp_real)**2/grav
@@ -764,8 +764,8 @@ DO i1 = 1, n1o2p1
     ENDDO
 ENDDO
 !
-E_tot = E
-WRITE(*,*) 'E_tot_ini =',E * L_out **2 ,'Hs_ini =',4*SQRT(E) * L_out, 'Tp_ini =',Tp_real
+E_tot = E * g_star
+WRITE(*,*) 'E_tot_ini =',E * L_out**3 / T_out**2 ,'Hs_ini =',4*SQRT(E/g_star) * L_out, 'Tp_ini =',Tp_real
 !
 END SUBROUTINE initiate_irreg_f
 !
@@ -965,9 +965,7 @@ SUBROUTINE initiate_NL
 INTEGER :: i1,j1,i2,j2
 REAL(RP), DIMENSION(m1,m2) :: eta_1,eta_s,eta_pos,eta_neg,eta_t,phi_1,phi_pos,phi_neg,phi_d,eta_3
 COMPLEX(RP), DIMENSION(m1o2p1,m2) :: a_eta_s, a_eta_pos, a_eta_neg,a_phi_1,a_phi_pos,a_phi_neg,a_phi_d,a_eta_3
-REAL(RP) :: E_NL, eta_mult,A_pos,A_neg,B_pos,B_neg
-!
-E_NL=E_tot
+REAL(RP) :: eta_mult,A_pos,A_neg,B_pos,B_neg
 !
 eta_1=0.0_rp
 eta_s=0.0_rp

@@ -106,8 +106,8 @@ Ta            = Ta / T
 !
 ! Specific scaling for irreg. cases
 IF(i_case == 3 .OR. i_case/10 == 3) THEN
-    ! FIXME: clarify non-dimensionalization
-    E_cible = E_cible / L **2
+    ! This is energy divided by rho
+    E_cible = E_cible / L**2 / (L/T**2)
 ENDIF
 !
 ! Normalisation factor for elevation eta
@@ -501,7 +501,7 @@ DO WHILE (time_cur <= T_stop_star)
     idx = MAXLOC(abs(a_eta))
     Tp = TWOPI/omega_n2(idx(1),idx(2))
     IF (i_case == 3 .OR. i_case/10 == 3) THEN
-        PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3)) * L_out,', T_peak=',Tp * T_out
+        PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3)/g_star) * L_out,', T_peak=',Tp * T_out
     ENDIF
     PRINT*,'*****************',FLOOR(time_cur/T_stop_star*100),' % *****************'
     CALL output_time_step(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, &
