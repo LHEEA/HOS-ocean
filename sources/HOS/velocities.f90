@@ -98,7 +98,7 @@ CALL fourier_2_space(a_dphis_l,  dphis3)
 DO i2=1,n2
     DO i1=1,n1
         deta3(i1,i2)  = (deta3(i1,i2) + W1(i1,i2))
-        dphis3(i1,i2) = (dphis3(i1,i2) - eta3(i1,i2))
+        dphis3(i1,i2) = (dphis3(i1,i2) - g_star*eta3(i1,i2))
     ENDDO
 ENDDO
 !
@@ -251,10 +251,10 @@ DO i1=1,n1
         vity2ref_SL(i1,i2) = phimy2(i1,i2)
         vitz2ref_SL(i1,i2) = phimz2(i1,i2)
 
-        Press_SL(i1,i2) = - eta3(i1,i2) - phit(i1,i2) +(- 0.5_rp*(phimx2(i1,i2) + phimy2(i1,i2) + phimz2(i1,i2)))    ! DFSBC OK if phimx2.NE.phimx*phimx
+        Press_SL(i1,i2) = - g_star*eta3(i1,i2) - phit(i1,i2) +(- 0.5_rp*(phimx2(i1,i2) + phimy2(i1,i2) + phimz2(i1,i2)))    ! DFSBC OK if phimx2.NE.phimx*phimx
         CCSL(i1,i2) = deta3(i1,i2) - phimxetax(i1,i2) - phimz(i1,i2)       ! CCSL OK
         ! Approximation (no dealiasing)
-        Press_bis(i1,i2) = - eta3(i1,i2) - phit(i1,i2) - 0.5_rp*(phimx(i1,i2)**2 + phimy(i1,i2)**2 + phimz(i1,i2)**2)
+        Press_bis(i1,i2) = - g_star*eta3(i1,i2) - phit(i1,i2) - 0.5_rp*(phimx(i1,i2)**2 + phimy(i1,i2)**2 + phimz(i1,i2)**2)
         CCSL_bis(i1,i2)  = deta3(i1,i2) + (phimx(i1,i2)*etax_tmp(i1,i2)+phimy(i1,i2)*etay_tmp(i1,i2)) - phimz(i1,i2) ! KFSBC OK
     ENDDO
 ENDDO
@@ -902,7 +902,7 @@ CALL fourier_2_space(a_dphis_l,  dphis3)
 DO i2=1,n2
     DO i1=1,n1
         deta3(i1,i2)  = (deta3(i1,i2) + W1(i1,i2))
-        dphis3(i1,i2) = (dphis3(i1,i2) - eta3(i1,i2))
+        dphis3(i1,i2) = (dphis3(i1,i2) - g_star*eta3(i1,i2))
     ENDDO
 ENDDO
 !
@@ -987,10 +987,10 @@ DO i1=1,n1
         vity2ref_SL(i1,i2) = phimy2(i1,i2)
         vitz2ref_SL(i1,i2) = phimz2(i1,i2)
 
-        Press_SL(i1,i2) = - eta3(i1,i2) - phit(i1,i2) +(- 0.5_rp*(phimx2(i1,i2) + phimy2(i1,i2) + phimz2(i1,i2))) ! CDSL OK si phimx2.NE.phimx*phimx
+        Press_SL(i1,i2) = - g_star*eta3(i1,i2) - phit(i1,i2) +(- 0.5_rp*(phimx2(i1,i2) + phimy2(i1,i2) + phimz2(i1,i2))) ! CDSL OK si phimx2.NE.phimx*phimx
         CCSL(i1,i2) = deta3(i1,i2) - phimxetax(i1,i2) - phimz(i1,i2)       ! CCSL OK
         ! Approximation (no dealiasing)
-        Press_bis(i1,i2) = - eta3(i1,i2) - phit(i1,i2) - 0.5_rp*(phimx(i1,i2)**2 + phimy(i1,i2)**2 + phimz(i1,i2)**2)
+        Press_bis(i1,i2) = - g_star*eta3(i1,i2) - phit(i1,i2) - 0.5_rp*(phimx(i1,i2)**2 + phimy(i1,i2)**2 + phimz(i1,i2)**2)
         CCSL_bis(i1,i2)  = deta3(i1,i2) + (phimx(i1,i2)*etax_tmp(i1,i2)+phimy(i1,i2)*etay_tmp(i1,i2)) - phimz(i1,i2)       ! CCSL OK
     ENDDO
 ENDDO

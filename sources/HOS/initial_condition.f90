@@ -76,7 +76,7 @@ SELECT CASE (i_case)
     CASE (1,2,21)
         WRITE(*,'(A,I3)') 'initiate_parameters: No parameters to set with i_case=',i_case
     CASE(81,82,83,84,809)
-        WRITE(*,'(A)') 'initiate_parameters: Fructus case'
+        WRITE(*,'(A)') 'initiate_parameters: Rienecker & Fenton case'
         SELECT CASE (i_case)
                 CASE (81)
                 filename = 'waverf_L628_inf_ka01_N15_30.cof'
@@ -90,7 +90,11 @@ SELECT CASE (i_case)
                 filename = 'waverf_L628_inf_ka009_N50_100.cof'
         END SELECT
         ! Depth is infinite in those cases
-        depth = 1.0e15_rp
+        ! Check that correct depth is used in input file
+        IF (ABS(depth-1.0e15_rp) >= epsilon(1.0e15_rp)) THEN
+            WRITE(*,'(A)') 'For this test case, infinite water depth has to be used'
+            STOP
+        ENDIF
         !
         CALL read_RF_data(filename, RF_obj, .TRUE.)
         !

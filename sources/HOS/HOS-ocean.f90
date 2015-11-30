@@ -362,8 +362,6 @@ DO i2 = 2, Nd2p1o2
     ENDDO
 ENDDO
 !
-CALL display_velocities()
-!
 ! Initial conditions
 !
 ! Evaluates the modal amplitudes (FT)
@@ -600,32 +598,18 @@ threshold = 10.0_rp
 !
 slopex_max = MAXVAL(ABS(etax))
 slopey_max = MAXVAL(ABS(etay))
-! WRITE(*,*) slopex_max
 !
 IF (slopex_max > threshold) THEN
-    WRITE(*,'(A,2(ES11.3,X))') 'Ca va trancher en x...', time_cur, slopex_max
+    WRITE(*,'(A,2(ES11.3,X))') 'Slope along x is too large...', time_cur, slopex_max
     STOP
 ENDIF
 !
 IF (slopey_max > threshold) THEN
-    WRITE(*,'(A)') 'Ca va trancher en y...'
+    WRITE(*,'(A)') 'Slope along y is too large...'
     STOP
 ENDIF
 !
 END SUBROUTINE check_slope
-!
-!
-!
-SUBROUTINE display_velocities()
-!
-IMPLICIT NONE
-!
-WRITE(*,'(A)') 'Parameters for the x-direction'
-IF (depth < 1.0E14_rp) THEN
-    WRITE(*,'(3X, A, ES12.5)')  'Shallow water velocity             c_0      =',SQRT(g_star*depth_star)*L/T
-ENDIF
-!
-END SUBROUTINE display_velocities
 !
 !
 !

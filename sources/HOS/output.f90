@@ -185,7 +185,7 @@ REAL(RP), DIMENSION(m1o2p1,m2) :: abs_eta, log_eta,abs_phis,log_phis
 !
 eta_mult = eta_out
 IF (i_3D == 1) THEN
-    ! Analytical integration of the linear part
+    ! Transform modal amplitudes to physical variables
     CALL fourier_2_space(a_eta,  eta)
     CALL fourier_2_space(a_phis, phis)
     !
@@ -225,11 +225,14 @@ IF (i_3D == 1) THEN
         ENDDO
     ENDIF
    102 FORMAT(3(ES12.5,X),ES12.5)
-   103 FORMAT(A,F9.2,A,I5,A,I5)
+   103 FORMAT(A,ES12.5,A,I5,A,I5)
    104 FORMAT((ES12.5,X),ES12.5)
 ENDIF
 !
 IF (i_2D == 1) THEN
+    ! Transform modal amplitude to physical variable
+    CALL fourier_2_space(a_eta,  eta)
+    !
     IF (ABS(time) <= tiny) THEN
         IF (tecplot == 11) THEN
             WRITE(66,603)'ZONE SOLUTIONTIME = ',time*T_out,', I=',n1
@@ -250,10 +253,10 @@ IF (i_2D == 1) THEN
         ENDDO
     ENDIF
    602 FORMAT(ES12.5,X,ES12.5)
-   603 FORMAT(A,F9.2,A,I5)
+   603 FORMAT(A,ES12.5,A,I5)
    604 FORMAT(ES12.5)
 ELSE IF (i_2D == 2) THEN
-    ! Analytical integration of the linear part
+    ! Transform modal amplitude to physical variable
     CALL fourier_2_space(a_eta,  eta)
     !
     ! Output of the free surface elevation versus space (size control of the output file)
