@@ -42,7 +42,7 @@ CHARACTER(LEN=*), INTENT(IN) :: filename
 INTEGER, INTENT(IN)          :: i_unit
 !
 ! Local variables
-INTEGER  :: n1,n2, n1o2p1
+INTEGER  :: n1,n2
 REAL(RP), INTENT(OUT) :: dt_out_star,T_stop_star,xlen_star,ylen_star,depth_star,g_star,L,T
 !
 COMPLEX(CP), ALLOCATABLE, DIMENSION(:,:), INTENT(OUT) :: modesspecx,modesspecy,modesspecz,modesspect,modesFS,modesFSt
@@ -337,14 +337,10 @@ REAL(RP), DIMENSION(n1o2p1,n2), INTENT(OUT)    :: kth
 COMPLEX(CP), DIMENSION(n1o2p1,n2), INTENT(OUT) :: ikx, iky
 ! Local variables
 REAL(RP) :: pioxlen, pioylen, delx, dely, k2
-INTEGER  :: n1o2p1,n2o2p1,Nd1o2p1,Nd2o2p1, N_der(2)
+INTEGER  :: N_der(2)
 INTEGER  :: i1,i2
 !
 ! Specify temporary number of points
-n1o2p1   = n1/2+1
-n2o2p1   = n2/2+1
-Nd1o2p1  = n1o2p1
-Nd2o2p1  = n2o2p1
 N_der(1) = n1o2p1
 N_der(2) = n2o2p1
 !
@@ -375,7 +371,7 @@ DO i2 = 1,n2
 ENDDO
 !
 !   wave numbers
-DO i1 = 1, Nd1o2p1
+DO i1 = 1, n1o2p1
     kx(i1)  = REAL(i1 - 1,RP) * pioxlen
 ENDDO
 !  y-wave numbers (on n2 modes)
