@@ -180,7 +180,7 @@ REAL(RP) :: x1, x2
 !
 ! We will look at first eight variables written on 18 characters
 OPEN(i_unit,file=filename,status='OLD', FORM='FORMATTED', ACCESS='DIRECT',RECL=18*10)
-READ(i_unit,'(9(ES17.10,1X))',REC=1) x1, x2, dt_out, T_stop, xlen, ylen, depth, g, L, T
+READ(i_unit,'(10(ES17.10,1X))',REC=1) x1, x2, dt_out, T_stop, xlen, ylen, depth, g, L, T
 !
 n1 = NINT(x1)
 n2 = NINT(x2)

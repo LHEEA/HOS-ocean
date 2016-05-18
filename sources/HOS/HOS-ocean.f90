@@ -106,8 +106,8 @@ Ta            = Ta / T
 !
 ! Specific scaling for irreg. cases
 IF(i_case == 3 .OR. i_case/10 == 3) THEN
-    ! FIXME: clarify non-dimensionalization
-    E_cible = E_cible / L **2
+    ! This is energy divided by rho
+    E_cible = E_cible / L**2 / (L/T**2)
 ENDIF
 !
 ! Normalisation factor for elevation eta
@@ -362,8 +362,6 @@ DO i2 = 2, Nd2p1o2
     ENDDO
 ENDDO
 !
-CALL display_velocities()
-!
 ! Initial conditions
 !
 ! Evaluates the modal amplitudes (FT)
@@ -501,7 +499,7 @@ DO WHILE (time_cur <= T_stop_star)
     idx = MAXLOC(abs(a_eta))
     Tp = TWOPI/omega_n2(idx(1),idx(2))
     IF (i_case == 3 .OR. i_case/10 == 3) THEN
-        PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3)) * L_out,', T_peak=',Tp * T_out
+        PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3)/g_star) * L_out,', T_peak=',Tp * T_out
     ENDIF
     PRINT*,'*****************',FLOOR(time_cur/T_stop_star*100),' % *****************'
     CALL output_time_step(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, &
@@ -600,32 +598,18 @@ threshold = 10.0_rp
 !
 slopex_max = MAXVAL(ABS(etax))
 slopey_max = MAXVAL(ABS(etay))
-! WRITE(*,*) slopex_max
 !
 IF (slopex_max > threshold) THEN
-    WRITE(*,'(A,2(ES11.3,X))') 'Ca va trancher en x...', time_cur, slopex_max
+    WRITE(*,'(A,2(ES11.3,X))') 'Slope along x is too large...', time_cur, slopex_max
     STOP
 ENDIF
 !
 IF (slopey_max > threshold) THEN
-    WRITE(*,'(A)') 'Ca va trancher en y...'
+    WRITE(*,'(A)') 'Slope along y is too large...'
     STOP
 ENDIF
 !
 END SUBROUTINE check_slope
-!
-!
-!
-SUBROUTINE display_velocities()
-!
-IMPLICIT NONE
-!
-WRITE(*,'(A)') 'Parameters for the x-direction'
-IF (depth < 1.0E14_rp) THEN
-    WRITE(*,'(3X, A, ES12.5)')  'Shallow water velocity             c_0      =',SQRT(g_star*depth_star)*L/T
-ENDIF
-!
-END SUBROUTINE display_velocities
 !
 !
 !

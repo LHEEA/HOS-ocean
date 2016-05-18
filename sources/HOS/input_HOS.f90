@@ -238,7 +238,7 @@ CALL write_datum(unit, T_stop,            'T_stop',         'Duration of the sim
 CALL write_datum(unit, f_out,             'f_out',          'Sampling frequency (output)')
 CALL write_datum(unit, toler,             'toler',          'Tolerance of RK scheme')
 CALL write_datum(unit, n,                 'n',              'Dommermuth initialisation')
-CALL write_datum(unit, Ta,                'Ta',             'Dommermuth initialisation')
+CALL write_datum(unit, Ta*T,                'Ta',             'Dommermuth initialisation')
 !
 CALL write_blank_line(unit,'--- Physical parameters')
 CALL write_datum(unit, grav,              'grav',           'Gravity')

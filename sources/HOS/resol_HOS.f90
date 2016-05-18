@@ -397,7 +397,7 @@ ENDIF
 CALL space_2_fourier(deta,  da_etark)
 CALL space_2_fourier(dphis, da_phisrk)
 !
-da_phisrk(1,1) = da_phisrk(1,1) - a_etark(1,1)
+da_phisrk(1,1) = da_phisrk(1,1) - g_star*a_etark(1,1)
 !
 END SUBROUTINE solveHOS_lin
 !
