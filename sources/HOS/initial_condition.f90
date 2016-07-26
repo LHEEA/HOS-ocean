@@ -488,7 +488,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         ENDIF
         !
         ! Evaluate group velocity (non-dimensional)
-        Cg = group_velocity(omega_n2(i1,1)/TWOPI*T,depth,grav) / (L/T)
+        Cg = group_velocity(omega_n2(i1,1)/TWOPI/T,depth,grav) / (L/T)
         !
         !%%%%%%%%%%%%%%% Takes 1D / 2D into account
         IF(n2 == 1) THEN
@@ -530,7 +530,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         ENDIF
         !
         ! Evaluate group velocity (non-dimensional)
-        Cg = group_velocity(omega_n2(1,i2)/TWOPI*T,depth,grav) / (L/T)
+        Cg = group_velocity(omega_n2(1,i2)/TWOPI/T,depth,grav) / (L/T)
         !
         a_eta(1,i2)  = (2.0_rp*Cg/k_abs(1,i2)*phi_JONSWAP(1,i2)*pioxlen*pioylen)**(0.5_rp) &
            *exp(i*(angle1+angle2+angle))
@@ -562,7 +562,7 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
             ENDIF
             !
             ! Evaluate group velocity (non-dimensional)
-            Cg = group_velocity(omega_n2(i1,i2)/TWOPI*T,depth,grav) / (L/T)
+            Cg = group_velocity(omega_n2(i1,i2)/TWOPI/T,depth,grav) / (L/T)
             !
             a_eta(i1,i2)  = (2.0_rp*Cg/k_abs(i1,i2)*phi_JONSWAP(i1,i2)*pioxlen*pioylen)**(0.5_rp) &
                 *exp(i*(angle1+angle2+angle))

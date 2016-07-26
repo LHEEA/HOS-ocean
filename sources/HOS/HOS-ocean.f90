@@ -481,7 +481,9 @@ DO WHILE (time_cur <= T_stop_star)
         ! Output of errors induced by H2 operator on free surface quantities
         PRINT*, '.......... H2 operator ..........'
         CALL HOSvel2(25,M,a_eta,a_phis,time_cur)
-        CALL reconstruction_SL(modesspec,modesspecx,modesspecy,modesspecz,modesspect,a_eta,da_eta,error_H2)
+        IF (m2.EQ.1) THEN
+            CALL reconstruction_SL(modesspec,modesspecx,modesspecy,modesspecz,modesspect,a_eta,da_eta,error_H2)
+        ENDIF
         IF(error_H2.GT.0.1_rp.AND.m2.EQ.1) THEN
             !
             ! Direct method
