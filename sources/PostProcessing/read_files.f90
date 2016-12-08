@@ -97,7 +97,7 @@ ENDIF
 dt_out = time-dt_out
 !
 102 FORMAT(3(ES12.5,1X),ES12.5)
-103 FORMAT(A,F9.2,A,I5,A,I5)
+103 FORMAT(A,ES12.5,A,I5,A,I5)
 !
 END SUBROUTINE init_read_3d
 !

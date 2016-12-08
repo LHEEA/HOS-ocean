@@ -85,6 +85,7 @@ clean:
 depend $(OBJDIR).depend:
 	@if test -d bin; then echo "bin/ exists"; else mkdir bin; fi
 	@if test -d obj; then echo "obj/ exists"; else mkdir obj; fi
+	@if test -d bin/Results; then echo "exists"; else mkdir bin/Results; fi
 	rm -f $(OBJDIR).depend
 	makedepf90 -b $(OBJDIR) $(SRCS) > $(OBJDIR).depend
 
