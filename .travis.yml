@@ -1,0 +1,22 @@
+sudo: required
+dist: trusty
+language: fortran
+
+matrix:
+  include:
+    - os: linux
+      compiler: clang
+      env: BTYPE=RelWithDebInfo
+    - os: linux
+      compiler: gcc
+      env: BTYPE=Release
+    - os: linux
+      compiler: clang
+      env: BTYPE=Debug
+    - os: osx
+      compiler: clang
+      env: BTYPE=RelWithDebInfo
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get --yes update; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get --yes install liblapack-dev; fi
