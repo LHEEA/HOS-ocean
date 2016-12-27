@@ -28,9 +28,9 @@ before_install:
 
 install:
   - mkdir ~/hosocean-build && cd ~/hosocean-build
-  # Configure. -DCMAKE_CXX_FLAGS=-Werror
+  # Configure
   - cmake $TRAVIS_BUILD_DIR/cmake -DCMAKE_BUILD_TYPE=$BTYPE -DCMAKE_INSTALL_PREFIX=~/hosocean
-  # Build.
+  # Build
   - make
 
 script:
