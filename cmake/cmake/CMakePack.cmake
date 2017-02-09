@@ -1,5 +1,5 @@
 # Install the dependencies of the program
-IF(MSYS)
+IF(MINGW)
     GET_FILENAME_COMPONENT(MINGW_BIN_PATH ${CMAKE_CXX_COMPILER} PATH)
     MESSAGE(STATUS "MINGW_BIN_PATH = ${MINGW_BIN_PATH}")
     LIST(APPEND MINGW_ADDITIONAL_LIB "${MINGW_BIN_PATH}/libgcc_s_dw2-1.dll")
@@ -19,6 +19,7 @@ ENDIF()
 # Instructions to build an installer
 IF(UNIX OR MSYS)
     INCLUDE(InstallRequiredSystemLibraries)
+    SET(CPACK_PACKAGE_CONTACT "Guillaume Ducrozet (guillaume.ducrozet@ec-nantes.fr)")
     SET(CPACK_PACKAGE_NAME "${PROJECT_NAME}_installer")
     SET(CPACK_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION OFF)
     SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
