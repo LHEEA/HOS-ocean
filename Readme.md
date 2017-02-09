@@ -1,7 +1,8 @@
-# HOS-ocean
+# HOS-ocean 
 
 High-Order Spectral method for oceanic simulations
 
+[![Travis][buildstatus_image_travis]][travisci]
 
 This readme file describes the different cases that might be computed with the periodic HOS model
 and gives instructions to set the numerical parameters `n1` to `p2`
@@ -63,3 +64,7 @@ Setting the value of integer `i_case` in `input_HOS.dat`
 Further details about input file, output of the code...
 may be find at the Wiki page of
 HOS-ocean project: https://github.com/LHEEA/HOS-ocean/wiki
+
+
+[buildstatus_image_travis]: https://travis-ci.org/Gjacquenot/HOS-ocean.svg?branch=master
+[travisci]: https://travis-ci.org/Gjacquenot/HOS-ocean
