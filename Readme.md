@@ -66,5 +66,5 @@ may be find at the Wiki page of
 HOS-ocean project: https://github.com/LHEEA/HOS-ocean/wiki
 
 
-[buildstatus_image_travis]: https://travis-ci.org/Gjacquenot/HOS-ocean.svg?branch=master
-[travisci]: https://travis-ci.org/Gjacquenot/HOS-ocean
+[buildstatus_image_travis]: https://travis-ci.org/LHEEA/HOS-ocean.svg?branch=master
+[travisci]: https://travis-ci.org/LHEEA/HOS-ocean
