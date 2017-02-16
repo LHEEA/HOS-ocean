@@ -464,7 +464,7 @@ ELSE
 ENDIF
 !
 !
-DO WHILE (time_cur <= T_stop_star)
+DO WHILE (T_stop_star-time_cur >= -tiny)
     !
     n_er_tot = n_error + n_er_tot ! number or time steps with too large error (wrong time steps)
     n_rk_tot = n_rk_tot + n_rk    ! total number of time steps
