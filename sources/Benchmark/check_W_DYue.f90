@@ -2703,6 +2703,7 @@ IF (test_x == 1) THEN
         PRINT*,'*'
         PRINT*,'***************** A probable error has appeared in x direction, CHECK ! *****************'
         PRINT*,'*'
+        STOP 1
     ENDIF
 ENDIF
 
@@ -2715,6 +2716,7 @@ IF (test_y == 1) THEN
         PRINT*,'*'
         PRINT*,'***************** A probable error has appeared in y direction, CHECK ! *****************'
         PRINT*,'*'
+        STOP 1
     ENDIF
 ENDIF
 
@@ -2727,17 +2729,16 @@ IF (test_xy == 1) THEN
         PRINT*,'*'
         PRINT*,'***************** A probable error has appeared in xy direction, CHECK ! *****************'
         PRINT*,'*'
+        STOP 1
     ENDIF
 ENDIF
-
-
-
-
+!
+!
+!
 CONTAINS
-
-! !
-! !
-! !
+!
+!
+!
 SUBROUTINE write_comp(unit, error, ref)
 !
 IMPLICIT NONE

@@ -7,6 +7,7 @@ bin/*
 # ignore backup files + Mac specific files
 *~
 sources/*/*~
+sources/*/*.orig
 .DS_Store
 # ignore PostProcessing/obj directory
 sources/PostProcessing/obj/
@@ -15,6 +16,14 @@ sources/PostProcessing/bin/*
 !sources/PostProcessing/bin/input_post_process.dat
 # ignore HOS_ocean directory
 HOS_ocean/
-
-build
-install
+# ignore Benchmark folder except waverf coef
+Benchmark/Convergence_RF/*
+!Benchmark/Convergence_RF/waverf*
+# ignore build and install folder (from cmake)
+install/
+build/
+# ignore cmake folder, except 2 files
+cmake/*
+!cmake/cmake/
+!cmake/CMakeLists.txt
+!cmake/CMakeSources.cmake
