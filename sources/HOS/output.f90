@@ -179,9 +179,9 @@ IMPLICIT NONE
 INTEGER, INTENT(IN)               :: i_3d, i_a, i_vol, i_2D, i_max, N_stop, i_prob, n_er_tot, n_rk_tot
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: a_eta, a_phis, da_eta
 REAL(RP), DIMENSION(m1,m2)        :: eta, phis
-REAL(RP) :: time, volume, energy(3), E_0(3), E_tot, dt
+REAL(RP)                          :: time, volume, energy(3), E_0(3), E_tot, dt
 ! Local variables
-INTEGER                        :: ii, i1, i2, it
+INTEGER                        :: ii, i1, i2, it, n_lambda_x
 REAL(RP)                       :: a_1, eta_mult, min_val, max_val
 REAL(RP), DIMENSION(m1,m2)     :: envelope
 REAL(RP), DIMENSION(m1o2p1,m2) :: abs_eta, log_eta,abs_phis,log_phis
@@ -355,7 +355,9 @@ ENDIF
 !
 ! FIXME: make this work for xlen diff from 1
 IF (i_case/10 == 8) THEN
-    WRITE(9,'(ES12.5,X,ES12.5)') time * T_out, ATAN2(IMAG(a_eta(2,1)), REAL(a_eta(2,1),RP))*180.0_rp/PI
+    ! FIXME: find another way to do define n_lambda_x?
+    n_lambda_x = MAXLOC(ABS(a_eta(:,1)),1)-1
+    WRITE(9,'(ES12.5,X,ES12.5)') time * T_out, ATAN2(IMAG(a_eta(n_lambda_x+1,1)), REAL(a_eta(n_lambda_x+1,1),RP))*180.0_rp/PI
 ENDIF
 !
 IF (i_prob == 1) THEN ! probes output

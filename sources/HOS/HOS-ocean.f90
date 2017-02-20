@@ -511,13 +511,17 @@ DO WHILE (T_stop_star-time_cur >= -tiny)
     !
     ! Rough estimation of peak period
     idx = MAXLOC(abs(a_eta))
-    Tp = TWOPI/omega_n2(idx(1),idx(2))
+    IF (i_case /= 1) THEN
+        Tp = TWOPI/omega_n2(idx(1),idx(2))
+    ELSE
+        Tp = 0.0_rp
+    ENDIF
     IF (i_case == 3 .OR. i_case/10 == 3) THEN
         PRINT*,'Hs_out=',4.0_rp*SQRT(energy(3)/g_star) * L_out,', T_peak=',Tp * T_out
     ENDIF
-    PRINT*,'*****************',FLOOR(time_cur/T_stop_star*100),' % *****************'
+    PRINT*,'*****************',NINT(time_cur/T_stop_star*100),' % *****************'
     CALL output_time_step(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, &
-                         time=time_cur, N_stop=FLOOR(T_stop_star / dt_out), &
+                         time=time_cur, N_stop=NINT(T_stop_star / dt_out), &
                          a_eta=a_eta, a_phis=a_phis, da_eta= da_eta, volume=volume, energy=energy, E_0=E_o, E_tot=E_tot, &
                          i_prob=i_prob, dt=dt, n_er_tot=n_er_tot, n_rk_tot=n_rk_tot)
     !
@@ -525,7 +529,7 @@ DO WHILE (T_stop_star-time_cur >= -tiny)
     !
     ! Going to next time step
     time_next = time_cur + dt_out
-    IF (time_next > T_stop_star) time_next = T_stop_star ! if last output
+    IF (time_next-T_stop_star > -epsilon(0.0)) time_next = T_stop_star ! if last output
     h_rk    = dt ! starting time step
     n_rk    = 0  ! local number of time steps
     n_error = 0  ! local number of wrong time steps
@@ -554,7 +558,11 @@ DO WHILE (T_stop_star-time_cur >= -tiny)
                 a_phis(1:n1o2p1,1:n2) = a_phis_rk(1:n1o2p1,1:n2)
                 time_cur   = time_cur + h_loc
                 n_rk       = n_rk + 1
-                dt_correc  = (error/toler)**(-(1.0_rp/(RK_param%p)))
+                IF (error.GT.tiny) THEN
+                    dt_correc = (error/toler)**(-(1.0_rp/(RK_param%p)))
+                ELSE
+                    dt_correc = 4.0_rp
+                ENDIF
             ENDIF
             ! Step size ratio bounds (Mathematica)
             IF (dt_correc > 4.0_rp)   dt_correc = 4.0_rp

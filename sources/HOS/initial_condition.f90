@@ -86,16 +86,16 @@ SELECT CASE (i_case)
     CASE(81,82,83,84,809)
         WRITE(*,'(A)') 'initiate_parameters: Rienecker & Fenton case'
         SELECT CASE (i_case)
-                CASE (81)
-                filename = 'waverf_L628_inf_ka01_N15_30.cof'
-                CASE (82)
-                filename = 'waverf_L628_inf_ka02_N20_40.cof'
-                CASE (83)
-                filename = 'waverf_L628_inf_ka03_N25_50.cof'
-                CASE (84)
-                filename = 'waverf_L628_inf_ka04_N50_100.cof'
-                CASE (809)
-                filename = 'waverf_L628_inf_ka009_N50_100.cof'
+            CASE (81)
+            filename = 'waverf_L628_inf_ka01_N15_30.cof'
+            CASE (82)
+            filename = 'waverf_L628_inf_ka02_N20_40.cof'
+            CASE (83)
+            filename = 'waverf_L628_inf_ka03_N25_50.cof'
+            CASE (84)
+            filename = 'waverf_L628_inf_ka04_N50_100.cof'
+            CASE (809)
+            filename = 'waverf_L628_inf_ka009_N50_100.cof'
         END SELECT
         ! Depth is infinite in those cases
         ! Check that correct depth is used in input file
@@ -106,15 +106,21 @@ SELECT CASE (i_case)
         !
         CALL read_RF_data(filename, RF_obj, .TRUE.)
         !
-        n_lambda_x = FLOOR(xlen)
-        n_lambda_y = FLOOR(ylen)
+        n_lambda_x = NINT(xlen)
+        n_lambda_y = NINT(ylen)
         !
-        CALL build_RF_reference(RF_obj, MAX(n1 / n_lambda_x,1))
+        IF (MOD(n1,n_lambda_x) /= 0) THEN
+            PRINT*,'Number of wavelengths not compatible with number of points: (n1, n_lambda_x)=', n1, n_lambda_x
+            PRINT*,'n1 should be a multiple of n_lambda_x'
+            STOP
+        ENDIF
+        !
+        CALL build_RF_reference(RF_obj, MAX(INT(n1,4) / n_lambda_x,1))
         !
         ! input is non-dimensional
         !
-        xlen   = REAL(FLOOR(xlen), RP) * RF_obj%lambda
-        ylen   = REAL(FLOOR(ylen), RP) * RF_obj%lambda
+        xlen   = REAL(NINT(xlen), RP) * RF_obj%lambda
+        ylen   = REAL(NINT(ylen), RP) * RF_obj%lambda
         !
         T_stop = T_stop * RF_obj%T
         f_out = f_out / RF_obj%T
@@ -133,11 +139,11 @@ SELECT CASE (i_case)
             f_out  = f_out*sqrt(grav/depth)
         ENDIF
     CASE (3,31,32)
-        n_lambda_x = FLOOR(xlen)
-        n_lambda_y = FLOOR(ylen)
+        n_lambda_x = NINT(xlen)
+        n_lambda_y = NINT(ylen)
         !
-        !xlen   = REAL(FLOOR(xlen), RP) * TWOPI/kp
-        !ylen   = REAL(FLOOR(ylen), RP) * TWOPI/kp
+        !xlen   = REAL(NINT(xlen), RP) * TWOPI/kp
+        !ylen   = REAL(NINT(ylen), RP) * TWOPI/kp
         !
         !grav = g ! gravity defined in input file
         !
@@ -151,8 +157,8 @@ SELECT CASE (i_case)
             kp_real = wave_number_r(1/Tp_real,depth,grav,1.0E-15_rp)
         ENDIF
         !
-        xlen   = REAL(FLOOR(xlen), RP) * TWOPI/kp_real
-        ylen   = REAL(FLOOR(ylen), RP) * TWOPI/kp_real
+        xlen   = REAL(NINT(xlen), RP) * TWOPI/kp_real
+        ylen   = REAL(NINT(ylen), RP) * TWOPI/kp_real
         !
         T_stop = T_stop*Tp_real
         f_out  = f_out/Tp_real
@@ -160,7 +166,7 @@ SELECT CASE (i_case)
         !
         IF(i_case == 31) CALL read_irreg_f
 CASE DEFAULT
-    WRITE(*,'(A)') 'initiate_parameters: Unknow case'
+    WRITE(*,'(A)') 'initiate_parameters: Unknown case'
 END SELECT
 !
 END SUBROUTINE initiate_parameters
@@ -234,10 +240,10 @@ SELECT CASE (i_case)
         ENDIF
         !
         IF (n_lambda_x /= 1) THEN
-            ! zero forcing to remove BF instabilities (in case L_x=2lambda)
+            ! zero forcing to remove BF instabilities (in case L_x=n_lambda_x*lambda)
             CALL space_2_fourier(eta, a_eta)
             DO i1=1,n_lambda_x-1
-            a_eta(1+i1:n1o2p1:n_lambda_x,:) = 0.0_cp
+                a_eta(1+i1:n1o2p1:n_lambda_x,:) = 0.0_cp
             ENDDO
             CALL fourier_2_space(a_eta, eta)
         ENDIF
@@ -305,13 +311,13 @@ SELECT CASE (i_case)
         ENDIF
         !
         IF (iseven(n1)) THEN ! useless as cosine amplitude is already zero for phis
-                CALL space_2_fourier(phis, a_phis)
-                a_phis(n1o2p1,:) = 0.0_cp
-                CALL fourier_2_space(a_phis, phis)
+            CALL space_2_fourier(phis, a_phis)
+            a_phis(n1o2p1,:) = 0.0_cp
+            CALL fourier_2_space(a_phis, phis)
         ENDIF
         !
         IF (n_lambda_x /= 1) THEN
-            ! zero forcing to remove BF instabilities (in case L_x=2lambda)
+            ! zero forcing to remove BF instabilities (in case L_x=n_lambda_x*lambda)
             CALL space_2_fourier(phis, a_phis)
             DO i1=1,n_lambda_x-1
                 a_phis(1+i1:n1o2p1:n_lambda_x,:) = 0.0_rp
