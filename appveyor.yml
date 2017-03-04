@@ -1,0 +1,110 @@
+# Windows testing.
+# Syntax for this file:
+# http://www.appveyor.com/docs/appveyor-yml
+
+shallow_clone: true
+
+platform: x64
+
+cache:
+  - x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
+  - i686-4.9.2-release-win32-dwarf-rt_v4-rev4.7z
+  - fftw-3.3.5-dll64.zip
+  - fftw-3.3.5-dll32.zip  
+  - lapack_source.zip
+  - lapack_install.zip
+
+environment:
+  CTEST_OUTPUT_ON_FAILURE: 1
+  LAPACK_URL: https://github.com/Reference-LAPACK/lapack/archive/v3.7.0.zip
+  LAPACK_SOURCE: lapack-3.7.0
+  LAPACK_ARCHIVE: lapack_source.zip
+  LAPACK_INSTALL: lapack_install.zip
+  FFTW_URL: http://www.fftw.org/fftw-3.3.6-pl1.tar.gz
+  matrix:
+  - MINGW_DIR: mingw64
+    MINGW_URL: https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.9.2/threads-win32/seh/x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z/download
+    MINGW_ARCHIVE: x86_64-4.9.2-release-win32-seh-rt_v4-rev4.7z
+    FFTW_INSTALL: fftw-3.3.5-dll64.zip
+  - MINGW_DIR: mingw32
+    MINGW_URL: https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/4.9.2/threads-win32/dwarf/i686-4.9.2-release-win32-dwarf-rt_v4-rev4.7z/download
+    MINGW_ARCHIVE: i686-4.9.2-release-win32-dwarf-rt_v4-rev4.7z
+    FFTW_INSTALL: fftw-3.3.5-dll32.zip
+
+install:
+  - dir
+  - if not exist "%MINGW_ARCHIVE%" appveyor DownloadFile "%MINGW_URL%" -FileName "%MINGW_ARCHIVE%"
+  - 7z x -y "%MINGW_ARCHIVE%" > nul
+  - set PATH=%CD%\%MINGW_DIR%\bin;%PATH%
+  - echo %PATH%
+  # CMake refuses to generate MinGW Makefiles if sh.exe is in the Path
+  - ps: Get-Command sh.exe -All | Remove-Item
+  - if not exist "%LAPACK_INSTALL%" (
+    appveyor DownloadFile "%LAPACK_URL%" -FileName "%LAPACK_ARCHIVE%" &&
+    7z x -y "%LAPACK_ARCHIVE%" > nul &&
+    cmake --help &&
+    dir &&
+    mkdir lapack_build &&
+    cd lapack_build &&
+    cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=..\lapack_install ..\%LAPACK_SOURCE% &&
+    mingw32-make -j%NUMBER_OF_PROCESSORS% install &&
+    cd .. &&
+    7z a %LAPACK_INSTALL% lapack_install\
+    )
+  - 7z x -y "%LAPACK_INSTALL%" > nul
+  - ps: Invoke-WebRequest "ftp://ftp.fftw.org/pub/fftw/fftw-3.3.5-dll64.zip" -OutFile "fftw-3.3.5-dll64.zip"
+  - ps: Invoke-WebRequest "ftp://ftp.fftw.org/pub/fftw/fftw-3.3.5-dll32.zip" -OutFile "fftw-3.3.5-dll32.zip"
+  - mkdir fftw
+  - cd fftw
+  - 7z x -y "..\%FFTW_INSTALL%" > nul
+  - move libfftw3-3.dll libfftw3.dll
+  - move libfftw3f-3.dll libfftw3f.dll
+  - move libfftw3l-3.dll libfftw3l.dll
+  - cd ..
+  # - if "%MINGW_DIR%"=="mingw64" (set CMAKE_BUILD_TYPE=Release) else (set CMAKE_BUILD_TYPE=Debug)
+
+  # - if not exist "%FFTW_INSTALL%" (
+  #   appveyor DownloadFile "%FFTW_URL%" -FileName "%FFTW_ARCHIVE%" &&
+  #   7z x -y "%FFTW_ARCHIVE%" -so | 7z x -aoa -si -ttar > nul &&
+  #   set PATH="%CD%\%MINGW_DIR%\bin;%PATH%" &&
+  #   dir &&
+  #   mkdir fftw_build &&
+  #   cd fftw_build &&
+  #   C:\msys64\usr\bin\bash -l -c "cd /c/projects/hos-ocean/$FFTW_SOURCE && ./configure --help && ./configure --disable-alloca --with-our-malloc --with-windows-f77-mangling --disable-shared --enable-static --enable-threads --with-combined-threads && make && make install"
+  #   )
+  #   # C:\msys64\usr\bin\bash -l -c "cd /c/projects/readstat && ./configure"
+  #   # C:\msys64\usr\bin\bash -l -c "cd /c/projects/readstat && make"
+  # - 7z x -y "%FFTW_INSTALL%" > nul
+
+build_script:
+  - dir
+  - echo "NUMBER_OF_PROCESSORS=%NUMBER_OF_PROCESSORS%"
+  - g++ --version
+  - mingw32-make --version
+  - cmake --version
+  - set SRC_DIR=%CD%
+  - echo %SRC_DIR%
+  - set BLD_DIR=%SRC_DIR%\..\hosocean-appveyor-bld
+  - set INST_DIR=hosocean-appveyor-install
+  - set INST_DIR_ABS=%SRC_DIR%\..\hosocean-appveyor-install
+  - mkdir %BLD_DIR%
+  - cd %BLD_DIR%
+  - cmake
+    -G "MinGW Makefiles"
+    -DCMAKE_BUILD_TYPE=Release
+    -DLAPACK_ROOT:PATH=%SRC_DIR%\lapack_install
+    -DFFTW_ROOT:PATH=%SRC_DIR%\fftw
+    -DFFTW_USE_STATIC_LIBS:BOOL=OFF
+    -DINSTALL_PREFIX=../%INST_DIR% %SRC_DIR%\cmake
+  - mingw32-make
+  - mingw32-make install
+  - copy %SRC_DIR%\fftw\libfftw3.dll %INST_DIR_ABS%\bin
+  - copy %SRC_DIR%\fftw\libfftw3f.dll %INST_DIR_ABS%\bin
+  - copy %SRC_DIR%\fftw\libfftw3l.dll %INST_DIR_ABS%\bin
+  - 7z a %SRC_DIR%\hos_ocean_install.zip %INST_DIR_ABS%\
+  
+#test_script:
+#  - ctest -D ExperimentalStart
+
+#after_test:
+#  - mingw32-make install -j%NUMBER_OF_PROCESSORS%
