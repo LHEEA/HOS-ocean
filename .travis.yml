@@ -40,3 +40,10 @@ script:
   - make package
   # Make sure we can install with no issues.
   - make install
+  # Create coverage report
+  - if [[ "$CMAKE_BUILD_TYPE" == "Coverage" ]];
+    then
+    echo "Coverage";
+    make coverage;
+    bash <(curl -s https://codecov.io/bash) -X gcov;
+    fi
