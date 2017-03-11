@@ -27,7 +27,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install fftw --with-fortran; fi
 
 install:
-  - mkdir $TRAVIS_BUILD_DIR/hosocean-build && cd $TRAVIS_BUILD_DIR/hosocean-build
+  - mkdir $TRAVIS_BUILD_DIR/sources/hosocean-build && cd $TRAVIS_BUILD_DIR/sources/hosocean-build
   # Configure
   - cmake $TRAVIS_BUILD_DIR/cmake -DCMAKE_BUILD_TYPE=$BTYPE -DCMAKE_INSTALL_PREFIX=~/hosocean
   # Build
