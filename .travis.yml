@@ -34,6 +34,8 @@ install:
   - make
 
 script:
+  # Test the program
+  - make test
   # Create package
   - make package
   # Make sure we can install with no issues.
