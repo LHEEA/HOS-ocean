@@ -8,11 +8,11 @@ matrix:
       compiler: clang
       env: BTYPE=RelWithDebInfo
     - os: linux
-      compiler: gcc
-      env: BTYPE=Release
-    - os: linux
       compiler: clang
       env: BTYPE=Debug
+    - os: linux
+      compiler: gcc
+      env: BTYPE=Coverage
     - os: osx
       compiler: clang
       env: BTYPE=RelWithDebInfo
@@ -41,7 +41,7 @@ script:
   # Make sure we can install with no issues.
   - make install
   # Create coverage report
-  - if [[ "$CMAKE_BUILD_TYPE" == "Coverage" ]];
+  - if [[ "$BTYPE" == "Coverage" ]];
     then
     echo "Coverage";
     make coverage;
