@@ -4,6 +4,7 @@ High-Order Spectral method for oceanic simulations
 
 [![Travis][buildstatus_image_travis]][travisci]
 [![Appveyor][buildstatus_image_appveyor]][appveyorci]
+[![Codecov][codecov_image]][codecovci]
 
 This readme file describes the different cases that might be computed with the periodic HOS model
 and gives instructions to set the numerical parameters `n1` to `p2`
@@ -72,3 +73,6 @@ HOS-ocean project: https://github.com/LHEEA/HOS-ocean/wiki
 
 [buildstatus_image_appveyor]: https://ci.appveyor.com/api/projects/status/k2tcs56pwiguxf3h?svg=true
 [appveyorci]: https://ci.appveyor.com/project/Gjacquenot/hos-ocean
+
+[codecov_image]: https://codecov.io/gh/Gjacquenot/HOS-ocean/branch/master/graph/badge.svg
+[codecovci]: https://codecov.io/gh/Gjacquenot/HOS-ocean
