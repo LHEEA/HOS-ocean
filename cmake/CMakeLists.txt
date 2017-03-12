@@ -10,6 +10,9 @@ SET(BUILD_SHARED_LIBS ON)
 
 ################################################################################
 SET(SRC_DIRECTORY     ${CMAKE_CURRENT_SOURCE_DIR}/../sources)
+STRING(REPLACE "cmake/../" "" SRC_DIRECTORY ${SRC_DIRECTORY})
+MESSAGE(STATUS "Sources to be used are located in ${SRC_DIRECTORY}")
+
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 IF(NOT DEFINED CMAKE_COLOR_MAKEFILE)
