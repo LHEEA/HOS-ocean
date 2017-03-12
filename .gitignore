@@ -15,3 +15,6 @@ sources/PostProcessing/bin/*
 !sources/PostProcessing/bin/input_post_process.dat
 # ignore HOS_ocean directory
 HOS_ocean/
+
+build
+install
