@@ -109,6 +109,7 @@ function (add_gcov_target TNAME)
   # will be checked by add_coverage_target in Findcoverage.cmake. Instead we
   # have to determine which gcov binary to use.
   get_target_property(TSOURCES ${TNAME} SOURCES)
+  message(STATUS "GJ2 ${TSOURCES}=${TSOURCES}")
   set(SOURCES "")
   set(TCOMPILER "")
   foreach (FILE ${TSOURCES})
@@ -131,10 +132,16 @@ function (add_gcov_target TNAME)
   set(GCOV_BIN "${GCOV_${TCOMPILER}_BIN}")
   set(GCOV_ENV "${GCOV_${TCOMPILER}_ENV}")
 
-
+  STRING(REGEX REPLACE "(.*)/cmake" "\\1" ROOT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  MESSAGE(STATUS "Coverage : ROOT_DIRECTORY ${ROOT_DIRECTORY}")
   set(BUFFER "")
   foreach(FILE ${SOURCES})
+    # MESSAGE(STATUS "Coverage : FILE           ${FILE}")
+    STRING(REGEX REPLACE "^__" "${ROOT_DIRECTORY}" FILE ${FILE})
     get_filename_component(FILE_PATH "${TDIR}/${FILE}" PATH)
+    # MESSAGE(STATUS "Coverage : FILE           ${FILE}")
+    # MESSAGE(STATUS "Coverage : TDIR/FILE.gcov ${TDIR}/${FILE}.gcov")
+    # MESSAGE(STATUS "Coverage : FILE_PATH      ${FILE_PATH}")
 
     # call gcov
     add_custom_command(OUTPUT ${TDIR}/${FILE}.gcov
