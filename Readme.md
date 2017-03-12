@@ -45,7 +45,7 @@ Setting the value of integer `i_case` in `input_HOS.dat`
    - `2`  - progressive wave: potential on free surface accordingly to linear theory
    - `21` - stationary wave: no velocity at initial time
    The number of the mode, its amplitude and phase have to be chosen
-   in the module `initial_condition.f90`.
+   in the module [`initial_condition.f90`](sources/HOS/initial_condition.f90).
 
 - `i_case = 3` and `31` and `32` : Irregular directional sea-state from spectrum specified :
 
