@@ -91,8 +91,8 @@ TARGET_LINK_LIBRARIES(check_W_DYue lapack blas ${FFTW_LIBRARIES})
 
 IF(${CMAKE_BUILD_TYPE_UPPER} STREQUAL "COVERAGE")
     add_coverage(HOS_ocean)
-    add_coverage(Post_processing)
-    add_coverage(check_W_DYue)
+    # add_coverage(Post_processing)
+    # add_coverage(check_W_DYue)
 ENDIF()
 
 INSTALL(TARGETS HOS_ocean Post_processing check_W_DYue
