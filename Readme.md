@@ -9,7 +9,8 @@ High-Order Spectral method for oceanic simulations
 This readme file describes the different cases that might be computed with the periodic HOS model
 and gives instructions to set the numerical parameters `n1` to `p2`
 
-Setting the value of integers `n1`, `n2`, `M`, `p1` and `p2` in `variables_3D.f90`
+Setting the value of integers `n1`, `n2`, `M`, `p1` and `p2` in
+[`variables_3D.f90`](sources/HOS/variables_3D.f90)
 
 ## 2D simulation
 
