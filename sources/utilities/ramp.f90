@@ -118,7 +118,10 @@ ENDIF
 ! Definition of the different ramp_ini times
 s = SIZE(t_def)
 !
-IF (s > 3) STOP 'ramp_ini_ini: Too much times at input'
+IF (s > 3) THEN
+    PRINT*,'ramp_ini_ini: Too much times at input'
+    STOP 1
+ENDIF
 IF (s == 1) THEN ! begins at t=0
     ramp_ini%t_begin = 0.0_rp
 ELSE ! begins at t=t_begin/=0

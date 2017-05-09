@@ -603,12 +603,12 @@ slopey_max = MAXVAL(ABS(etay))
 !
 IF (slopex_max > threshold) THEN
     WRITE(*,'(A,2(ES11.3,X))') 'Slope along x is too large...', time_cur, slopex_max
-    STOP
+    STOP 1
 ENDIF
 !
 IF (slopey_max > threshold) THEN
     WRITE(*,'(A)') 'Slope along y is too large...'
-    STOP
+    STOP 1
 ENDIF
 !
 END SUBROUTINE check_slope

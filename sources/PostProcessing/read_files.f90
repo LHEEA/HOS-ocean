@@ -70,7 +70,7 @@ IF (tecplot == 11) THEN
     READ(i_unit,103) test,time,test2,n1,test2,n2
 ELSE
     PRINT*, 'This has to be done'
-    stop
+    STOP 1
 ENDIF
 dt_out = time
 !
@@ -90,7 +90,7 @@ IF (tecplot == 11) THEN
     BACKSPACE(i_unit) ! Going back to previous line
 ELSE
     PRINT*, 'This has to be done'
-    stop
+    STOP 1
 ENDIF
 !
 ! Define the time step of outputs in filename
@@ -122,12 +122,12 @@ INTEGER  :: i1,i2,istep,nstep,ios
 ! Check that time different from zero
 IF (time_cur < dt_out/2.d0) THEN
     PRINT*, 'The CALL to this routine is useless: init_read is sufficient'
-    STOP
+    STOP 1
 ENDIF
 !
 IF (tecplot /= 11) THEN
     PRINT*, 'Other output formats that tecplot 11 have to be done'
-    STOP
+    STOP 1
 ENDIF
 !
 nstep = NINT(time_cur/dt_out)-NINT(time_prev/dt_out) !NINT((time_cur-time_prev)/dt_out)
@@ -137,7 +137,7 @@ DO istep = 1, nstep-1
     IF (ios /= 0) THEN
         PRINT*, 'Time is larger than maximum time in: ', file_3d
         PRINT*, 'time max. = ', (istep-2)*dt_out
-        STOP
+        STOP 1
     ENDIF
     DO i2=1,n2
         DO i1=1,n1

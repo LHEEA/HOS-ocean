@@ -1976,7 +1976,7 @@ IF (test_xy.EQ.1) THEN
                             a_phiz_RF(2:n1o2p1,:) = 0.0_rp
                         ELSE
                             PRINT*, 'This part is not working for angles different from: pi/4, -pi/4, 0'
-                            STOP
+                            STOP 1
                         ENDIF
                         !
                         CALL fourier_2_space(a_eta,eta)
@@ -2822,12 +2822,12 @@ slopey_max = MAXVAL(ABS(etay))
 !
 IF (slopex_max > threshold) THEN
     WRITE(*,'(A)') 'Ca va trancher en x...'
-    STOP
+    STOP 1
 ENDIF
 !
 IF (slopey_max > threshold) THEN
   WRITE(*,'(A)') 'Ca va trancher en y...'
-    STOP
+    STOP 1
 !   pause
 !   WRITE(*,'(A)') 'Trying to filter eta and phis...'
 !   IF (n2 /= 1) THEN
@@ -3383,10 +3383,10 @@ SELECT CASE (n)
         WRITE(*,'(A,A,A)') 'initiate_parameters: value of ',name,' in correct range'
     CASE (6,10,12,13,16,18,20,21,22,24,25,26,27,28)
         WRITE(*,'(A,A,A)') 'initiate_parameters: forbidden value of ',name,'. cf readme.txt for instructions'
-        STOP
+        STOP 1
     CASE DEFAULT ! n above 30
         WRITE(*,'(A,A,A)') 'initiate_parameters: forbidden value of ',name,'. cf readme.txt for instructions'
-        STOP
+        STOP 1
 END SELECT
 END SUBROUTINE check_range
 !

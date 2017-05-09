@@ -142,7 +142,7 @@ READ(unit,format_read,ERR=101,END=101) description, input
 WRITE(*,'(A," : ",ES25.16)') description(1:N_descr), input
 IF (ABS(input) > tiny .AND. ABS(input) * 1.0E+16_rp < 1.0E+5_rp) THEN
     WRITE(*,'(A,A)') 'Numeric point is probably missing in current input ',description
-    STOP
+    STOP 1
 ENDIF
 RETURN
 101 CALL error_message(description)
@@ -215,7 +215,7 @@ CHARACTER(LEN=N_tot) :: description
 !
 WRITE(*,'(A,I2)') 'Error while reading the input file on line: ', line_counter
 WRITE(*,'(A)') description
-STOP
+STOP 1
 
 !
 END SUBROUTINE error_message

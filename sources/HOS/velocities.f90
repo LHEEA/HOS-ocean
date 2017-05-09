@@ -1025,7 +1025,7 @@ COMPLEX(CP), DIMENSION(m1o2p1,1) :: modesphi, modesphix, modesphiy, modesphiz, m
 !
 IF (m2.NE.1) THEN
     PRINT*,'direct inversion only working (RAM memory use) in 2D'
-    stop
+    STOP 1
 ENDIF
 !
 ! Create the matrix
@@ -1124,7 +1124,7 @@ CALL zgesv(n1*1,1,A_save(1:n1*1,1:n1*1),n1*1,ipiv, work(1:n1*1), n1*1, info)
 !
 IF(info/=0)THEN
   PRINT *, 'Problems with inversion of the matrix',info
-  STOP
+  STOP 1
 ENDIF
 !!
 !! Evaluate error of inversion
@@ -1314,13 +1314,13 @@ rank = SIZE(M,1)
 CALL dgetrf(rank,rank,M,rank,ipiv,info)
 IF(info/=0)THEN
     PRINT *, 'Problems with L-U of the matrix',info
-    STOP
+    STOP 1
 ENDIF
 lwork=rank
 CALL dgetri(rank,M,rank,ipiv,work,lwork,info)
 IF(info/=0)THEN
   PRINT *, 'Problems with inversion of the matrix',info
-  STOP
+  STOP 1
 ENDIF
 END SUBROUTINE InvertMatrix
 !

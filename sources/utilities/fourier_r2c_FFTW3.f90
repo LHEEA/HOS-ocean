@@ -98,7 +98,7 @@ SELECT CASE (lib)
     ! FIXME: everything is done with FFTW now
     CASE (1)
     PRINT*,'Not taken in charge any more'
-    STOP
+    STOP 1
     CASE (3)
         ! FFTW-3.3 library
         ! FFTW_ESTIMATE is deterministic (useful for debug/testing) but not optimal
@@ -119,7 +119,8 @@ SELECT CASE (lib)
         CALL dfftw_plan_dft_c2r_2d(plan_C2R_big, Nd1, Nd2,  out_big,     in_big,     flag)
         ENDIF
     CASE DEFAULT
-        STOP 'Unknown DFT library in Fourier_ini'
+        PRINT*,'Unknown DFT library in Fourier_ini'
+        STOP 1
 END SELECT
 !
 ! Evaluating conversion coefficients
@@ -211,7 +212,8 @@ SELECT CASE (lib)
         CALL fftw_cleanup
         !
     CASE DEFAULT
-        STOP 'Unknown DFT library in Fourier_ini'
+        PRINT*,'Unknown DFT library in Fourier_ini'
+        STOP 1
 END SELECT
 !
 ! Memory allocation

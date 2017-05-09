@@ -228,21 +228,21 @@ SUBROUTINE idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDBVIP - Fatal error!'
     write ( *, '(a)' ) '  Input parameter MD out of range.'
-    stop
+    stop 1
   end if
 
   if ( ndp < 4 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDBVIP - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NDP out of range.'
-    stop
+    stop 1
   end if
 
   if ( nip < 1 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDBVIP - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NIP out of range.'
-    stop
+    stop 1
   end if
 
   if ( md == 1 ) then
@@ -252,7 +252,7 @@ SUBROUTINE idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
         write ( *, '(a)' ) ' '
         write ( *, '(a)' ) 'IDBVIP - Fatal error!'
         write ( *, '(a)' ) '  MD = 2 or 3 but NDP was changed since last call.'
-        stop
+        stop 1
     end if
   end if
 
@@ -263,7 +263,7 @@ SUBROUTINE idbvip ( md, ndp, xd, yd, zd, nip, xi, yi, zi, iwk, wk )
         write ( *, '(a)' ) ' '
         write ( *, '(a)' ) 'IDBVIP - Fatal error!'
         write ( *, '(a)' ) '  MD = 3 but NIP was changed since last call.'
-        stop
+        stop 1
     end if
   end if
 !
@@ -1982,28 +1982,28 @@ SUBROUTINE idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
     WRITE(*,*)'  Input parameter MD out of range.'
-    stop
+    stop 1
   end if
 
   if ( ndp < 4 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NDP out of range.'
-    stop
+    stop 1
   end if
 
   if ( nxi < 1 .or. nyi < 1 ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NXI or NYI out of range.'
-    stop
+    stop 1
   end if
 
   if ( nxi > nzi ) then
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDSFFT - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NZI is less than NXI.'
-    stop
+    stop 1
   end if
 
   if ( md <= 1 ) then
@@ -2016,7 +2016,7 @@ SUBROUTINE idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
         write ( *, '(a)' ) ' '
         write ( *, '(a)' ) 'IDSFFT - Fatal error!'
         write ( *, '(a)' ) '  MD = 2 or 3 but ndp was changed since last call.'
-        stop
+        stop 1
     end if
 
   end if
@@ -2032,14 +2032,14 @@ SUBROUTINE idsfft ( md, ndp, xd, yd, zd, nxi, nyi, nzi, xi, yi, zi, iwk, wk )
         write ( *, '(a)' ) ' '
         write ( *, '(a)' ) 'IDSFFT - Fatal error!'
         write ( *, '(a)' ) 'MD = 3 but nxi was changed since last call.'
-        stop
+        stop 1
     end if
 
     if ( nyi /= iwk(4) ) then
         write ( *, '(a)' ) ' '
         write ( *, '(a)' ) 'IDSFFT - Fatal error!'
         write ( *, '(a)' ) '  MD = 3 but nyi was changed since last call.'
-        stop
+        stop 1
     end if
 
   end if
@@ -2308,7 +2308,7 @@ SUBROUTINE idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
     write ( *, '(a)' ) ' '
     write ( *, '(a)' ) 'IDTANG - Fatal error!'
     write ( *, '(a)' ) '  Input parameter NDP out of range.'
-    stop
+    stop 1
   end if
 !
 !  Determine IPMN1 and IPMN2, the closest pair of data points.
@@ -2334,7 +2334,7 @@ SUBROUTINE idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
         write ( *, * ) 'at i =',ip1,ip2
         WRITE(*,*) 'dsqi=', dsqi,'x1=',x1,xd(ip2)
 
-        stop
+        stop 1
         end if
 
         if(dsqi<dsqmn) then
@@ -2403,7 +2403,7 @@ SUBROUTINE idtang ( ndp, xd, yd, nt, ipt, nl, ipl, iwl, iwp, wk )
   write ( *, '(a)' ) ' '
   write ( *, '(a)' ) 'IDTANG - Fatal error!'
   write ( *, '(a)' ) '  All collinear data points.'
-  stop
+  stop 1
 
    37 continue
 

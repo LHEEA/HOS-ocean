@@ -492,39 +492,39 @@ tiny_sp = epsilon(1.0)
 IF(x_max.GT.(xlen_star+tiny_sp)*L) THEN
     WRITE(*,*) 'Warning, length of HOS-ocean domain exceeded'
     WRITE(*,*) 'xmax =',x_max,'xlen =',xlen_star*L
-    STOP
+    STOP 1
 ENDIF
 IF(x_min.LT.(-tiny_sp)) then
     WRITE(*,*) 'Warning, negative x location'
     WRITE(*,*) 'xmin =',x_min
-    STOP
+    STOP 1
 ENDIF
 IF(n2 /= 1) then
     IF(y_max.GT.(ylen_star+tiny_sp)*L) then
         WRITE(*,*) 'Warning, length of HOS-ocean domain exceeded'
         WRITE(*,*) 'ymax =',y_max,'ylen =',ylen_star*L
-        STOP
+        STOP 1
     ENDIF
     IF(y_min.LT.(-tiny_sp)) then
         WRITE(*,*) 'Warning, negative y location'
         WRITE(*,*) 'ymin =',y_min
-        STOP
+        STOP 1
     ENDIF
 ENDIF
 IF(t_max.GT.(T_stop_star+tiny_sp)*T) THEN
     WRITE(*,*) 'Warning, duration of HOS-ocean simulation exceeded'
     WRITE(*,*) 'tmax =',t_max,'T_stop =',T_stop_star*T
-    STOP
+    STOP 1
 ENDIF
 IF(t_min.LT.(-tiny_sp)) then
     WRITE(*,*) 'Warning, negative starting time'
     WRITE(*,*) 'tmin =',t_min
-    STOP
+    STOP 1
 ENDIF
 IF(z_min.LT.(-depth_star-tiny_sp)*L) then
     WRITE(*,*) 'Warning, |z_min| is greater than water depth'
     WRITE(*,*) 'zmin =',z_min
-    STOP
+    STOP 1
 ENDIF
 !
 END SUBROUTINE check_sizes

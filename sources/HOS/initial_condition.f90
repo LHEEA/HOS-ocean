@@ -62,8 +62,14 @@ CALL check_range(M,'M ')
 CALL check_range(p1,'p1')
 CALL check_range(p2,'p2')
 !
-IF (p1 > M) STOP 'initiate_parameters: p1 is higher than M'
-IF (p2 > M) STOP 'initiate_parameters: p2 is higher than M'
+IF (p1 > M) THEN
+    PRINT*,'initiate_parameters: p1 is higher than M'
+    STOP 1
+ENDIF
+IF (p2 > M) THEN
+    PRINT*,'initiate_parameters: p2 is higher than M'
+    STOP 1
+ENDIF
 !
 ! Setting numerical parameters
 !
@@ -951,7 +957,7 @@ IF(m_i == m1 .and. n_i == n2)THEN
     CALL space_2_fourier(phis, a_phis)
 ELSE
     WRITE(*,*) 'INPUT ERROR - WRONG DIMENSIONS'
-    STOP
+    STOP 1
 ENDIF
 !
 1003 FORMAT(A,F9.2,A,I5,A,I5)

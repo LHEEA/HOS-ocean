@@ -110,7 +110,10 @@ IF (i_prob == 1) THEN
     !
     WRITE(*,'(I3,2A)') nprobes, ' probes found in the file prob.inp'
     !
-    if (nprobes.gt.maxprobes) STOP 'error: increase maxprobes in variables file'
+    IF (nprobes.gt.maxprobes) THEN
+        PRINT*,'error: increase maxprobes in variables file'
+        STOP 1
+    ENDIF
     DO i1=1,nprobes
         IF (n2 == 1) THEN
                 READ(55,*) xprobe(i1)
@@ -142,7 +145,7 @@ ENDIF
 IF (i_sw == 1) THEN
     IF ((2*n1o2p1).GE.5000) THEN
         PRINT*,'Problem in the writing of modes_HOS_swense.dat: change writing format'
-        STOP
+        STOP 1
     ENDIF
     ! Give constants needed to computation...
     OPEN(123,file='Results/modes_HOS_SWENSE.dat',status='REPLACE', FORM='FORMATTED', ACCESS='DIRECT',RECL=18*(2*n1o2p1))
@@ -383,7 +386,7 @@ IF (i_prob == 1) THEN ! probes output
     WRITE(99,'(101(ES13.5,X))') time * T_out, (eta_probe(ii)* L_out, ii=1,nprobes)
     IF (nprobes.GT.100) THEN
         PRINT*, 'Change writing format in probes.dat file'
-        STOP
+        STOP 1
     ENDIF
 ENDIF
 !

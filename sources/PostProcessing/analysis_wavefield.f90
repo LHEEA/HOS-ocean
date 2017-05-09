@@ -75,7 +75,7 @@ ENDIF
 ! Number of waves inside the domain
 IF(.NOT.iseven(n_zeros)) THEN
   WRITE(*,*) 'n_zeros is not even... there is a problem'
-  STOP
+  STOP 1
 ENDIF
 n_waves = n_zeros/2
 !
@@ -83,7 +83,7 @@ n_waves = n_zeros/2
 IF (n_waves < 2) THEN
     PRINT*, 'Too small number of waves in wave-by-wave analysis'
     PRINT*, 'If 3D analysis of wave-field, you should restrict to 2D'
-    STOP
+    STOP 1
 ENDIF
 !
 ! Allocation on the number of waves
@@ -243,7 +243,7 @@ DO i2=1,n2
     IF (n_waves_x(i2) > n1/4) THEN
         PRINT*, 'Not enough points per wavelength in x'
         PRINT*,'n_waves =', n_waves_x(i2), 'n1 =', n1
-        STOP
+        STOP 1
     ENDIF
     !
     DO i1=1,n_waves_x(i2)
@@ -270,7 +270,7 @@ DO i1=1,n1
     IF (n_waves_y(i1) > n2/4) THEN
         PRINT*, 'Not enough points per wavelength in y'
         PRINT*,'n_waves =', n_waves_y(i1), 'n2 =', n2
-        stop
+        STOP 1
     ENDIF
     !
     DO i2=1,n_waves_y(i1)
@@ -560,7 +560,7 @@ REAL(RP), DIMENSION(size(data)) :: p,s
 !
 IF (n <= 1) THEN
     WRITE(*,*) 'ERREUR : moment: n must be at least 2'
-    STOP
+    STOP 1
 ENDIF
 !
 ! First pass to get the mean.
@@ -591,7 +591,7 @@ IF (ABS(var) > tiny) THEN
     curt=curt/(n*var**2)-3.0_sp
 ELSE
     WRITE(*,*) 'ERREUR : moment: no skew or kurtosis when zero variance'
-    STOP
+    STOP 1
 ENDIF
 !
 END SUBROUTINE
