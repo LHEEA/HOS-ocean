@@ -128,6 +128,7 @@ Peak period in s             :: Tp_real          :: 10.0
 Significant wave height in m :: Hs_real          :: 4.5
 JONSWAP Spectrum             :: gamma            :: 3.3
 Directionality (Dysthe)      :: beta             :: 0.785398
+Random phases generation     :: random_phases    :: 1
 --- Output files
 Tecplot version              :: tecplot          :: 11
 Output: 1-dim. ; 0-nondim.   :: i_out_dim        :: 1
@@ -136,7 +137,6 @@ Output: 1-dim. ; 0-nondim.   :: i_out_dim        :: 1
 2d free surface, center line :: i_2d             :: 0
 Wave probes in domain        :: i_prob           :: 0
 Swense output 1='yes',0='no' :: i_sw             :: 0
-
 ")
 
 FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Results")
