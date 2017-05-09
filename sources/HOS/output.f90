@@ -171,15 +171,15 @@ END SUBROUTINE init_output
 !
 !
 SUBROUTINE output_time_step(i_3d, i_a, i_vol, i_2D, i_max, time, N_stop, a_eta, a_phis, da_eta, volume, energy, E_0, E_tot, &
-    i_prob)
+    i_prob, dt, n_er_tot, n_rk_tot)
 !
 IMPLICIT NONE
 !
 ! Input variables
-INTEGER, INTENT(IN)               :: i_3d, i_a, i_vol, i_2D, i_max, N_stop, i_prob
+INTEGER, INTENT(IN)               :: i_3d, i_a, i_vol, i_2D, i_max, N_stop, i_prob, n_er_tot, n_rk_tot
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: a_eta, a_phis, da_eta
 REAL(RP), DIMENSION(m1,m2)        :: eta, phis
-REAL(RP) :: time, volume, energy(3), E_0(3), E_tot
+REAL(RP) :: time, volume, energy(3), E_0(3), E_tot, dt
 ! Local variables
 INTEGER                        :: ii, i1, i2, it
 REAL(RP)                       :: a_1, eta_mult, min_val, max_val
@@ -203,7 +203,7 @@ IF (i_3D == 1) THEN
     ENDIF
     !
     ! Output of the free surface elevation versus space (size control of the output file)
-    IF (ABS(time) <= tiny) THEN
+    IF (ABS(time-time_restart) <= tiny) THEN
         IF (tecplot == 11) THEN
             WRITE(1,103)'ZONE SOLUTIONTIME = ',time*T_out,', I=',n1,', J=',n2
         ELSE
@@ -236,7 +236,7 @@ IF (i_2D == 1) THEN
     ! Transform modal amplitude to physical variable
     CALL fourier_2_space(a_eta,  eta)
     !
-    IF (ABS(time) <= tiny) THEN
+    IF (ABS(time-time_restart) <= tiny) THEN
         IF (tecplot == 11) THEN
             WRITE(66,603)'ZONE SOLUTIONTIME = ',time*T_out,', I=',n1
         ELSE
@@ -263,7 +263,7 @@ ELSE IF (i_2D == 2) THEN
     CALL fourier_2_space(a_eta,  eta)
     !
     ! Output of the free surface elevation versus space (size control of the output file)
-    IF (ABS(time) <= tiny) THEN
+    IF (ABS(time-time_restart) <= tiny) THEN
         WRITE(66,'(A,I4,A,I6)')'ZONE I=',n1,', J=',N_stop
         DO i1 = 1, n1
             WRITE(66,662) x(i1)*L_out, time*T_out, eta(i1,MAX(1,n2/2+1))*eta_mult*L_out
@@ -286,7 +286,7 @@ IF (i_a == 1) THEN
     !
     log_phis(1:n1o2p1,1:n2) = LOG10(MAX(EPSILON(1.0_rp),abs_phis(1:n1o2p1,1:n2)))
     !
-    IF (ABS(time) <= tiny) THEN
+    IF (ABS(time-time_restart) <= tiny) THEN
         IF (tecplot == 11) THEN
             WRITE(2,103)'ZONE SOLUTIONTIME = ',time*T_out,', I=',n1o2p1,', J=',n2
         ELSE
@@ -402,6 +402,23 @@ IF (i_sw == 1) THEN ! time=0 has to be saved...
     ENDDO
 ENDIF
 !
+! Backup the current file (if problem occurs during writing)
+CALL SYSTEM('mv -f Results/restart_FS_quantities.dat Results/restart_FS_quantities_backup.dat')
+!
+! Write the restart data in a file
+OPEN(234,file='Results/restart_FS_quantities.dat')
+! Global informations
+WRITE(234,403) time, dt, n_er_tot, n_rk_tot
+DO i2 = 1, n2
+    DO i1 = 1, n1o2p1
+        WRITE(234,404) a_eta(i1,i2), a_phis(i1,i2)
+    ENDDO
+ENDDO
+!
+CLOSE(234)
+403 FORMAT(2(D25.16,X),I6,X,I6)
+404 FORMAT(3(D25.16,X),D25.16)
+!
 END SUBROUTINE output_time_step
 !
 !
@@ -420,6 +437,161 @@ CALL fourier_2_space(temp_C_n, temp_R_n)
 hilbert = temp_R_n
 !
 END FUNCTION hilbert
+!
+!
+!
+SUBROUTINE init_restart(i_3d, i_a, i_vol, i_2D, i_max, i_prob, i_sw, time_cur, dt, n_er_tot, n_rk_tot)
+!
+IMPLICIT NONE
+!
+! Input variables
+INTEGER, INTENT(IN)        :: i_3d, i_a, i_vol, i_2D, i_max, i_prob, i_sw
+!
+! Output variables
+INTEGER, INTENT(OUT)       :: n_er_tot, n_rk_tot
+REAL(RP),INTENT(OUT)       :: time_cur, dt
+! Local variables
+INTEGER :: i1, i2
+!
+! Read the restart data stored in a file
+OPEN(234,file='Results/restart_FS_quantities.dat')
+! Global informations
+READ(234,403) time_restart, dt, n_er_tot, n_rk_tot
+DO i2 = 1, n2
+    DO i1 = 1, n1o2p1
+        READ(234,404) a_eta(i1,i2), a_phis(i1,i2)
+    ENDDO
+ENDDO
+!
+time_cur = time_restart
+!
+IF (i_3D == 1) THEN
+    OPEN(1,file='Results/3d_restart.dat',status='unknown')
+    CALL write_input(1)
+    WRITE(1,'(A)')'TITLE=" 3D free surface elevation "'
+    WRITE(1,'(A)') 'VARIABLES="x","y","eta","phis"'
+ENDIF
+!
+IF (i_a == 1) THEN
+    OPEN(2,file='Results/a_3d_restart.dat',status='unknown')
+    CALL write_input(2)
+    WRITE(2,'(A)')'TITLE=" 3D modes "'
+    WRITE(2,'(A)') 'VARIABLES="kx","ky","a-eta","a-phis","LOG10-a-eta","LOG10-a-phis"'
+ENDIF
+!
+IF (i_vol == 1) THEN
+    OPEN(3,file='Results/vol_energy_restart.dat',status='unknown')
+    CALL write_input(3)
+    WRITE(3,'(A)')'TITLE=" 3D volume and energy "'
+    WRITE(3,'(A)') 'VARIABLES="t", "volume", "potential", "kinetic", "total", "dE/E_o","E_spec_dens"'
+ENDIF
+!
+IF (i_2D == 1) THEN
+    OPEN(66,file='Results/2d_restart.dat',status='unknown')
+    CALL write_input(66)
+    WRITE(66,'(A)')'TITLE=" 2D free surface elevation on the center line "'
+    WRITE(66,'(A)') 'VARIABLES="x","eta"'
+ELSE IF (i_2D == 2) THEN ! 2D plus t thing
+    OPEN(66,file='Results/2dpt_restart.dat',status='unknown')
+    CALL write_input(66)
+    WRITE(66,'(A)')'TITLE=" 2D+t free surface elevation "'
+    WRITE(66,'(A)') 'VARIABLES="x","t","eta"'
+ENDIF
+!
+IF (i_max == 1) THEN
+    OPEN(8,file='Results/eta_max_restart.dat',status='unknown')
+    CALL write_input(8)
+    WRITE(8,'(A)')'TITLE=" max/minimum free surface elevation as a function of time"'
+    WRITE(8,'(A)') 'VARIABLES="t","max-eta","min-eta","max/sqrt(t)","min/sqrt(t)"'
+ENDIF
+!
+IF (i_case/10 == 8) THEN
+    OPEN(9,file='Results/phase_shift_restart.dat',status='unknown')
+    CALL write_input(9)
+    WRITE(9,'(A)')'TITLE=" phase shift (Fructus test) as a function of time"'       !
+    WRITE(9,'(A)') 'VARIABLES="t","phase shift (in degrees)"'
+ENDIF
+!
+IF (i_prob == 1) THEN
+    !
+    ! Wave probes location
+    !
+    WRITE(*,'(A)') 'Probes:'
+    OPEN(55,FILE='prob.inp')
+    !
+    nprobes=0
+    DO
+        READ(55,*,END=98)
+        nprobes = nprobes + 1
+        CYCLE
+98      EXIT
+    ENDDO
+    REWIND(55)
+   !
+   WRITE(*,'(I3,2A)') nprobes, ' probes found in the file prob.inp'
+   !
+   IF (nprobes.gt.maxprobes) STOP 'error: increase maxprobes in variables file'
+   DO i1=1,nprobes
+      IF (n2 == 1) THEN
+         READ(55,*) xprobe(i1)
+         yprobe(i1) = 0.0d0
+      ELSE
+         READ(55,*) xprobe(i1), yprobe(i1)
+      END IF
+   END DO
+   CLOSE(55)
+   !
+   WRITE(*,'(A)') 'Probes position:'
+   !
+   DO i1=1,nprobes
+      WRITE(*,902)'xprobe(',i1,')=',xprobe(i1),' m, yprobe(',i1,')=',yprobe(i1),' m'
+   END DO
+   !
+902 FORMAT(a,2(i2,a,1es10.3,a))
+903 FORMAT("#",A,100(F10.2))
+	!
+    OPEN(99,file='Results/probes_restart.dat',status='unknown')
+    CALL write_input(99)
+    CALL write_datum(99, nprobes,             'nprobes',          'number of probes')
+    WRITE(99,903)'xprobe=',(xprobe(i1),i1=1,nprobes)
+    WRITE(99,903)'yprobe=',(yprobe(i1),i1=1,nprobes)
+    WRITE(99,'(A)') 'TITLE="Probes records versus time"'
+    WRITE(99,'(61A)') 'VARIABLES = "time" ', ('"p'//TRIM(int2str(i1))//'" ',i1=1,nprobes)
+    !
+    xprobe = xprobe / L
+    yprobe = yprobe / L
+ENDIF
+!
+IF (i_sw == 1) THEN
+    IF ((2*n1o2p1).GE.5000) THEN
+        PRINT*,'Problem in the writing of modes_HOS_swense.dat: change writing format'
+        STOP
+    ENDIF
+    ! Give constants needed to computation...
+    OPEN(123,file='Results/modes_HOS_SWENSE_restart.dat',status='REPLACE', FORM='FORMATTED', ACCESS='DIRECT',RECL=18*(2*n1o2p1))
+    WRITE(123,'(5000(ES17.10,1X))',REC=1) REAL(n1,RP), REAL(n2,RP), 1.0_rp/f_out_star,T_stop_star &
+          , xlen_star , ylen_star , depth_star, g_star, L, T, (0.0_rp, i1=11,2*n1o2p1)
+
+    WRITE(123,'(5000(ES17.10,1X))',REC=2) (0.0_rp, i1=1,2*n1o2p1)
+    WRITE(123,'(5000(ES17.10,1X))',REC=3) (0.0_rp, i1=1,2*n1o2p1)
+    WRITE(123,'(5000(ES17.10,1X))',REC=4) (0.0_rp, i1=1,2*n1o2p1)
+    WRITE(123,'(5000(ES17.10,1X))',REC=5) (0.0_rp, i1=1,2*n1o2p1)
+    WRITE(123,'(5000(ES17.10,1X))',REC=6) (0.0_rp, i1=1,2*n1o2p1)
+    DO i2=2,n2
+        WRITE(123,'(5000(ES17.10,1X))',REC=1+6*(i2-1)) (0.0_rp, i1=1,2*n1o2p1)
+        WRITE(123,'(5000(ES17.10,1X))',REC=2+6*(i2-1)) (0.0_rp, i1=1,2*n1o2p1)
+        WRITE(123,'(5000(ES17.10,1X))',REC=3+6*(i2-1)) (0.0_rp, i1=1,2*n1o2p1)
+        WRITE(123,'(5000(ES17.10,1X))',REC=4+6*(i2-1)) (0.0_rp, i1=1,2*n1o2p1)
+        WRITE(123,'(5000(ES17.10,1X))',REC=5+6*(i2-1)) (0.0_rp, i1=1,2*n1o2p1)
+        WRITE(123,'(5000(ES17.10,1X))',REC=6+6*(i2-1)) (0.0_rp, i1=1,2*n1o2p1)
+    ENDDO
+ENDIF
+!
+CLOSE(234)
+403 FORMAT(2(D25.16,X),I6,X,I6)
+404 FORMAT(3(D25.16,X),D25.16)
+!
+END SUBROUTINE init_restart
 !
 !
 !

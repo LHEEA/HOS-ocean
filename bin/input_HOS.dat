@@ -1,3 +1,4 @@
+Restart previous computation :: i_restart        :: 0
 Choice of computed case      :: i_case           :: 3
 --- Geometry of the horizontal domain
 Length in x-direction        :: xlen             :: 11.0

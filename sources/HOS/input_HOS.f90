@@ -65,46 +65,79 @@ IMPLICIT NONE
 ! Input variables
 CHARACTER(LEN=*), INTENT(IN)  :: filename
 ! Local variables
-INTEGER  :: unit
+INTEGER  :: unit,unit2,n1_tmp,n2_tmp,M_tmp,p1_tmp,p2_tmp
 !
-unit = 100
+unit  = 100
+unit2 = 101
 OPEN(unit, FILE=filename)
+OPEN(unit2, FILE='Results/restart_data.dat')
 line_counter = 0
 !
-CALL read_datum(unit, i_case)          ! Choice of computed case
-CALL read_blank_line(unit)
-WRITE(*,*)
-CALL read_datum(unit, xlen)            ! Length in x-direction
-CALL read_datum(unit, ylen)            ! Length in y-direction
-CALL read_blank_line(unit)
-WRITE(*,*)
-CALL read_datum(unit, T_stop)          ! Duration of the simulation
-CALL read_datum(unit, f_out)           ! Sampling frequency (output)
-CALL read_datum(unit, toler)           ! Tolerance of RK scheme
-CALL read_datum(unit, n)               ! Dommermuth initialisation
-CALL read_datum(unit, Ta)              ! Dommermuth initialisation
-CALL read_blank_line(unit)
-WRITE(*,*)
-CALL read_datum(unit, grav)            ! Gravity
-CALL read_datum(unit, depth)           ! Water depth
-CALL read_blank_line(unit)
-WRITE(*,*)
-CALL read_datum(unit,Tp_real)          ! Peak period in s
-CALL read_datum(unit,Hs_real)          ! Significant wave height in m
-CALL read_datum(unit, gamma)           ! JONSWAP Spectrum
-CALL read_datum(unit, beta)            ! Directionality (Dysthe)
-CALL read_datum(unit, random_phases)   ! Random phases generation
-CALL read_blank_line(unit)
-WRITE(*,*)
-CALL read_datum(unit, tecplot)         ! Tecplot version
-CALL read_datum(unit, i_out_dim)       ! Output: 1-dim. 0-non dim.
-CALL read_datum(unit, i_3d)            ! 3d free surface quantities
-CALL read_datum(unit, i_a_3d)          ! 3d modes
-CALL read_datum(unit, i_2d)            ! 2d free surface, center line
-CALL read_datum(unit, i_prob)          ! Wave probes in domain
-CALL read_datum(unit, i_sw)            ! Swense output 1='yes',0='no'
+CALL read_datum(unit, i_restart)       ! Restart previous computation
+IF (i_restart.EQ.0) THEN ! Classical simulation without restart file
+    CALL read_datum(unit, i_case)          ! Choice of computed case
+    CALL read_blank_line(unit)
+    WRITE(*,*)
+    CALL read_datum(unit, xlen)            ! Length of the studied zone in x-direction
+    CALL read_datum(unit, ylen)            ! Length of the studied zone in y-direction
+    CALL read_blank_line(unit)
+    WRITE(*,*)
+    CALL read_datum(unit, T_stop)          ! Duration of the simulation
+    CALL read_datum(unit, f_out)           ! Sampling frequency (output)
+    CALL read_datum(unit, toler)           ! Tolerance of RK scheme
+    CALL read_datum(unit, n)               ! Dommermuth initialisation
+    CALL read_datum(unit, Ta)              ! Dommermuth initialisation
+    CALL read_blank_line(unit)
+    WRITE(*,*)
+    CALL read_datum(unit, grav)            ! Gravity
+    CALL read_datum(unit, depth)           ! Water depth
+    CALL read_blank_line(unit)
+    WRITE(*,*)
+    CALL read_datum(unit,Tp_real)          ! Peak period in s
+    CALL read_datum(unit,Hs_real)          ! Significant wave height in m
+    CALL read_datum(unit, gamma)           ! JONSWAP Spectrum
+    CALL read_datum(unit, beta)            ! Directionality (Dysthe)
+    CALL read_datum(unit, random_phases)   ! Random phases generation
+    CALL read_blank_line(unit)
+    WRITE(*,*)
+    CALL read_datum(unit, tecplot)         ! Tecplot version
+    CALL read_datum(unit, i_out_dim)       ! Output: 1-dim. 0-non dim.
+    CALL read_datum(unit, i_3d)            ! 3d free surface quantities
+    CALL read_datum(unit, i_a_3d)          ! 3d modes
+    CALL read_datum(unit, i_2d)            ! 2d free surface, center line
+    CALL read_datum(unit, i_prob)          ! Wave probes in domain
+    CALL read_datum(unit, i_sw)            ! Swense output 1='yes',0='no'
+    !
+    ! Save the parameters of the computation for possible restart
+    WRITE(unit2,102) n1,n2,M,p1,p2, &
+        i_case,n,random_phases,tecplot,i_out_dim,i_3d,i_a_3d,i_2d,i_prob,i_sw, &
+        xlen,ylen,T_stop,f_out,toler,Ta,grav,depth,Tp_real,Hs_real,gamma,beta
+    !
+    time_restart = 0.0_rp
+ELSEIF (i_restart.EQ.1) THEN ! Use results from previous simulations
+    !
+    ! Load the parameters of the previous computation for possible restart
+    READ(unit2,102) n1_tmp,n2_tmp,M_tmp,p1_tmp,p2_tmp, &
+        i_case,n,random_phases,tecplot,i_out_dim,i_3d,i_a_3d,i_2d,i_prob,i_sw, &
+        xlen,ylen,T_stop,f_out,toler,Ta,grav,depth,Tp_real,Hs_real,gamma,beta
+    !
+    ! Check that the discretization is the same
+    IF((n1_tmp.NE.n1).OR.(n2_tmp.NE.n2)&
+        .OR.(M_tmp.NE.M).OR.(p1_tmp.NE.p1).OR.(p2_tmp.NE.p2)) THEN
+        WRITE(*,*) 'Problem with the restart of the computation: the numerical parameters are different.'
+        WRITE(*,*) 'Listing of parameters (n1,n2,M,p1,p2):'
+        WRITE(*,*) 'Previous computation -',n1_tmp,n2_tmp,M_tmp,p1_tmp,p2_tmp
+        WRITE(*,*) 'Current simulation -',n1,n2,M,p1,p2
+    ENDIF
+ELSE
+    WRITE(*,*) 'Unknown i_restart, check your input file'
+    STOP
+ENDIF
 !
 CLOSE(unit)
+CLOSE(unit2)
+!
+102 FORMAT(15(I5,X),12(ES12.5,X))
 !
 END SUBROUTINE read_input
 !
@@ -229,7 +262,8 @@ IMPLICIT NONE
 ! Input variables
 INTEGER, INTENT(IN) :: unit
 ! Tecplot version
-CALL write_datum(unit, i_case,            'i_case',         'Choice of computed case')
+CALL write_datum(unit, i_restart,            'i_restart',         'Restart previous computation')
+CALL write_datum(unit, i_case,            'i_case',         'Choice of the computed case')
 CALL write_blank_line(unit,'--- Geometry of the horizontal domain')
 CALL write_datum(unit, xlen,              'xlen',           'Length in x-direction')
 CALL write_datum(unit, ylen,              'ylen',           'Length in y-direction')

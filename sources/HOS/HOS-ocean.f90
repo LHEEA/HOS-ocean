@@ -35,7 +35,7 @@ USE linear_wave
 !
 IMPLICIT NONE
 ! Time marching parameters
-INTEGER, PARAMETER  :: i_adapt    = 1
+INTEGER, PARAMETER  :: i_adapt = 1
 !
 REAL(RP), DIMENSION(m1,m2)        :: eta_ref, phis_ref
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: a_phis_rk, a_eta_rk, da_eta
@@ -439,10 +439,10 @@ n_er_tot  = 0
 time_cur  = 0.0_rp
 error_old = toler
 !
-! Output files
-!
-CALL init_output(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, i_prob=i_prob, i_sw=i_sw)
-!
+! Analytical integration of the linear part
+! Evaluates the modal amplitudes (FT)
+CALL space_2_fourier(eta_ref,  a_eta)
+CALL space_2_fourier(phis_ref, a_phis)
 !
 IF (err == 'rel') THEN
     eta_scale     = MAXVAL(ABS(a_eta))  ! relative error
@@ -451,6 +451,18 @@ ELSE IF (err == 'abs') THEN
     eta_scale     = 1.0_rp ! absolute error
     phis_scale    = 1.0_rp ! absolute error
 ENDIF
+!
+! Output files
+!
+IF (i_restart.EQ.0) THEN
+    CALL init_output(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, i_prob=i_prob, i_sw=i_sw)
+ELSE
+    CALL init_restart(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, i_prob=i_prob, i_sw=i_sw, &
+        time_cur=time_cur, dt=dt, n_er_tot=n_er_tot, n_rk_tot=n_rk_tot)
+    ! guessing deta_dt at t=0 for energy output at t=0
+    CALL RK_adapt_2var_3D_in_mo_lin(0, RK_param, 0.0_rp, 0.0_rp, a_phis, a_eta, da_eta)
+ENDIF
+!
 !
 DO WHILE (time_cur <= T_stop_star)
     !
@@ -507,7 +519,7 @@ DO WHILE (time_cur <= T_stop_star)
     CALL output_time_step(i_3d=i_3d, i_a=i_a_3d, i_vol=1, i_2D=i_2d, i_max=0, &
                          time=time_cur, N_stop=FLOOR(T_stop_star / dt_out), &
                          a_eta=a_eta, a_phis=a_phis, da_eta= da_eta, volume=volume, energy=energy, E_0=E_o, E_tot=E_tot, &
-                         i_prob=i_prob)
+                         i_prob=i_prob, dt=dt, n_er_tot=n_er_tot, n_rk_tot=n_rk_tot)
     !
     IF (ABS(time_cur-T_stop_star) <= tiny) EXIT ! output of the last zone is done
     !

@@ -128,6 +128,8 @@ REAL(RP) :: g_star, xlen_star, ylen_star, T_stop_star, f_out_star, depth_star
 ! Volume and energy
 REAL(RP) :: volume, E_o(3)
 !
+!Input numbers
+INTEGER :: i_restart ! 0: no restart file, 1: restart file
 ! Output numbers
 INTEGER :: i_3d, i_a_3d, i_2d, i_prob
 !
@@ -154,6 +156,9 @@ REAL(RP), DIMENSION(m1,m2)        :: vitx2ref_SL, vity2ref_SL, vitz2ref_SL
 INTEGER, PARAMETER :: maxprobes=5
 INTEGER :: nprobes
 REAL(RP), DIMENSION(maxprobes) :: xprobe, yprobe, eta_probe
+!
+! Restart quantities
+REAL(RP) :: time_restart
 !
 CONTAINS
 !

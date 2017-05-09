@@ -109,7 +109,8 @@ ENDFOREACH()
 
 ENABLE_TESTING()
 FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/input_HOS.dat"
-"Choice of computed case      :: i_case           :: 3
+"Restart previous computation :: i_restart        :: 0
+Choice of computed case      :: i_case           :: 3
 --- Geometry of the horizontal domain
 Length in x-direction        :: xlen             :: 20.0
 Length in y-direction        :: ylen             :: 20.0
