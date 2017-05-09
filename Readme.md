@@ -3,11 +3,14 @@
 High-Order Spectral method for oceanic simulations
 
 [![Travis][buildstatus_image_travis]][travisci]
+[![Appveyor][buildstatus_image_appveyor]][appveyorci]
+[![Codecov][codecov_image]][codecovci]
 
 This readme file describes the different cases that might be computed with the periodic HOS model
 and gives instructions to set the numerical parameters `n1` to `p2`
 
-Setting the value of integers `n1`, `n2`, `M`, `p1` and `p2` in `variables_3D.f90`
+Setting the value of integers `n1`, `n2`, `M`, `p1` and `p2` in
+[`variables_3D.f90`](sources/HOS/variables_3D.f90)
 
 ## 2D simulation
 
@@ -42,7 +45,7 @@ Setting the value of integer `i_case` in `input_HOS.dat`
    - `2`  - progressive wave: potential on free surface accordingly to linear theory
    - `21` - stationary wave: no velocity at initial time
    The number of the mode, its amplitude and phase have to be chosen
-   in the module `initial_condition.f90`.
+   in the module [`initial_condition.f90`](sources/HOS/initial_condition.f90).
 
 - `i_case = 3` and `31` and `32` : Irregular directional sea-state from spectrum specified :
 
@@ -68,3 +71,9 @@ HOS-ocean project: https://github.com/LHEEA/HOS-ocean/wiki
 
 [buildstatus_image_travis]: https://travis-ci.org/LHEEA/HOS-ocean.svg?branch=master
 [travisci]: https://travis-ci.org/LHEEA/HOS-ocean
+
+[buildstatus_image_appveyor]: https://ci.appveyor.com/api/projects/status/kgkw3p6ygj47j2oj?svg=true
+[appveyorci]: https://ci.appveyor.com/project/LHEEA/hos-ocean
+
+[codecov_image]: https://codecov.io/gh/LHEEA/HOS-ocean/branch/master/graph/badge.svg
+[codecovci]: https://codecov.io/gh/LHEEA/HOS-ocean
