@@ -72,8 +72,8 @@ HOS-ocean project: https://github.com/LHEEA/HOS-ocean/wiki
 [buildstatus_image_travis]: https://travis-ci.org/LHEEA/HOS-ocean.svg?branch=master
 [travisci]: https://travis-ci.org/LHEEA/HOS-ocean
 
-[buildstatus_image_appveyor]: https://ci.appveyor.com/api/projects/status/k2tcs56pwiguxf3h?svg=true
-[appveyorci]: https://ci.appveyor.com/project/Gjacquenot/hos-ocean
+[buildstatus_image_appveyor]: https://ci.appveyor.com/api/projects/status/kgkw3p6ygj47j2oj?svg=true
+[appveyorci]: https://ci.appveyor.com/project/LHEEA/hos-ocean
 
 [codecov_image]: https://codecov.io/gh/Gjacquenot/HOS-ocean/branch/master/graph/badge.svg
 [codecovci]: https://codecov.io/gh/Gjacquenot/HOS-ocean
