@@ -14,6 +14,7 @@ STRING(REPLACE "cmake/../" "" SRC_DIRECTORY ${SRC_DIRECTORY})
 MESSAGE(STATUS "Sources to be used are located in ${SRC_DIRECTORY}")
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+SET(BENCHMARK_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../Benchmark)
 
 IF(NOT DEFINED CMAKE_COLOR_MAKEFILE)
     SET(CMAKE_COLOR_MAKEFILE OFF)
@@ -134,6 +135,7 @@ Output: 1-dim. ; 0-nondim.   :: i_out_dim        :: 1
 2d free surface, center line :: i_2d             :: 0
 Wave probes in domain        :: i_prob           :: 0
 Swense output 1='yes',0='no' :: i_sw             :: 0
+
 ")
 
 FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Results")

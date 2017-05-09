@@ -44,7 +44,8 @@ module2=\
 	maths\
 	ramp\
 	RF_solution\
-	linear_wave
+	linear_wave\
+	random_numbers
 
 subroutine=\
 

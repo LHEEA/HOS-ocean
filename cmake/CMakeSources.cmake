@@ -17,6 +17,7 @@ SET(srcHOS_ocean
     ${SRC_DIRECTORY}/utilities/ramp.f90
     ${SRC_DIRECTORY}/utilities/RF_solution.f90
     ${SRC_DIRECTORY}/utilities/linear_wave.f90
+    ${SRC_DIRECTORY}/utilities/random_numbers.f90
     )
 
 SET(srcPost_processing

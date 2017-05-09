@@ -132,8 +132,9 @@ REAL(RP) :: volume, E_o(3)
 INTEGER :: i_3d, i_a_3d, i_2d, i_prob
 !
 ! Irregular waves
-INTEGER  :: i_sw ! Outputs...
-INTEGER  :: n                    ! Spreading parameter
+INTEGER  :: i_sw          ! Outputs...
+INTEGER  :: n             ! Spreading parameter
+INTEGER  :: random_phases ! For random phases generation
 REAL(RP) :: E_cible,gamma,beta,Ta,Tp_real,Hs_real,Tp
 !
 REAL(RP), DIMENSION(md1o2p1,n2)  :: omega_n2,goomega_n2

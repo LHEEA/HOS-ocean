@@ -32,6 +32,8 @@ USE runge_kutta
 USE Bivar
 USE input_HOS
 USE linear_wave
+USE random_numbers
+!USE IFPORT
 !
 IMPLICIT NONE
 !
@@ -390,14 +392,14 @@ SUBROUTINE initiate_irreg(RK_param)
 IMPLICIT NONE
 !
 REAL(RP) :: sigma, theta, E, Cj, pioxlen, pioylen
-REAL(RP) :: test, rnd, angle, angle1, angle2
+REAL(RP) :: test, angle, angle1, angle2
 INTEGER  :: iseed,i1,i2,i_initiate_NL
 REAL(RP), DIMENSION(3)            :: energy
 TYPE(RK_parameters), INTENT(IN)   :: RK_param
 COMPLEX(CP), DIMENSION(m1o2p1,m2) :: da_eta,a_eta_temp,a_phi_temp
-REAL(RP), DIMENSION(m1o2p1,m2) :: phi_JONSWAP
-REAL(RP),DIMENSION(m1o2p1,m2)  :: DD_WW
-REAL(RP),DIMENSION(ikp) :: ones_k
+REAL(RP), DIMENSION(m1o2p1,m2)    :: phi_JONSWAP, DD_WW
+REAL(RP), DIMENSION(m1o2p1,m2,2)  :: rnd
+REAL(RP), DIMENSION(ikp) :: ones_k
 INTEGER ::  i_dir_JSWP,jj
 REAL(RP) :: beta_min,beta_max,frr,fp_w,s_ww,Norm_DD
 REAL(RP) :: Cg
@@ -454,26 +456,32 @@ Cj = 3.279_rp*E_cible
 E     = E_cible
 test  = 0.0_rp
 !
+! Compute the random numbers used for phases
+IF (random_phases.EQ.0) THEN ! Random numbers are the same at every run for a given value of n1 and n2
+    CALL init_not_random_seed()
+    CALL RANDOM_NUMBER(rnd)
+ELSEIF (random_phases.EQ.1) THEN ! Random numbers are different at every run
+    CALL init_random_seed()
+    CALL RANDOM_NUMBER(rnd)
+ELSE
+    PRINT*, 'Random number generation undefined'
+    STOP
+ENDIF
+!
 DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
     !
     Cj = 3.279_rp*E
     WRITE(*,*) 'E = ', E
-    CALL srand(iseed)
     !
-    rnd = RAND(0)
-    angle1 = rnd*TWOPI
+    angle1 = rnd(1,1,1)*TWOPI
+    angle2 = rnd(1,1,2)*TWOPI
     !
-    rnd = RAND(0)
-    angle2 =  rnd*TWOPI
     a_eta(1,1)  = 0.0_rp
     a_phis(1,1) = 0.0_rp
     !
     DO i1 = 2, n1o2p1
-        rnd = RAND(0)
-        angle1 = rnd*TWOPI
-        !
-        rnd = RAND(0)
-        angle2 =  rnd*TWOPI
+        angle1 = rnd(i1,1,1)*TWOPI
+        angle2 = rnd(i1,1,2)*TWOPI
         angle = 0.0_rp
         !
         IF(omega_n2(i1,1).LT.TWOPI/Tp_real*T) THEN
@@ -511,11 +519,8 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
     ENDDO
     !
     DO i2 = 2, n2
-        rnd = RAND(0)
-        angle1 =  rnd*TWOPI
-        !
-        rnd = RAND(0)
-        angle2 =  rnd*TWOPI
+        angle1 = rnd(1,i2,1)*TWOPI
+        angle2 = rnd(1,i2,2)*TWOPI
         angle = 0.0_rp
         !
         IF(omega_n2(1,i2).LT.TWOPI/Tp_real*T) THEN
@@ -543,11 +548,8 @@ DO WHILE(ABS(test-E_cible)/E_cible.GT.0.001)
         a_phis(1,i2) = -g_star*i/omega_n2(1,i2)*(2.0_rp*Cg/k_abs(1,i2)*phi_JONSWAP(1,i2) &
            *pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))
         DO i1 = 2, n1o2p1
-            rnd = RAND(0)
-            angle1 =  rnd*TWOPI
-            !
-            rnd = RAND(0)
-            angle2 =  rnd*TWOPI
+            angle1 = rnd(i1,i2,1)*TWOPI
+            angle2 = rnd(i1,i2,2)*TWOPI
             angle = 0.0_rp
             !
             IF(omega_n2(i1,i2).LT.TWOPI/Tp_real*T) THEN
@@ -632,8 +634,9 @@ SUBROUTINE initiate_irreg_f
 IMPLICIT NONE
 
 REAL(RP) :: theta, E, pioxlen, pioylen,d1,d2,d3,d4
-REAL(RP) :: rnd, angle, angle1, angle2
-REAL(RP), DIMENSION(m1o2p1,m2) :: phi_E
+REAL(RP) :: angle, angle1, angle2
+REAL(RP), DIMENSION(m1o2p1,m2,2) :: rnd
+REAL(RP), DIMENSION(m1o2p1,m2)   :: phi_E
 REAL(RP), DIMENSION(m1o2p1,m2,4) :: coef_ww2cart
 INTEGER, DIMENSION(m1o2p1,m2) :: ind_o_ww,ind_t_ww
 INTEGER :: iseed,i1,i2,i_int,I_cpt,ndp
@@ -748,8 +751,17 @@ ELSEIF(i_int == 2) THEN
     IF(ISEVEN(n2)) phi_E(:,n2o2p1) = 0.0_rp
 ENDIF
 !
-iseed=2*n1o2p1*n2
-CALL srand(iseed)
+! Compute the random numbers used for phases
+IF (random_phases.EQ.0) THEN ! Random numbers are the same at every run for a given value of n1 and n2
+    CALL init_not_random_seed()
+    CALL RANDOM_NUMBER(rnd)
+ELSEIF (random_phases.EQ.1) THEN ! Random numbers are different at every run
+    CALL init_random_seed()
+    CALL RANDOM_NUMBER(rnd)
+ELSE
+    PRINT*, 'Random number generation undefined'
+    STOP
+ENDIF
 !
 a_eta=0.0_cp
 a_phis=0.0_cp
@@ -758,11 +770,9 @@ DO i1 = 1, n1o2p1
     DO i2 = 1, n2
         IF(ABS(phi_E(i1,i2)).gt.tiny)THEN
             IF(i1 /= 1 .or. i2 /= 1)THEN
-                rnd = RAND(0)
-                angle1 = rnd*TWOPI
+                angle1 = rnd(i1,i2,1)*TWOPI
+                angle2 = rnd(i1,i2,2)*TWOPI
                 !
-                rnd = RAND(0)
-                angle2 =  rnd*TWOPI
                 angle = 0.0_rp
                 a_eta(i1,i2)  = (phi_E(i1,i2)/abs(phi_E(i1,i2)))* (1.0_rp/omega_n2(i1,i2)**3 &
                             *abs(phi_E(i1,i2))*pioxlen*pioylen)**(0.5_rp)*exp(i*(angle1+angle2+angle))

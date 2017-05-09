@@ -93,6 +93,7 @@ CALL read_datum(unit,Tp_real)          ! Peak period in s
 CALL read_datum(unit,Hs_real)          ! Significant wave height in m
 CALL read_datum(unit, gamma)           ! JONSWAP Spectrum
 CALL read_datum(unit, beta)            ! Directionality (Dysthe)
+CALL read_datum(unit, random_phases)   ! Random phases generation
 CALL read_blank_line(unit)
 WRITE(*,*)
 CALL read_datum(unit, tecplot)         ! Tecplot version
@@ -253,6 +254,7 @@ CALL write_datum(unit, Tp_real,         'Tp_real',      'Peak period in s')
 CALL write_datum(unit, Hs_real,         'Hs_real',      'Significant wave height in m')
 CALL write_datum(unit, gamma,           'gamma',        'JONSWAP Spectrum')
 CALL write_datum(unit, beta,            'beta',         'Directionality (Dysthe)')
+CALL write_datum(unit, random_phases,   'random_phases','Random phases generation')
 !
 CALL write_blank_line(unit,'--- Output files')
 CALL write_datum(unit, tecplot,           'tecplot',        'Tecplot version')
