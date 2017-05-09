@@ -75,5 +75,5 @@ HOS-ocean project: https://github.com/LHEEA/HOS-ocean/wiki
 [buildstatus_image_appveyor]: https://ci.appveyor.com/api/projects/status/kgkw3p6ygj47j2oj?svg=true
 [appveyorci]: https://ci.appveyor.com/project/LHEEA/hos-ocean
 
-[codecov_image]: https://codecov.io/gh/Gjacquenot/HOS-ocean/branch/master/graph/badge.svg
-[codecovci]: https://codecov.io/gh/Gjacquenot/HOS-ocean
+[codecov_image]: https://codecov.io/gh/LHEEA/HOS-ocean/branch/master/graph/badge.svg
+[codecovci]: https://codecov.io/gh/LHEEA/HOS-ocean
