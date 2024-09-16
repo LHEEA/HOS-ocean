@@ -952,15 +952,15 @@ IMPLICIT NONE
 !
 INTEGER :: i1,i2,ii,unit,m_i,n_i
 REAL(RP) :: time_i
-CHARACTER :: A1,A2
+CHARACTER :: A1,A2,A3
 !
 unit = 1000
 !
 open(1000,FILE='3d_ini.dat')
-DO ii= 1,63
+DO ii= 1,36
 CALL read_blank_line(unit)
 ENDDO
-READ(unit,1003) A1,time_i,A2,m_i,n_i
+READ(unit,1003) A1,time_i,A2,m_i,A3,n_i
 IF(m_i == m1 .and. n_i == n2)THEN
     DO i2 =  1, n2
         DO i1 = 1, m1
@@ -976,7 +976,7 @@ ELSE
     STOP 1
 ENDIF
 !
-1003 FORMAT(A,F9.2,A,I5,A,I5)
+1003 FORMAT(A20,ES12.5,A4,I5,A4,I5)
 1004 FORMAT(2(ES12.5,X),ES12.5)
 END SUBROUTINE initiate_irreg_i
 !
